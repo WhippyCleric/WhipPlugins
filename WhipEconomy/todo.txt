@@ -1,0 +1,4 @@
+to fix
+
+currency locale
+everything is case sesnitive
