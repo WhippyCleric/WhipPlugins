@@ -11,6 +11,13 @@ public class Auction {
 	private double increment;
 	private int time;
 	private String playerName;
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public String getPlayerId() {
+		return playerId;
+	}
 	private String playerId;
 	
 	public Auction(String itemId, String itemName, int numberOfItem,
