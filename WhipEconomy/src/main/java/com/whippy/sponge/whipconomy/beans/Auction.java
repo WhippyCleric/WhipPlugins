@@ -16,6 +16,7 @@ public class Auction extends Thread{
 	private boolean cancelable;
 	private Bid currentBid;
 	private boolean isBidable;
+	private String playerId;
 	
 	public Auction(String itemId, String itemName, int numberOfItem,
 			double startingBid, double increment, int time, Player player) {
@@ -38,8 +39,6 @@ public class Auction extends Thread{
 	public String getPlayerId() {
 		return playerId;
 	}
-	private String playerId;
-	
 	
 	public String getItemId() {
 		return itemId;
@@ -78,6 +77,9 @@ public class Auction extends Thread{
 		return isBidable;
 	}
 
+	public void raiseCurrentBid(double maxBid) {
+		currentBid.setMaxBid(maxBid);
+	}
 	
 	@Override
 	public void run(){
@@ -135,6 +137,7 @@ public class Auction extends Thread{
 				// Auction has been killed
 			}
 	}
+
 
 
 	

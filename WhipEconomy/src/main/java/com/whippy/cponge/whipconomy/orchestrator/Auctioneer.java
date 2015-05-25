@@ -8,6 +8,7 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.whippy.sponge.whipconomy.beans.Auction;
+import com.whippy.sponge.whipconomy.beans.Bid;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
@@ -22,7 +23,6 @@ public class Auctioneer extends Thread {
 		this.maxAuctions = maxAuctions;
 	}
 
-	
 	@Override
 	public void run(){
 		while(ConfigurationLoader.hasAuctions()){
@@ -33,7 +33,6 @@ public class Auctioneer extends Thread {
 		}
 	}
 	
-
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
 		if(auctions.size()<maxAuctions){
 			auctions.add(auction);
@@ -62,20 +61,55 @@ public class Auctioneer extends Thread {
 		}
 	}
 
-	public synchronized void bid(Player player) {
-		synchronized(currentAuction){			
-			
+	private synchronized void bid(Bid bid) {
+		synchronized(currentAuction){	
+			if(currentAuction!=null){				
+				if(currentAuction.isBidable()){
+					if(currentAuction.getCurrentBid()==null){						
+						currentAuction.setCurrentBid(bid);
+						sendBidBroadcast(bid);
+					}else{
+						Bid currentBid = currentAuction.getCurrentBid();
+						if(currentBid.getBid()>=bid.getMaxBid()){						
+							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
+						}else if(currentBid.getMaxBid()>=bid.getMaxBid()){
+							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
+							currentAuction.raiseCurrentBid(bid.getMaxBid());
+						}else{
+							bid.setCurrentBid(currentBid.getMaxBid());
+							bid.setBid(currentBid.getMaxBid());
+							currentAuction.setCurrentBid(bid);
+							sendBidBroadcast(bid);
+						}
+					}
+				}else{
+					bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Cannot bid at this time",TextColors.RED));
+				}
+			}else{				
+				bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("There is no auction currently running",TextColors.RED));
+			}
 		}
 	}
+
+
+	private void sendBidBroadcast(Bid bid) {
+		StringBuilder bidMessage = new StringBuilder();
+		bidMessage.append(bid.getPlayer().getName());
+		bidMessage.append(" bids ");
+		bidMessage.append(bid.getBid());						
+		StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(bidMessage.toString(),TextColors.RED));
+	}
+	
 	public synchronized void bid(Player player, double bid) {
-		synchronized(currentAuction){			
-			
-		}
+		
 	}
-	public synchronized void bid(Player player, double bid, double max) {
-		synchronized(currentAuction){			
-			
-		}
+	
+	public synchronized void bid(Player player) {
+		
+	}
+	public synchronized void bid(Player player, double initialBid, double max) {
+		Bid bid = new Bid(player, initialBid, max);
+		bid(bid);
 	}
 
 }
