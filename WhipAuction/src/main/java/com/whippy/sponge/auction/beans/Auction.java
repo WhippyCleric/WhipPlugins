@@ -1,5 +1,7 @@
 package com.whippy.sponge.auction.beans;
 
+import org.spongepowered.api.entity.player.Player;
+
 public class Auction {
 
 	private String itemId;
@@ -8,9 +10,11 @@ public class Auction {
 	private double startingBid;
 	private double increment;
 	private int time;
+	private String playerName;
+	private String playerId;
 	
 	public Auction(String itemId, String itemName, int numberOfItem,
-			double startingBid, double increment, int time) {
+			double startingBid, double increment, int time, Player player) {
 		super();
 		this.itemId = itemId;
 		this.itemName = itemName;
@@ -18,6 +22,8 @@ public class Auction {
 		this.startingBid = startingBid;
 		this.increment = increment;
 		this.time = time;
+		this.playerName = player.getName();
+		this.playerId = player.getIdentifier();
 	}
 	
 	public String getItemId() {

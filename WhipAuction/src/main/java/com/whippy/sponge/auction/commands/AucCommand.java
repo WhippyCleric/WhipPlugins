@@ -52,10 +52,12 @@ public class AucCommand implements CommandCallable {
 			Player player = (Player) sender;
 				if(args!=null && !args.equals("")){
 					String[] arguments = args.split(" ");
-					if(arguments.length!=5){
-						player.sendMessage(Texts.builder("Invalid command format").color(TextColors.RED).build());
-					}else{
+					if(arguments.length==5){
 						fiveArgumentCommand(arguments, player);
+					}else if(arguments.length==1){
+						singleArgumentCommand(arguments, player);
+					}else{
+						player.sendMessage(Texts.builder("Invalid command format").color(TextColors.RED).build());
 					}
 				}else{
 					player.sendMessage(Texts.builder("Invalid command format, no arguments received").color(TextColors.RED).build());
@@ -66,6 +68,21 @@ public class AucCommand implements CommandCallable {
 		return null;
 	}
 	
+	private void singleArgumentCommand(String[] arguments, Player player) {
+		String subCommand = arguments[0];
+		if(subCommand.equalsIgnoreCase("c")){
+			cancelCommand(arguments, player);
+		}else{								
+			player.sendMessage(Texts.builder("Invalid command format, received 1 arguments but not a cancel command").color(TextColors.RED).build());
+		}
+	}
+
+	private void cancelCommand(String[] arguments, Player player) {
+		if(StaticsHandler.getAuctioneer().cancel(player)){
+			player.sendMessage(Texts.builder("Auction Cancelled").color(TextColors.GREEN).build());
+		}
+	}
+
 	private void fiveArgumentCommand(String[] arguments, Player player){
 		String subCommand = arguments[0];
 		if(subCommand.equalsIgnoreCase("s")){
@@ -86,7 +103,7 @@ public class AucCommand implements CommandCallable {
 				double startingBid = Double.valueOf(arguments[2]);
 				double increment  = Double.valueOf(arguments[3]);
 				int time = Integer.valueOf(arguments[4]);
-				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time);
+				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
 				int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
 				if(result == -1){
 					player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
