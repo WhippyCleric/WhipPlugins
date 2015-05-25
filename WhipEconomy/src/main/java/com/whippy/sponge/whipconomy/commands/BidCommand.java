@@ -57,7 +57,7 @@ public class BidCommand implements CommandCallable {
 						double bid = Double.valueOf(arguments[0]);
 						StaticsHandler.getAuctioneer().bid(player, bid);
 					}catch(NumberFormatException e){
-						player.sendMessage(Texts.builder("Invalid command format, received non number value for bid amount").color(TextColors.RED).build());
+						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received non number value for bid amount",TextColors.RED));
 					}
 				}else if(arguments.length==2){
 					try{
@@ -65,11 +65,11 @@ public class BidCommand implements CommandCallable {
 						double maxBid = Double.valueOf(arguments[1]);
 						StaticsHandler.getAuctioneer().bid(player, bid, maxBid);
 					}catch(NumberFormatException e){
-						player.sendMessage(Texts.builder("Invalid command format, received non number value for either bid or max bid amount").color(TextColors.RED).build());
+						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received non number value for either bid or max bid amount",TextColors.RED));
 					}
 					
 				}else{
-					player.sendMessage(Texts.builder("Invalid command format, received more than 2 arguments with bid command").color(TextColors.RED).build());
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received more than 2 arguments with bid command",TextColors.RED));
 				}
 			}
 		}else{

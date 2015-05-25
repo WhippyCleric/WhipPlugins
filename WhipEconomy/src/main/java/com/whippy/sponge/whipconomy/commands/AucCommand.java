@@ -57,10 +57,10 @@ public class AucCommand implements CommandCallable {
 					}else if(arguments.length==1){
 						singleArgumentCommand(arguments, player);
 					}else{
-						player.sendMessage(Texts.builder("Invalid command format").color(TextColors.RED).build());
+						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format",TextColors.RED));
 					}
 				}else{
-					player.sendMessage(Texts.builder("Invalid command format, no arguments received").color(TextColors.RED).build());
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, no arguments received",TextColors.RED));
 				}
 		}else{
 			StaticsHandler.getLogger().warn("auc command called by non player entity");
@@ -73,7 +73,7 @@ public class AucCommand implements CommandCallable {
 		if(subCommand.equalsIgnoreCase("c")){
 			cancelCommand(arguments, player);
 		}else{								
-			player.sendMessage(Texts.builder("Invalid command format, received 1 arguments but not a cancel command").color(TextColors.RED).build());
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received 1 arguments but not a cancel command",TextColors.RED));
 		}
 	}
 
@@ -86,7 +86,7 @@ public class AucCommand implements CommandCallable {
 		if(subCommand.equalsIgnoreCase("s")){
 			sellCommand(arguments, player);
 		}else{								
-			player.sendMessage(Texts.builder("Invalid command format, received 5 arguments but not a sell command").color(TextColors.RED).build());
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received 5 arguments but not a sell command",TextColors.RED));
 		}
 	}
 	
@@ -104,10 +104,10 @@ public class AucCommand implements CommandCallable {
 				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
 				StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
 			}catch(NumberFormatException e){
-				player.sendMessage(Texts.builder("Invalid command format, text received instead of number").color(TextColors.RED).build());
+				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, text received instead of number",TextColors.RED));
 			}
 		}else{
-			player.sendMessage(Texts.builder("Please have the item you wish to auction in your hand.").color(TextColors.RED).build());
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Please have the item you wish to auction in your hand.",TextColors.RED));
 		}
 	}
 

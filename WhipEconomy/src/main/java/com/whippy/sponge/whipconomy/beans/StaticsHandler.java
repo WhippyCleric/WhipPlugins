@@ -2,6 +2,9 @@ package com.whippy.sponge.whipconomy.beans;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColor;
 
 import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
 
@@ -48,6 +51,13 @@ public class StaticsHandler {
 
 	public static void setAuctionPrefix(String auctionPrefixNew) {
 		auctionPrefix = auctionPrefixNew;
+	}
+	
+	public static Text buildTextForEcoPlugin(String message, TextColor color){
+		StringBuilder notification = new StringBuilder();
+		notification.append(getAuctionPrefix());
+		notification.append(message);
+		return Texts.builder(notification.toString()).color(color).build();
 	}
 
 }
