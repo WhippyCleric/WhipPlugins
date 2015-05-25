@@ -63,4 +63,8 @@ public class ConfigurationLoader {
 		return maxTransactionHistory;
 	}
 
+	public static boolean hasAuctions() {
+		return true;
+	}
+
 }

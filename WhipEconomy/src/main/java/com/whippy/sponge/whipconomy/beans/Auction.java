@@ -74,6 +74,11 @@ public class Auction extends Thread{
 		this.currentBid = currentBid;
 	}
 
+	public boolean isBidable() {
+		return isBidable;
+	}
+
+	
 	@Override
 	public void run(){
 
@@ -95,7 +100,7 @@ public class Auction extends Thread{
 
 			int time = getTime();
 			game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionStartingBuilder.toString(),TextColors.BLUE));
-			isBidable  =true;
+			isBidable = true;
 			try {
 				Thread.sleep(time-30);
 				setCancelable(false);
@@ -114,7 +119,7 @@ public class Auction extends Thread{
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("1 seconds remaining", TextColors.BLUE));
 				
 				Thread.sleep(1);
-				isBidable  =false;
+				isBidable = false;
 				Bid finalBid = getCurrentBid();
 				setCurrentBid(null);
 				if(getCurrentBid()==null){
@@ -131,4 +136,6 @@ public class Auction extends Thread{
 			}
 	}
 
+
+	
 }

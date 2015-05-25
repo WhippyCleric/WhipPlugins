@@ -8,21 +8,30 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.whippy.sponge.whipconomy.beans.Auction;
-import com.whippy.sponge.whipconomy.beans.Bid;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
-public class Auctioneer {
+public class Auctioneer extends Thread {
 
 	private List<Auction> auctions;
 	private final int maxAuctions;
 	private Auction currentAuction;
-	private Bid currentBid;
 
 	public Auctioneer(int maxAuctions){
 		this.auctions = new ArrayList<Auction>();
 		this.maxAuctions = maxAuctions;
 	}
 
+	
+	@Override
+	public void run(){
+		while(ConfigurationLoader.hasAuctions()){
+			if(auctions.size()>0){
+				currentAuction = auctions.remove(0);
+				currentAuction.run();
+			}
+		}
+	}
 	
 
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
