@@ -7,20 +7,20 @@ import com.whippy.sponge.auction.beans.Auction;
 public class Auctioneer {
 
 	
-	public int pushAuctionToQueue(Auction auction){
+	public synchronized int pushAuctionToQueue(Auction auction){
 		return 1;
 	}
 	
-	public void cancel(Player player){
+	public synchronized void cancel(Player player){
 	}
 
-	public void bid(Player player) {
+	public synchronized void bid(Player player) {
 		
 	}
-	public void bid(Player player, double bid) {
+	public synchronized void bid(Player player, double bid) {
 		
 	}
-	public void bid(Player player, double bid, double max) {
+	public synchronized void bid(Player player, double bid, double max) {
 		
 	}
 	
