@@ -50,48 +50,55 @@ public class AucCommand implements CommandCallable {
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			Optional<ItemStack> holdingOptional = player.getItemInHand();
-			if(holdingOptional.isPresent()){
-				ItemStack item = holdingOptional.get();
-				String itemId = item.getItem().getId();
-				String itemName = item.getItem().getId();
 				if(args!=null && !args.equals("")){
 					String[] arguments = args.split(" ");
 					if(arguments.length!=5){
 						player.sendMessage(Texts.builder("Invalid command format").color(TextColors.RED).build());
 					}else{
-							String subCommand = arguments[0];
-							if(subCommand.equalsIgnoreCase("s")){
-								try{
-								
-									int numberOfItem = Integer.valueOf(arguments[1]);
-									double startingBid = Double.valueOf(arguments[2]);
-									double increment  = Double.valueOf(arguments[3]);
-									int time = Integer.valueOf(arguments[4]);
-									Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time);
-									int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
-									if(result == -1){
-										player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
-									}else{
-										player.sendMessage(Texts.builder("Auction queued number " + result + " in line").color(TextColors.RED).build());
-									}
-								}catch(NumberFormatException e){
-									player.sendMessage(Texts.builder("Invalid command format, text received instead of number").color(TextColors.RED).build());
-								}
-							}else{								
-								player.sendMessage(Texts.builder("Invalid command format, missing s").color(TextColors.RED).build());
-							}
+						fiveArgumentCommand(arguments, player);
 					}
 				}else{
 					player.sendMessage(Texts.builder("Invalid command format, no arguments received").color(TextColors.RED).build());
 				}
-			}else{
-				player.sendMessage(Texts.builder("Please have the item you wish to auction in your hand.").color(TextColors.RED).build());
-			}
 		}else{
 			StaticsHandler.getLogger().warn("auc command called by non player entity");
 		}
 		return null;
+	}
+	
+	private void fiveArgumentCommand(String[] arguments, Player player){
+		String subCommand = arguments[0];
+		if(subCommand.equalsIgnoreCase("s")){
+			sellCommand(arguments, player);
+		}else{								
+			player.sendMessage(Texts.builder("Invalid command format, received 5 arguments but not a sell command").color(TextColors.RED).build());
+		}
+	}
+	
+	private void sellCommand(String[] arguments, Player player){
+		Optional<ItemStack> holdingOptional = player.getItemInHand();
+		if(holdingOptional.isPresent()){
+			ItemStack item = holdingOptional.get();
+			String itemId = item.getItem().getId();
+			String itemName = item.getItem().getId();
+			try{
+				int numberOfItem = Integer.valueOf(arguments[1]);
+				double startingBid = Double.valueOf(arguments[2]);
+				double increment  = Double.valueOf(arguments[3]);
+				int time = Integer.valueOf(arguments[4]);
+				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time);
+				int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
+				if(result == -1){
+					player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
+				}else{
+					player.sendMessage(Texts.builder("Auction queued number " + result + " in line").color(TextColors.GREEN).build());
+				}
+			}catch(NumberFormatException e){
+				player.sendMessage(Texts.builder("Invalid command format, text received instead of number").color(TextColors.RED).build());
+			}
+		}else{
+			player.sendMessage(Texts.builder("Please have the item you wish to auction in your hand.").color(TextColors.RED).build());
+		}
 	}
 
 	@Override
