@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.whippy.sponge.whipconomy.beans.Auction;
@@ -36,7 +35,11 @@ public class Auctioneer extends Thread {
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
 		if(auctions.size()<maxAuctions){
 			auctions.add(auction);
-			player.sendMessage(Texts.builder("Auction queued number " + auctions.indexOf(auction) + " in line").color(TextColors.GREEN).build());
+			StringBuilder auctionNotification = new StringBuilder();
+			auctionNotification .append("Auction queued number ");
+			auctionNotification .append(auctions.indexOf(auction));
+			auctionNotification .append(" in line");
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
 		}else{
 			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Auction queue is full, please try again later", TextColors.RED));
 		}
@@ -111,7 +114,6 @@ public class Auctioneer extends Thread {
 			Bid bid = new Bid(player, initialBid, initialBid);
 			bid(bid);
 		}
-
 	}
 
 	public synchronized void bid(Player player) {
