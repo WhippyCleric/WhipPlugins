@@ -70,11 +70,11 @@ public class Auctioneer extends Thread {
 						sendBidBroadcast(bid);
 					}else{
 						Bid currentBid = currentAuction.getCurrentBid();
-						if(currentBid.getBid()>=bid.getMaxBid()){						
+						if(currentBid.getBid()+currentAuction.getIncrement()>bid.getMaxBid()){						
 							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
-						}else if(currentBid.getMaxBid()>=bid.getMaxBid()){
+						}else if(currentBid.getMaxBid()+currentAuction.getIncrement()>=bid.getMaxBid()){
 							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
-							currentAuction.raiseCurrentBid(bid.getMaxBid());
+							currentAuction.raiseCurrentBid(bid.getMaxBid());						
 						}else{
 							bid.setCurrentBid(currentBid.getMaxBid());
 							bid.setBid(currentBid.getMaxBid());
