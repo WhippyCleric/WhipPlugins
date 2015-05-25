@@ -17,5 +17,11 @@ public class Auctioneer {
 	public void bid(Player player) {
 		
 	}
+	public void bid(Player player, double bid) {
+		
+	}
+	public void bid(Player player, double bid, double max) {
+		
+	}
 	
 }

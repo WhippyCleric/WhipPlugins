@@ -48,7 +48,30 @@ public class BidCommand implements CommandCallable {
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if (sender instanceof Player) {
 			Player player = (Player) sender;
-			StaticsHandler.getAuctioneer().bid(player);
+			if(args==null || args.equals("")){
+				StaticsHandler.getAuctioneer().bid(player);
+			}else{
+				String[] arguments = args.split(" ");
+				if(arguments.length==1){
+					try{
+						double bid = Double.valueOf(arguments[0]);
+						StaticsHandler.getAuctioneer().bid(player, bid);
+					}catch(NumberFormatException e){
+						player.sendMessage(Texts.builder("Invalid command format, received non number value for bid amount").color(TextColors.RED).build());
+					}
+				}else if(arguments.length==2){
+					try{
+						double bid = Double.valueOf(arguments[0]);
+						double maxBid = Double.valueOf(arguments[1]);
+						StaticsHandler.getAuctioneer().bid(player, bid, maxBid);
+					}catch(NumberFormatException e){
+						player.sendMessage(Texts.builder("Invalid command format, received non number value for either bid or max bid amount").color(TextColors.RED).build());
+					}
+					
+				}else{
+					player.sendMessage(Texts.builder("Invalid command format, received more than 2 arguments with bid command").color(TextColors.RED).build());
+				}
+			}
 		}else{
 			StaticsHandler.getLogger().warn("bid command called by non player entity");
 		}
