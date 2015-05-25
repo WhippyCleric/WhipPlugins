@@ -78,9 +78,7 @@ public class AucCommand implements CommandCallable {
 	}
 
 	private void cancelCommand(String[] arguments, Player player) {
-		if(StaticsHandler.getAuctioneer().cancel(player)){
-			player.sendMessage(Texts.builder("Auction Cancelled").color(TextColors.GREEN).build());
-		}
+		StaticsHandler.getAuctioneer().cancel(player);
 	}
 
 	private void fiveArgumentCommand(String[] arguments, Player player){

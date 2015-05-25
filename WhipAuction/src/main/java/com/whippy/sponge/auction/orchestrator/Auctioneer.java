@@ -11,8 +11,11 @@ public class Auctioneer {
 		return 1;
 	}
 	
-	public boolean cancel(Player player){
-		return true;
+	public void cancel(Player player){
+	}
+
+	public void bid(Player player) {
+		
 	}
 	
 }
