@@ -12,6 +12,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 
 import com.google.inject.Inject;
+import com.whippy.sponge.auction.beans.StaticsHandler;
 import com.whippy.sponge.auction.commands.AucCommand;
 
 
@@ -34,7 +35,7 @@ public class WhipAuction {
 
     @Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException {
-
+    	StaticsHandler.setLogger(logger);
     }
 
     @Subscribe
