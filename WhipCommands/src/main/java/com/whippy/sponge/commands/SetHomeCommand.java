@@ -3,7 +3,6 @@ package com.whippy.sponge.commands;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
@@ -14,15 +13,11 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
+import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
 public class SetHomeCommand implements CommandCallable{
 
-	@Inject
-	Logger logger;
-	
-	
 	@Override
 	public Optional<Text> getHelp(CommandSource arg0) {
 		// TODO Auto-generated method stub
@@ -53,7 +48,7 @@ public class SetHomeCommand implements CommandCallable{
 			CommandConfiguration.setHome(player);
 			return null;
 		}else{
-			logger.warn("SetHome called by none player entity");
+			StaticsHandler.getLogger().warn("SetHome called by none player entity");
 			return null;
 		}
 	}

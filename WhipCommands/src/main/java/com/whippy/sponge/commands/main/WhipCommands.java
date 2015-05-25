@@ -16,6 +16,7 @@ import com.whippy.sponge.commands.HomeCommand;
 import com.whippy.sponge.commands.SetHomeCommand;
 import com.whippy.sponge.commands.SetSpawnCommand;
 import com.whippy.sponge.commands.SpawnCommand;
+import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
 @Plugin(id = "WhipCommands", name = "WhipCommands")
@@ -29,6 +30,7 @@ public class WhipCommands {
 	
 	@Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException  {
+		StaticsHandler.setLogger(logger);
 		CommandConfiguration.refreshFromFile();
     }
 	

@@ -3,7 +3,6 @@ package com.whippy.sponge.commands;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
@@ -15,14 +14,11 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
 public class SetSpawnCommand implements CommandCallable{
-
-	@Inject
-	Logger logger;
 
 	@Override
 	public Optional<Text> getHelp(CommandSource arg0) {
@@ -48,7 +44,7 @@ public class SetSpawnCommand implements CommandCallable{
 			Location location = player.getLocation();
 			CommandConfiguration.setSpawn(new NoWorldLocation(location.getX(), location.getY(), location.getZ()));
 		}else{
-			logger.warn("setSpawn called by non player entity");
+			StaticsHandler.getLogger().warn("setSpawn called by non player entity");
 		}
 		return null;
 	}
