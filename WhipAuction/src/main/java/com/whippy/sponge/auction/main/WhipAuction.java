@@ -14,6 +14,7 @@ import org.spongepowered.api.service.command.CommandService;
 import com.google.inject.Inject;
 import com.whippy.sponge.auction.beans.StaticsHandler;
 import com.whippy.sponge.auction.commands.AucCommand;
+import com.whippy.sponge.auction.commands.BidCommand;
 import com.whippy.sponge.auction.orchestrator.Auctioneer;
 
 
@@ -44,6 +45,7 @@ public class WhipAuction {
     public void onPreInitializationEvent(ServerStartingEvent event) {
         CommandService cmdService = game.getCommandDispatcher();
         cmdService.register(this, new AucCommand(), "auc");
+        cmdService.register(this, new BidCommand(), "bid");
 
     }
 
