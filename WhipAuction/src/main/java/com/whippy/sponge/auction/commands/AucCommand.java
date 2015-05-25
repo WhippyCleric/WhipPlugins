@@ -57,24 +57,30 @@ public class AucCommand implements CommandCallable {
 				String itemName = item.getItem().getId();
 				if(args!=null && !args.equals("")){
 					String[] arguments = args.split(" ");
-					if(arguments.length!=4){
+					if(arguments.length!=5){
 						player.sendMessage(Texts.builder("Invalid command format").color(TextColors.RED).build());
 					}else{
-						try{
-							int numberOfItem = Integer.valueOf(arguments[0]);
-							double startingBid = Double.valueOf(arguments[2]);
-							double increment  = Double.valueOf(arguments[3]);
-							int time = Integer.valueOf(arguments[3]);
-							Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time);
-							int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
-							if(result == -1){
-								player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
-							}else{
-								player.sendMessage(Texts.builder("Auction queued number " + result + " in line").color(TextColors.RED).build());
+							String subCommand = arguments[0];
+							if(subCommand.equalsIgnoreCase("s")){
+								try{
+								
+									int numberOfItem = Integer.valueOf(arguments[1]);
+									double startingBid = Double.valueOf(arguments[2]);
+									double increment  = Double.valueOf(arguments[3]);
+									int time = Integer.valueOf(arguments[4]);
+									Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time);
+									int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
+									if(result == -1){
+										player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
+									}else{
+										player.sendMessage(Texts.builder("Auction queued number " + result + " in line").color(TextColors.RED).build());
+									}
+								}catch(NumberFormatException e){
+									player.sendMessage(Texts.builder("Invalid command format, text received instead of number").color(TextColors.RED).build());
+								}
+							}else{								
+								player.sendMessage(Texts.builder("Invalid command format, missing s").color(TextColors.RED).build());
 							}
-						}catch(NumberFormatException e){
-							player.sendMessage(Texts.builder("Invalid command format, test received instead of number").color(TextColors.RED).build());
-						}
 					}
 				}else{
 					player.sendMessage(Texts.builder("Invalid command format, no arguments received").color(TextColors.RED).build());
