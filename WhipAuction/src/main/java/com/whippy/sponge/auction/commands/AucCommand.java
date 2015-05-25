@@ -102,12 +102,7 @@ public class AucCommand implements CommandCallable {
 				double increment  = Double.valueOf(arguments[3]);
 				int time = Integer.valueOf(arguments[4]);
 				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
-				int result = StaticsHandler.getAuctioneer().pushAuctionToQueue(auction);
-				if(result == -1){
-					player.sendMessage(Texts.builder("Auction queue is full, please try again later").color(TextColors.RED).build());
-				}else{
-					player.sendMessage(Texts.builder("Auction queued number " + result + " in line").color(TextColors.GREEN).build());
-				}
+				StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
 			}catch(NumberFormatException e){
 				player.sendMessage(Texts.builder("Invalid command format, text received instead of number").color(TextColors.RED).build());
 			}
