@@ -38,6 +38,8 @@ public class WhipAuction {
     @Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException {
     	StaticsHandler.setLogger(logger);
+    	StaticsHandler.setGame(game);
+    	StaticsHandler.setAuctionPrefix("[WhipAuction] ");
     	StaticsHandler.setAuctioneer(new Auctioneer(4));
     }
 
