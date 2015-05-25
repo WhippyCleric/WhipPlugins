@@ -47,7 +47,8 @@ public class BidCommand implements CommandCallable {
 	@Override
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if (sender instanceof Player) {
-			
+			Player player = (Player) sender;
+			StaticsHandler.getAuctioneer().bid(player);
 		}else{
 			StaticsHandler.getLogger().warn("bid command called by non player entity");
 		}
