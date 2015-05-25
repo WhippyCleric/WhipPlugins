@@ -16,11 +16,15 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
+import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
 import com.whippy.cponge.whipconomy.orchestrator.EconomyCache;
 import com.whippy.sponge.whipconomy.beans.Payment;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
+import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
+import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
 
@@ -35,14 +39,16 @@ public class Whipconomy {
 	
 	@Subscribe
     public void onServerStarting(ServerStartingEvent event)  {
+		StaticsHandler.setLogger(logger);
+		StaticsHandler.setGame(game);
+		StaticsHandler.setAuctionPrefix("[WhipAuction] ");
+		StaticsHandler.setAuctioneer(new Auctioneer(4));
 		if(!ConfigurationLoader.init()){
 			logger.warn("Failed to load configuration defaults will be used");
 		}
 		EconomyCache.refreshMappingsFromFile();
 		EconomyCache.refreshAccountsFromFile();
 		PendingNotificaitions.refreshPendingFromFile();
-		ConfigurationLoader.setLogger(logger);
-		ConfigurationLoader.setGame(game);
 	}
 
 	@Subscribe
@@ -93,6 +99,8 @@ public class Whipconomy {
 		cmdService.register(this, new BalCommand(), "bal");
 		cmdService.register(this, new TransferCommand(), "pay");
 		cmdService.register(this, new TransactionsCommand(), "accountHistory");
+		cmdService.register(this, new AucCommand(), "auc");
+        cmdService.register(this, new BidCommand(), "bid");
 		
 	}
 	

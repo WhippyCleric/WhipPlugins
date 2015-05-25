@@ -8,12 +8,12 @@ import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Text;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
 public class PlayerNotifier {
 	
 	public boolean notify(Text message, UUID playerId){
-		Game game = ConfigurationLoader.getGame();
+		Game game = StaticsHandler.getGame();
 		Server server = game.getServer();
 		Optional<Player> optionalPlayer =  server.getPlayer(playerId);
 		if(optionalPlayer.isPresent()){

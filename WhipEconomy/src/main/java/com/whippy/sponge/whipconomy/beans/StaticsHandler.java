@@ -1,9 +1,10 @@
-package com.whippy.sponge.auction.beans;
+package com.whippy.sponge.whipconomy.beans;
 
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 
-import com.whippy.sponge.auction.orchestrator.Auctioneer;
+import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
+
 
 
 public class StaticsHandler {

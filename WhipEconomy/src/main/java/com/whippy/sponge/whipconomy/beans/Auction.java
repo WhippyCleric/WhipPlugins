@@ -1,4 +1,4 @@
-package com.whippy.sponge.auction.beans;
+package com.whippy.sponge.whipconomy.beans;
 
 import org.spongepowered.api.entity.player.Player;
 

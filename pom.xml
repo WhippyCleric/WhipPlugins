@@ -18,7 +18,6 @@
 			<module>WhipCommands</module>
 			<module>WhipEconomy</module>
 			<module>WhipPerms</module>
-			<module>WhipAuction</module>
 		</modules>
   
 	</project>

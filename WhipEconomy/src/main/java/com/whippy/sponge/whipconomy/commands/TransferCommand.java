@@ -1,13 +1,9 @@
 package com.whippy.sponge.whipconomy.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
@@ -17,13 +13,9 @@ import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 
-import sun.security.ec.ECDHKeyAgreement;
-
 import com.google.common.base.Optional;
-import com.google.inject.Inject;
 import com.whippy.cponge.whipconomy.orchestrator.EconomyCache;
-import com.whippy.cponge.whipconomy.orchestrator.PlayerNotifier;
-import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
 public class TransferCommand implements CommandCallable {
 	
@@ -65,7 +57,7 @@ public class TransferCommand implements CommandCallable {
 	@Override
 	public Optional<CommandResult> process(CommandSource sender, String arguments)
 			throws CommandException {
-		Logger logger = ConfigurationLoader.getLogger();
+		Logger logger = StaticsHandler.getLogger();
 		if(sender instanceof Player){
 			Player player = (Player) sender;
 			if(arguments==null){

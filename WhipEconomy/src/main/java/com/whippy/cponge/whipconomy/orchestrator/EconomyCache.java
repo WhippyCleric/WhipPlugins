@@ -24,6 +24,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Payment;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
 import com.whippy.sponge.whipconomy.exceptions.GetTransactionException;
@@ -53,7 +54,7 @@ public class EconomyCache {
 				messageBuilder.append(ConfigurationLoader.getCurrency());
 			}
 			playerFrom.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
-			ConfigurationLoader.getLogger().info("[PAYMENT]" + playerFrom.getName() +  " " + playerTo + " " + amount);
+			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom.getName() +  " " + playerTo + " " + amount);
 			PlayerNotifier notifier = new PlayerNotifier();
 			StringBuilder paymentReceived = new StringBuilder();
 			paymentReceived.append("Recevied ");

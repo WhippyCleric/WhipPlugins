@@ -1,4 +1,4 @@
-package com.whippy.sponge.auction.commands;
+package com.whippy.sponge.whipconomy.commands;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.auction.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
 
 public class BidCommand implements CommandCallable {

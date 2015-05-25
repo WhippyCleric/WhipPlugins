@@ -1,4 +1,4 @@
-package com.whippy.sponge.auction.orchestrator;
+package com.whippy.cponge.whipconomy.orchestrator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import com.whippy.sponge.auction.beans.Auction;
-import com.whippy.sponge.auction.beans.Bid;
-import com.whippy.sponge.auction.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.beans.Auction;
+import com.whippy.sponge.whipconomy.beans.Bid;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
 public class Auctioneer extends Thread {
 

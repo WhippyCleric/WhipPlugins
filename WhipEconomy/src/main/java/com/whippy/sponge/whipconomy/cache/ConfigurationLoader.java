@@ -4,9 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.spongepowered.api.Game;
-
 public class ConfigurationLoader {
 
 	private static String currency;
@@ -15,8 +12,6 @@ public class ConfigurationLoader {
 	private static boolean appendCurrency;
 	private static double maxOverdraft;
 	private static int maxTransactionHistory;
-	private static Logger logger;
-	private static Game game;
 
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
@@ -66,20 +61,6 @@ public class ConfigurationLoader {
 
 	public static int getMaxTransactionHistory() {
 		return maxTransactionHistory;
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		ConfigurationLoader.logger = logger;
-	}
-	public static void setGame(Game game) {
-		ConfigurationLoader.game = game;
-	}
-	public static Game getGame() {
-		return game;
 	}
 
 }
