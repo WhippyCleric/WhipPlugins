@@ -10,13 +10,14 @@ import java.io.IOException;
 
 import com.google.inject.Inject;
 
+import com.whippy.sponge.auction.commands.AucCommand;
+
 import org.json.simple.parser.ParseException;
 
 import org.slf4j.Logger;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.entity.player.PlayerEnterBedEvent;
 import org.spongepowered.api.event.state.ServerStartingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
@@ -47,7 +48,7 @@ public class WhipAuction {
     @Subscribe
     public void onPreInitializationEvent(ServerStartingEvent event) {
         CommandService cmdService = game.getCommandDispatcher();
-        //cmdService.register(this, new SpawnCommand(), "spawn");
+        cmdService.register(this, new AucCommand(), "auc");
 
     }
 
