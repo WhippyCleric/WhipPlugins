@@ -41,7 +41,6 @@ public class Whipconomy {
     public void onServerStarting(ServerStartingEvent event)  {
 		StaticsHandler.setLogger(logger);
 		StaticsHandler.setGame(game);
-		StaticsHandler.setAuctionPrefix("[WhipAuction] ");
 		StaticsHandler.setAuctioneer(new Auctioneer(4));
 		if(!ConfigurationLoader.init()){
 			logger.warn("Failed to load configuration defaults will be used");

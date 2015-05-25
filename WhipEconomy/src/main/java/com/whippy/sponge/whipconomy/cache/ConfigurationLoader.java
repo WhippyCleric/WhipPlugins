@@ -12,6 +12,9 @@ public class ConfigurationLoader {
 	private static boolean appendCurrency;
 	private static double maxOverdraft;
 	private static int maxTransactionHistory;
+	private static String auctionPrefix;
+	private static boolean hasAuctions;
+	private static double defaultIncrement;
 
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
@@ -26,6 +29,9 @@ public class ConfigurationLoader {
 			startingBallance = Double.parseDouble(props.getProperty("StartingBalance"));
 			maxOverdraft = Double.parseDouble(props.getProperty("MaxOverdraft"));
 			maxTransactionHistory =Integer.parseInt(props.getProperty("MaxTransactionHistory"));
+			auctionPrefix = "[WhipAuction] ";
+			defaultIncrement = 1;
+			hasAuctions = true;
 			return true;
 		} catch (IOException e) {
 			currency = "$";
@@ -33,6 +39,9 @@ public class ConfigurationLoader {
 			startingBallance = 0;
 			maxOverdraft = 0;
 			maxTransactionHistory = 30;
+			auctionPrefix = "[WhipAuction] ";
+			hasAuctions = true;
+			defaultIncrement = 1;
 			e.printStackTrace();
 			return false;
 		}
@@ -64,7 +73,18 @@ public class ConfigurationLoader {
 	}
 
 	public static boolean hasAuctions() {
-		return true;
+		return hasAuctions;
 	}
+	
+	public static String getAuctionPrefix() {
+		return auctionPrefix;
+	}
+
+
+	public static double getDefaultIncrement() {
+		return defaultIncrement;
+	}
+
+
 
 }

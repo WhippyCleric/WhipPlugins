@@ -7,6 +7,7 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColor;
 
 import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
 
 
@@ -19,7 +20,6 @@ public class StaticsHandler {
     private static Logger logger;
     private static Auctioneer auctioneer;
     private static Game game;
-    private static String auctionPrefix;
 
 	public static Logger getLogger() {
 		return logger;
@@ -45,17 +45,10 @@ public class StaticsHandler {
 		auctioneer = auctioneerNew;
 	}
 
-	public static String getAuctionPrefix() {
-		return auctionPrefix;
-	}
 
-	public static void setAuctionPrefix(String auctionPrefixNew) {
-		auctionPrefix = auctionPrefixNew;
-	}
-	
 	public static Text buildTextForEcoPlugin(String message, TextColor color){
 		StringBuilder notification = new StringBuilder();
-		notification.append(getAuctionPrefix());
+		notification.append(ConfigurationLoader.getAuctionPrefix());
 		notification.append(message);
 		return Texts.builder(notification.toString()).color(color).build();
 	}
