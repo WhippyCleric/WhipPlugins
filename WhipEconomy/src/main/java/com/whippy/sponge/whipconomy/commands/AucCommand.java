@@ -16,6 +16,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
 
 public class AucCommand implements CommandCallable {
@@ -101,8 +102,20 @@ public class AucCommand implements CommandCallable {
 				double startingBid = Double.valueOf(arguments[2]);
 				double increment  = Double.valueOf(arguments[3]);
 				int time = Integer.valueOf(arguments[4]);
-				Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
-				StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
+				if(numberOfItem<1){
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Must hold at least 1 item to auction",TextColors.RED));
+				}else if(startingBid<=0){
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Starting bid must be a greater than 0",TextColors.RED));
+				}else if(increment<=0){
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Increment must be greater than 0",TextColors.RED));
+				}else if(time<ConfigurationLoader.getMinAuctionTime()){
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Time must be at least " + ConfigurationLoader.getMinAuctionTime() + " seconds",TextColors.RED));
+				}else if(time>ConfigurationLoader.getMaxAuctionTime()){
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Time must be at most " + ConfigurationLoader.getMaxAuctionTime() + " seconds",TextColors.RED));
+				}else{					
+					Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
+					StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
+				}
 			}catch(NumberFormatException e){
 				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, text received instead of number",TextColors.RED));
 			}

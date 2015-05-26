@@ -92,8 +92,8 @@ public class AucCommandTest {
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
 		AucCommand command = new AucCommand();
 		
-		command.process(player, "s 1 1 1 31");
-		Thread.sleep(35000);
+		command.process(player, "s 1 1 1 45");
+		Thread.sleep(47000);
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		verify(server, times(7)).broadcastMessage(broadcastCaptor.capture());
 		
@@ -116,6 +116,103 @@ public class AucCommandTest {
 	}
 	
 	@Test
+	public void testSellWithNegativeStartBid() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer(4);
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 -1 1 45");
+		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
+		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
+		assertEquals("[WhipAuction] Starting bid must be a greater than 0" , capturedPlayerMessage.getContent());
+	}
+	@Test
+	public void testSellWithNegativeIncrement() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer(4);
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 -1 45");
+		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
+		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
+		assertEquals("[WhipAuction] Increment must be greater than 0" , capturedPlayerMessage.getContent());
+	}
+	@Test
+	public void testSellWithTooLowTime() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer(4);
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 44");
+		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
+		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
+		assertEquals("[WhipAuction] Time must be at least 45 seconds" , capturedPlayerMessage.getContent());
+	}
+	@Test
+	public void testSellWithTooMuchTime() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer(4);
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 91");
+		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
+		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
+		assertEquals("[WhipAuction] Time must be at most 90 seconds" , capturedPlayerMessage.getContent());
+	}
+	
+	@Test
+	public void testSellWithNegativeItemCount() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer(4);
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s -1 1 1 45");
+		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
+		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
+		assertEquals("[WhipAuction] Must hold at least 1 item to auction" , capturedPlayerMessage.getContent());
+	}
+	
+	@Test
 	public void testAuctionMultipleBids() throws CommandException, InterruptedException{
 		Auctioneer auctioneer = new Auctioneer(4);
 		StaticsHandler.setAuctioneer(auctioneer);
@@ -127,7 +224,7 @@ public class AucCommandTest {
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
 		AucCommand command = new AucCommand();
-		command.process(player, "s 1 1 1 31");
+		command.process(player, "s 1 1 1 45");
 		Thread.sleep(15000);
 		BidCommand bidCommand = new BidCommand();
 		
@@ -151,10 +248,10 @@ public class AucCommandTest {
 		bidCommand.process(bidder, "5 20");
 		Thread.sleep(1000);
 		bidCommand.process(bidder, "5 200");
-		Thread.sleep(16000);
+		Thread.sleep(30000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 31 seconds.");
+		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
 		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 1.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.2");
@@ -201,15 +298,15 @@ public class AucCommandTest {
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
 		AucCommand command = new AucCommand();
-		command.process(player, "s 1 1 1 31");
+		command.process(player, "s 1 1 1 45");
 		Thread.sleep(15000);
 		BidCommand bidCommand = new BidCommand();
 		Player bidder = objectCreator.createRandomPlayer();
 		bidCommand.process(bidder, "10");
-		Thread.sleep(16000);
+		Thread.sleep(32000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 31 seconds.");
+		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
 		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 10.0");
 		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
