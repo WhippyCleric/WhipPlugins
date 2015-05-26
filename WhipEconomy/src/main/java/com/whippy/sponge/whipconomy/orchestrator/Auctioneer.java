@@ -77,30 +77,38 @@ public class Auctioneer extends Thread {
 		synchronized(currentAuction){	
 			if(currentAuction!=null){				
 				if(currentAuction.isBidable()){
-					if(currentAuction.getCurrentBid()==null){						
-						currentAuction.setCurrentBid(bid);
-						sendBidBroadcast(bid);
-					}else{
-						Bid currentBid = currentAuction.getCurrentBid();
-						if(currentBid.getBid()+currentAuction.getIncrement()>bid.getMaxBid()){						
-							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
-						}else if(currentBid.getCurrentBid()+currentAuction.getIncrement()>bid.getMaxBid()){
-							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
-						}else if(currentBid.getMaxBid()+currentAuction.getIncrement()>bid.getMaxBid()){
-							bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
-							if(bid.getMaxBid()<currentBid.getMaxBid()){								
-								currentAuction.raiseCurrentBid(bid.getMaxBid());						
-							}else{
-								currentAuction.raiseCurrentBid(currentBid.getMaxBid());														
-							}
-						}else{
-							if(bid.getBid()<=currentBid.getMaxBid()+currentAuction.getIncrement()){
-								bid.setCurrentBid(currentBid.getMaxBid()+currentAuction.getIncrement());
-								bid.setBid(currentBid.getMaxBid()+currentAuction.getIncrement());								
+					if(bid.getMaxBid()>=currentAuction.getStartingBid()){
+						if(currentAuction.getCurrentBid()==null){
+							if(bid.getBid()<currentAuction.getStartingBid()){
+								bid.setBid(currentAuction.getStartingBid());
+								bid.setCurrentBid(currentAuction.getStartingBid());
 							}
 							currentAuction.setCurrentBid(bid);
 							sendBidBroadcast(bid);
+						}else{
+							Bid currentBid = currentAuction.getCurrentBid();
+							if(currentBid.getBid()+currentAuction.getIncrement()>bid.getMaxBid()){						
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
+							}else if(currentBid.getCurrentBid()+currentAuction.getIncrement()>bid.getMaxBid()){
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
+							}else if(currentBid.getMaxBid()+currentAuction.getIncrement()>bid.getMaxBid()){
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
+								if(bid.getMaxBid()<currentBid.getMaxBid()){								
+									currentAuction.raiseCurrentBid(bid.getMaxBid());						
+								}else{
+									currentAuction.raiseCurrentBid(currentBid.getMaxBid());														
+								}
+							}else{
+								if(bid.getBid()<=currentBid.getMaxBid()+currentAuction.getIncrement()){
+									bid.setCurrentBid(currentBid.getMaxBid()+currentAuction.getIncrement());
+									bid.setBid(currentBid.getMaxBid()+currentAuction.getIncrement());								
+								}
+								currentAuction.setCurrentBid(bid);
+								sendBidBroadcast(bid);
+							}
 						}
+					}else{
+						bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
 					}
 				}else{
 					bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Cannot bid at this time",TextColors.RED));
