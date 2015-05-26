@@ -22,12 +22,12 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.whippy.cponge.whipconomy.orchestrator.PlayerNotifier;
 import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.exceptions.GetTransactionException;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
+import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
 public class EconomyCache {
 

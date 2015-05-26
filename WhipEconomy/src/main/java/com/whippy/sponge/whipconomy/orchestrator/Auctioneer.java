@@ -1,4 +1,4 @@
-package com.whippy.cponge.whipconomy.orchestrator;
+package com.whippy.sponge.whipconomy.orchestrator;
 
 import java.util.ArrayList;
 import java.util.List;

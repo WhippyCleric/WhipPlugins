@@ -6,8 +6,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColor;
 
-import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
 
 

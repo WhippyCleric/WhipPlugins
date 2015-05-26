@@ -16,7 +16,6 @@ import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
-import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
@@ -27,6 +26,7 @@ import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
+import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
 @Plugin(id = "Whipconomy", name = "Whipconomy")
 public class Whipconomy {
