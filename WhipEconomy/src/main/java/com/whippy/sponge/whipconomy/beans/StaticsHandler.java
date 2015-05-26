@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.format.TextColor.Base;
 
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
@@ -46,7 +46,7 @@ public class StaticsHandler {
 	}
 
 
-	public static Text buildTextForEcoPlugin(String message, TextColor color){
+	public static Text buildTextForEcoPlugin(String message, Base color){
 		StringBuilder notification = new StringBuilder();
 		notification.append(ConfigurationLoader.getAuctionPrefix());
 		notification.append(message);

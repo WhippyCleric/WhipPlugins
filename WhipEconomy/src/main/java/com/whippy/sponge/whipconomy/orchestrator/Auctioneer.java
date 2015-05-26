@@ -9,7 +9,6 @@ import org.spongepowered.api.text.format.TextColors;
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.Bid;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
-import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
 public class Auctioneer extends Thread {
 
@@ -22,15 +21,25 @@ public class Auctioneer extends Thread {
 		this.maxAuctions = maxAuctions;
 	}
 
-	@Override
-	public void run(){
-		while(ConfigurationLoader.hasAuctions()){
-			if(auctions.size()>0){
-				currentAuction = auctions.remove(0);
-				currentAuction.run();
-			}
-		}
+
+
+	public Auction getCurrentAuction() {
+		return currentAuction;
 	}
+
+
+
+	public void setCurrentAuction(Auction currentAuction) {
+		this.currentAuction = currentAuction;
+	}
+
+
+
+	public List<Auction> getAuctions() {
+		return auctions;
+	}
+
+
 
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
 		if(auctions.size()<maxAuctions){
@@ -85,8 +94,10 @@ public class Auctioneer extends Thread {
 								currentAuction.raiseCurrentBid(currentBid.getMaxBid());														
 							}
 						}else{
-							bid.setCurrentBid(currentBid.getMaxBid());
-							bid.setBid(currentBid.getMaxBid());
+							if(bid.getBid()<=currentBid.getMaxBid()+currentAuction.getIncrement()){
+								bid.setCurrentBid(currentBid.getMaxBid()+currentAuction.getIncrement());
+								bid.setBid(currentBid.getMaxBid()+currentAuction.getIncrement());								
+							}
 							currentAuction.setCurrentBid(bid);
 							sendBidBroadcast(bid);
 						}

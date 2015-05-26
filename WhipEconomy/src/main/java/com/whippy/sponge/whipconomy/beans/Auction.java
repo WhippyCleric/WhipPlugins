@@ -78,7 +78,7 @@ public class Auction extends Thread{
 	}
 
 	public void raiseCurrentBid(double maxBid) {
-		currentBid.setMaxBid(maxBid);
+		currentBid.setCurrentBid(maxBid);
 	}
 	
 	@Override
@@ -100,37 +100,37 @@ public class Auction extends Thread{
 			auctionStartingBuilder.append(getTime());
 			auctionStartingBuilder.append(" seconds.");
 
-			int time = getTime();
+			int time = getTime()*1000;
 			game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionStartingBuilder.toString(),TextColors.BLUE));
 			isBidable = true;
 			try {
-				Thread.sleep(time-30);
+				Thread.sleep(time-30000);
 				setCancelable(false);
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("30 seconds remaining", TextColors.BLUE));
 				
-				Thread.sleep(20);
+				Thread.sleep(20000);
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("10 seconds remaining", TextColors.BLUE));
 				
-				Thread.sleep(7);
+				Thread.sleep(7000);
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("3 seconds remaining", TextColors.BLUE));
 
-				Thread.sleep(1);
+				Thread.sleep(1000);
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("2 seconds remaining", TextColors.BLUE));
 
-				Thread.sleep(1);
+				Thread.sleep(1000);
 				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("1 seconds remaining", TextColors.BLUE));
 				
-				Thread.sleep(1);
+				Thread.sleep(1000);
 				isBidable = false;
 				Bid finalBid = getCurrentBid();
 				setCurrentBid(null);
-				if(getCurrentBid()==null){
+				if(finalBid==null){
 					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("Auction completed with no bids", TextColors.BLUE));
 				}else{
 					StringBuilder auctionNotification = new StringBuilder();
 					auctionNotification.append(finalBid.getPlayer().getName());
-					auctionNotification.append("won the auction with a bid of ");
-					auctionNotification.append(finalBid.getBid());
+					auctionNotification.append(" won the auction with a bid of ");
+					auctionNotification.append(finalBid.getCurrentBid());
 					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
 				}
 			} catch (InterruptedException e) {

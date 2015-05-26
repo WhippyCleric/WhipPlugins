@@ -95,7 +95,7 @@ public class AucCommand implements CommandCallable {
 		if(holdingOptional.isPresent()){
 			ItemStack item = holdingOptional.get();
 			String itemId = item.getItem().getId();
-			String itemName = item.getItem().getId();
+			String itemName = item.getItem().getName();
 			try{
 				int numberOfItem = Integer.valueOf(arguments[1]);
 				double startingBid = Double.valueOf(arguments[2]);

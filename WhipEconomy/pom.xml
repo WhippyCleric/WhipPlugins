@@ -17,6 +17,18 @@
 			<version>2.1-20150421.042532-1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>sponge</artifactId>
+			<version>1.8-1371-2.1DEV-460</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.spongepowered</groupId>
+					<artifactId>spongecommon</artifactId>
+				</exclusion>
+			</exclusions>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
@@ -40,11 +52,31 @@
 			<version>1.9.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.4.11</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.whipppy</groupId>
 			<artifactId>whip-sponge-testing-harness</artifactId>
 			<version>1.0</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>2.5.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

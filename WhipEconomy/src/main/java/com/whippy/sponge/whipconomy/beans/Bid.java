@@ -13,7 +13,7 @@ public class Bid {
 		super();
 		this.player = player;
 		this.bid = bid;
-		this.currentBid = currentBid;
+		this.currentBid = bid;
 		this.maxBid = maxBid;
 	}
 

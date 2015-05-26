@@ -26,6 +26,7 @@ import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
+import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
 @Plugin(id = "Whipconomy", name = "Whipconomy")
@@ -48,6 +49,8 @@ public class Whipconomy {
 		EconomyCache.refreshMappingsFromFile();
 		EconomyCache.refreshAccountsFromFile();
 		PendingNotificaitions.refreshPendingFromFile();
+		AuctionRunner runner = new AuctionRunner();
+		runner.run();
 	}
 
 	@Subscribe
