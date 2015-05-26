@@ -18,6 +18,7 @@
 			<module>WhipCommands</module>
 			<module>WhipEconomy</module>
 			<module>WhipPerms</module>
+			<module>WhipSpongeTestingHarness</module>
 		</modules>
   
 	</project>
