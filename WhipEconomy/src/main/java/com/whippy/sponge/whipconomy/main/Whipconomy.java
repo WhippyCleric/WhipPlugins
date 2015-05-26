@@ -42,15 +42,14 @@ public class Whipconomy {
     public void onServerStarting(ServerStartingEvent event)  {
 		StaticsHandler.setLogger(logger);
 		StaticsHandler.setGame(game);
-		StaticsHandler.setAuctioneer(new Auctioneer(4));
+		
 		if(!ConfigurationLoader.init()){
 			logger.warn("Failed to load configuration defaults will be used");
 		}
 		EconomyCache.refreshMappingsFromFile();
 		EconomyCache.refreshAccountsFromFile();
 		PendingNotificaitions.refreshPendingFromFile();
-		AuctionRunner runner = new AuctionRunner();
-		runner.run();
+		
 	}
 
 	@Subscribe
@@ -101,9 +100,13 @@ public class Whipconomy {
 		cmdService.register(this, new BalCommand(), "bal");
 		cmdService.register(this, new TransferCommand(), "pay");
 		cmdService.register(this, new TransactionsCommand(), "accountHistory");
-		cmdService.register(this, new AucCommand(), "auc");
-        cmdService.register(this, new BidCommand(), "bid");
-		
+		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
+			cmdService.register(this, new AucCommand(), "auc");
+	        cmdService.register(this, new BidCommand(), "bid");
+		}
+		StaticsHandler.setAuctioneer(new Auctioneer());
+		AuctionRunner runner = new AuctionRunner();
+		runner.run();
 	}
 	
 }

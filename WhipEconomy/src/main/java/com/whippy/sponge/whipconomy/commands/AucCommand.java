@@ -17,6 +17,7 @@ import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
 
 public class AucCommand implements CommandCallable {
@@ -99,8 +100,8 @@ public class AucCommand implements CommandCallable {
 			String itemName = item.getItem().getName();
 			try{
 				int numberOfItem = Integer.valueOf(arguments[1]);
-				double startingBid = Double.valueOf(arguments[2]);
-				double increment  = Double.valueOf(arguments[3]);
+				double startingBid = EconomyCache.round(Double.valueOf(arguments[2]), ConfigurationLoader.getDecPlaces());
+				double increment  = EconomyCache.round(Double.valueOf(arguments[3]), ConfigurationLoader.getDecPlaces());
 				int time = Integer.valueOf(arguments[4]);
 				if(numberOfItem<1){
 					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Must hold at least 1 item to auction",TextColors.RED));

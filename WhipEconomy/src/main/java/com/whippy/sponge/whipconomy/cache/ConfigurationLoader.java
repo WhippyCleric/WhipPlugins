@@ -17,6 +17,7 @@ public class ConfigurationLoader {
 	private static double defaultIncrement;
 	private static int minAuctionTime;
 	private static int maxAuctionTime;
+	private static int maxAuctions;
 
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
@@ -37,6 +38,7 @@ public class ConfigurationLoader {
 			minAuctionTime = 45;
 			maxAuctionTime=90;
 			hasAuctions = true;
+			maxAuctions=4;
 			return true;
 		} catch (IOException e) {
 			currency = "$";
@@ -49,7 +51,7 @@ public class ConfigurationLoader {
 			defaultIncrement = 1;
 			minAuctionTime = 45;
 			maxAuctionTime=90;
-			e.printStackTrace();
+			maxAuctions=4;
 			return false;
 		}
 	}
@@ -98,6 +100,10 @@ public class ConfigurationLoader {
 
 	public static double getDefaultIncrement() {
 		return defaultIncrement;
+	}
+
+	public static int getMaxAuctions() {
+		return maxAuctions;
 	}
 
 

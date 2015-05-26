@@ -9,6 +9,8 @@ import org.spongepowered.api.text.format.TextColors;
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.Bid;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
 public class Auctioneer extends Thread {
 
@@ -16,9 +18,9 @@ public class Auctioneer extends Thread {
 	private final int maxAuctions;
 	private Auction currentAuction;
 
-	public Auctioneer(int maxAuctions){
+	public Auctioneer(){
 		this.auctions = new ArrayList<Auction>();
-		this.maxAuctions = maxAuctions;
+		this.maxAuctions = ConfigurationLoader.getMaxAuctions();
 	}
 
 
@@ -130,6 +132,7 @@ public class Auctioneer extends Thread {
 
 	public synchronized void bid(Player player, double initialBid) {
 		synchronized (currentAuction){
+			initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
 			Bid bid = new Bid(player, initialBid, initialBid);
 			bid(bid);
 		}
@@ -139,13 +142,19 @@ public class Auctioneer extends Thread {
 		synchronized (currentAuction){
 			Bid currentBid = currentAuction.getCurrentBid();
 			double increment = currentAuction.getIncrement();
-			Bid bid = new Bid(player, currentBid.getCurrentBid() + increment, currentBid.getCurrentBid() + increment);
+			Bid bid = new Bid(player, currentBid.getMaxBid() + increment, currentBid.getMaxBid() + increment);
 			bid(bid);
 		}
 	}
 	public synchronized void bid(Player player, double initialBid, double max) {
-		Bid bid = new Bid(player, initialBid, max);
-		bid(bid);
+		if(max>=initialBid){
+			initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
+			max = EconomyCache.round(max, ConfigurationLoader.getDecPlaces());
+			Bid bid = new Bid(player, initialBid, max);
+			bid(bid);
+		}else{
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Max bid can not be lower than intial bid",TextColors.RED));
+		}
 	}
 
 }

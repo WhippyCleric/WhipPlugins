@@ -134,6 +134,7 @@ public class AucCommandTest {
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
 		assertEquals("[WhipAuction] Starting bid must be a greater than 0" , capturedPlayerMessage.getContent());
 	}
+
 	@Test
 	public void testSellWithNegativeIncrement() throws InterruptedException, CommandException{
 		Auctioneer auctioneer = new Auctioneer(4);
@@ -248,6 +249,8 @@ public class AucCommandTest {
 		bidCommand.process(bidder, "5 20");
 		Thread.sleep(1000);
 		bidCommand.process(bidder, "5 200");
+		Thread.sleep(100);
+		bidCommand.process(bidder2, null);
 		Thread.sleep(30000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
@@ -256,13 +259,14 @@ public class AucCommandTest {
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 1.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.2");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 21.0");
+		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 201.0");
 		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] "+ bidder.getName() +" won the auction with a bid of 21.0");
+		expectedBroadcasts.add("[WhipAuction] "+ bidder2.getName() +" won the auction with a bid of 201");
 		
-		verify(server, times(10)).broadcastMessage(broadcastCaptor.capture());
+		verify(server, times(11)).broadcastMessage(broadcastCaptor.capture());
 		verify(bidder3, times(1)).sendMessage(bidder3Captor.capture());
 		verify(bidder, times(4)).sendMessage(bidderCaptor.capture());
 		
