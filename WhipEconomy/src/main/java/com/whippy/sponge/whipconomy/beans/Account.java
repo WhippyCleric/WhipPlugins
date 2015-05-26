@@ -6,8 +6,8 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.whippy.cponge.whipconomy.orchestrator.EconomyCache;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
 public class Account {
 

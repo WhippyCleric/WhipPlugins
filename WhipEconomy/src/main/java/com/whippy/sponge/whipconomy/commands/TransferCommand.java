@@ -14,8 +14,8 @@ import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 
 import com.google.common.base.Optional;
-import com.whippy.cponge.whipconomy.orchestrator.EconomyCache;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
 public class TransferCommand implements CommandCallable {
 	

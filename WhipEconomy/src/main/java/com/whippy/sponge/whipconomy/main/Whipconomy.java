@@ -17,10 +17,10 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 import com.whippy.cponge.whipconomy.orchestrator.Auctioneer;
-import com.whippy.cponge.whipconomy.orchestrator.EconomyCache;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
 import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
