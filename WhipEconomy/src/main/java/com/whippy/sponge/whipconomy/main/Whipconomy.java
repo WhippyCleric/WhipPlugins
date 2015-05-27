@@ -18,6 +18,7 @@ import org.spongepowered.api.text.format.TextColors;
 import com.google.inject.Inject;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.AuctionCache;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
@@ -104,6 +105,7 @@ public class Whipconomy {
 			cmdService.register(this, new AucCommand(), "auc");
 	        cmdService.register(this, new BidCommand(), "bid");
 		}
+		StaticsHandler.setAuctionCache(new AuctionCache());
 		StaticsHandler.setAuctioneer(new Auctioneer());
 		AuctionRunner runner = new AuctionRunner();
 		runner.run();

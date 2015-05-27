@@ -1,5 +1,6 @@
 package com.whippy.sponge.whipconomy.cache;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class EconomyCache {
 			throw new TransferException("Cannot charge player negative amount");
 		}
 		if(account.getBal()+ConfigurationLoader.getMaxOverdraft()<amount){
-			throw new TransferException("Player does not have enough money to make the paymentc");			
+			throw new TransferException("Player does not have enough money to make the payment");			
 		}
 		account.ammendBal(amount*-1);
 		pushFileAccountsUpdate();
@@ -197,6 +198,11 @@ public class EconomyCache {
 	
 	private synchronized static void pushFileAccountsUpdate(){
 		try{
+			File accountsFile = new File(ACCOUNTS_PATH);
+			if(!accountsFile.exists()) {
+				accountsFile.getParentFile().mkdirs();
+			    accountsFile.createNewFile();
+			} 
 			JSONObject all = new JSONObject();
 			FileWriter file = new FileWriter(ACCOUNTS_PATH);
 			JSONArray accounts = new JSONArray();
@@ -216,6 +222,11 @@ public class EconomyCache {
 	
 	private synchronized static void pushFileMappingsUpdate(){
 		try {
+			File accountsFile = new File(NAME_TO_UID_MAPPINGS);
+			if(!accountsFile.exists()) {
+				accountsFile.getParentFile().mkdirs();
+			    accountsFile.createNewFile();
+			} 
 			JSONObject all = new JSONObject();
 			FileWriter file = new FileWriter(NAME_TO_UID_MAPPINGS);
 			JSONObject mappings = new JSONObject();

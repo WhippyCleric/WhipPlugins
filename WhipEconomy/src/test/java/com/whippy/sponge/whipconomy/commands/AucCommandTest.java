@@ -1,6 +1,7 @@
 package com.whippy.sponge.whipconomy.commands;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +32,10 @@ import org.spongepowered.api.util.command.CommandException;
 import com.google.common.base.Optional;
 import com.whippy.sponge.whip.sponge.testing.harness.SpongeObjectCreator;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.AuctionCache;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
+import com.whippy.sponge.whipconomy.exceptions.TransferException;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -53,6 +57,9 @@ public class AucCommandTest {
 		mockItemType(ItemTypes.class.getField("BOAT"), "Boats");
 		ConfigurationLoader.init();
 		AUCTION_PREFIX = ConfigurationLoader.getAuctionPrefix();
+		
+		EconomyCache.refreshMappingsFromFile();
+		EconomyCache.refreshAccountsFromFile();
 	}
 	@Test
 	public void testEmptyArguments() throws CommandException{
@@ -486,21 +493,27 @@ public class AucCommandTest {
 	}
 	
 	@Test
-	public void testAuction1Bid() throws CommandException, InterruptedException{
+	public void testAuction1Bid() throws CommandException, InterruptedException, TransferException{
 		Auctioneer auctioneer = new Auctioneer();
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player bidder = objectCreator.createRandomPlayer();
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
 		Server server = objectCreator.mockServer();
+		
+		EconomyCache.updatePlayerMapping(player);
+		EconomyCache.updatePlayerMapping(bidder);
+		EconomyCache.pay(bidder.getIdentifier(), 50);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
 		AucCommand command = new AucCommand();
 		command.process(player, "s 1 1 1 45");
-		Thread.sleep(15000);
+		Thread.sleep(17000);
 		BidCommand bidCommand = new BidCommand();
-		Player bidder = objectCreator.createRandomPlayer();
 		bidCommand.process(bidder, "10");
 		Thread.sleep(32000);
 		
@@ -519,6 +532,7 @@ public class AucCommandTest {
 		for(int i=0 ; i<8; i++){
 			assertEquals(expectedBroadcasts.get(i), broadcasts.get(i).getContent());
 		}
+		assertTrue(40==EconomyCache.getBalance(bidder.getIdentifier()));
 	}
 	
 	private void testMessageSend(Player player, String expectedMessage, CommandExecution command) throws CommandException{

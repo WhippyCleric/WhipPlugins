@@ -11,6 +11,7 @@ import com.whippy.sponge.whipconomy.beans.Bid;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
+import com.whippy.sponge.whipconomy.exceptions.TransferException;
 
 public class Auctioneer extends Thread {
 
@@ -114,8 +115,15 @@ public class Auctioneer extends Thread {
 								bid.setBid(currentAuction.getStartingBid());
 								bid.setCurrentBid(currentAuction.getStartingBid());
 							}
-							currentAuction.setCurrentBid(bid);
-							sendBidBroadcast(bid);
+							double toCharge = bid.getMaxBid();
+							try{
+								EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+								StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
+								currentAuction.setCurrentBid(bid);
+								sendBidBroadcast(bid);
+							}catch(TransferException e){
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Not enough funds, must have at least " + toCharge,TextColors.RED));
+							}
 						}else if(currentAuction.getCurrentBid().getPlayer().getIdentifier().equals(bid.getPlayer().getIdentifier())){
 							//Player who is the current bidder is bidding again
 							Bid currentBid = currentAuction.getCurrentBid();
@@ -123,8 +131,16 @@ public class Auctioneer extends Thread {
 								//player wishes to increase max bid
 								bid.setBid(currentBid.getBid());
 								bid.setBid(currentBid.getCurrentBid());
-								currentAuction.setCurrentBid(bid);								
-								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have raised your max bid",TextColors.RED));
+								//Charge player difference between the 2 bids
+								double toCharge = bid.getMaxBid() - StaticsHandler.getAuctionCache().getCurrentMaxBid();
+								try{
+									EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+									StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
+									currentAuction.setCurrentBid(bid);
+									bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have raised your max bid",TextColors.BLUE));
+								}catch(TransferException e){
+									bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Not enough funds to raise max bid, must have at least " + toCharge,TextColors.RED));
+								}
 							}else{
 								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You are currently the highest bidder, add a higher max bid to increase your maximum",TextColors.RED));
 							}
@@ -135,16 +151,30 @@ public class Auctioneer extends Thread {
 							if(bid.getBid()>currentBid.getCurrentBid()+increment){
 								//They also have outbid the max bid
 								if(bid.getBid()>currentBid.getMaxBid()){
-									currentAuction.setCurrentBid(bid);
-									sendBidBroadcast(bid);
+									double toCharge = bid.getMaxBid();
+									try{
+										EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+										StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
+										currentAuction.setCurrentBid(bid);
+										sendBidBroadcast(bid);
+									}catch(TransferException e){
+										bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Not enough funds, must have at least " + toCharge,TextColors.RED));
+									}
 								}else{
 									//They are lower than the max, how about their max bid?
 									if(bid.getMaxBid()>currentBid.getMaxBid()){
 										//Their max is higher
 										bid.setBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
 										bid.setCurrentBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
-										currentAuction.setCurrentBid(bid);
-										sendBidBroadcast(bid);
+										double toCharge = bid.getMaxBid();
+										try{
+											EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+											StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
+											currentAuction.setCurrentBid(bid);
+											sendBidBroadcast(bid);
+										}catch(TransferException e){
+											bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Not enough funds, must have at least " + toCharge,TextColors.RED));
+										}
 									}else{
 										//Current max is higher
 										bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
@@ -164,8 +194,15 @@ public class Auctioneer extends Thread {
 										bid.setBid(currentBid.getMaxBid());
 										bid.setCurrentBid(currentBid.getMaxBid());
 									}
-									currentAuction.setCurrentBid(bid);
-									sendBidBroadcast(bid);
+									double toCharge = bid.getMaxBid();
+									try{
+										EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+										StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
+										currentAuction.setCurrentBid(bid);
+										sendBidBroadcast(bid);
+									}catch(TransferException e){
+										bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Not enough funds, must have at least " + toCharge,TextColors.RED));
+									}
 								}else{
 									//current max bid is higher, current bid is raised to match max bid
 									bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));

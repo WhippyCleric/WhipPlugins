@@ -6,6 +6,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColor.Base;
 
+import com.whippy.sponge.whipconomy.cache.AuctionCache;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -20,6 +21,7 @@ public class StaticsHandler {
     private static Logger logger;
     private static Auctioneer auctioneer;
     private static Game game;
+    private static AuctionCache auctionCache;
 
 	public static Logger getLogger() {
 		return logger;
@@ -51,6 +53,14 @@ public class StaticsHandler {
 		notification.append(ConfigurationLoader.getAuctionPrefix());
 		notification.append(message);
 		return Texts.builder(notification.toString()).color(color).build();
+	}
+
+	public static AuctionCache getAuctionCache() {
+		return auctionCache;
+	}
+
+	public static void setAuctionCache(AuctionCache auctionCache) {
+		StaticsHandler.auctionCache = auctionCache;
 	}
 
 }
