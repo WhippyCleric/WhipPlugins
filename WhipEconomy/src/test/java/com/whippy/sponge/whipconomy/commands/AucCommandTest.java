@@ -373,6 +373,33 @@ public class AucCommandTest {
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
 		assertEquals("[WhipAuction] Must hold at least 1 item to auction" , capturedPlayerMessage.getContent());
 	}
+	@Test
+	public void testAttemptMultipleAuctions() throws InterruptedException, CommandException{
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		objectCreator.mockServer();
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 45");
+		command.process(player, "s 1 1 1 45");
+		Thread.sleep(2000);
+		verify(player, times(2)).sendMessage(playerMessageCaptor.capture());
+		List<Literal> capturedPlayerMessage = playerMessageCaptor.getAllValues();
+		List<String> expectPlayerMessages = new ArrayList<String>();
+		expectPlayerMessages.add("[WhipAuction] Auction queued number 1 in line");
+		expectPlayerMessages.add("[WhipAuction] Allready have auction in queue");
+		for(int i=0;i<2;i++){			
+			assertEquals(expectPlayerMessages.get(i), capturedPlayerMessage.get(i).getContent());
+		}
+	}
 	
 	@Test
 	public void testAuctionMultipleBids() throws CommandException, InterruptedException{
