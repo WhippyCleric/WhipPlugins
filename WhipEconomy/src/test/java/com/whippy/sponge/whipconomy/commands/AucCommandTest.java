@@ -410,13 +410,28 @@ public class AucCommandTest {
 	}
 	
 	@Test
-	public void testAuctionMultipleBids() throws CommandException, InterruptedException{
+	public void testAuctionMultipleBids() throws CommandException, InterruptedException, TransferException{
 		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		Player bidder = objectCreator.createRandomPlayer();
+		Player bidder2 = objectCreator.createRandomPlayer();
+		Player bidder3 = objectCreator.createRandomPlayer();
 		Server server = objectCreator.mockServer();
+		
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
+		EconomyCache.updatePlayerMapping(bidder);
+		EconomyCache.updatePlayerMapping(bidder2);
+		EconomyCache.updatePlayerMapping(bidder3);
+		
+		EconomyCache.pay(bidder.getIdentifier(), 210);
+		EconomyCache.pay(bidder2.getIdentifier(), 301);
+		EconomyCache.pay(bidder3.getIdentifier(), 15);
+		
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
@@ -425,16 +440,13 @@ public class AucCommandTest {
 		Thread.sleep(15000);
 		BidCommand bidCommand = new BidCommand();
 		
-		Player bidder = objectCreator.createRandomPlayer();
 		bidCommand.process(bidder, "0.5");
 		Thread.sleep(100);
 		bidCommand.process(bidder, "0.5 11.2");
 		Thread.sleep(100);
-		Player bidder2 = objectCreator.createRandomPlayer();
 		bidCommand.process(bidder2, "12 20");
 		Thread.sleep(100);
 		ArgumentCaptor<Literal> bidder3Captor = ArgumentCaptor.forClass(Literal.class);
-		Player bidder3 = objectCreator.createRandomPlayer();
 		bidCommand.process(bidder3, "15");
 		Thread.sleep(100);
 		ArgumentCaptor<Literal> bidderCaptor = ArgumentCaptor.forClass(Literal.class);
@@ -490,13 +502,15 @@ public class AucCommandTest {
 			System.out.println(bidderMessages.get(i).getContent());
 			assertEquals(expectedBidderMessages.get(i), bidderMessages.get(i).getContent());
 		}
+		
+		assertTrue(EconomyCache.getBalance(bidder.getIdentifier())==210);
+		assertTrue(EconomyCache.getBalance(bidder2.getIdentifier())==100);
+		assertTrue(EconomyCache.getBalance(bidder3.getIdentifier())==15);
 	}
 	
 	@Test
 	public void testAuction1Bid() throws CommandException, InterruptedException, TransferException{
 		Auctioneer auctioneer = new Auctioneer();
-		AuctionCache auctionCache = new AuctionCache();
-		StaticsHandler.setAuctionCache(auctionCache);
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -504,9 +518,12 @@ public class AucCommandTest {
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
 		Server server = objectCreator.mockServer();
 		
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
 		EconomyCache.updatePlayerMapping(player);
 		EconomyCache.updatePlayerMapping(bidder);
 		EconomyCache.pay(bidder.getIdentifier(), 50);
+		
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);

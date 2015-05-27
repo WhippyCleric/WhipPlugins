@@ -153,7 +153,9 @@ public class Auctioneer extends Thread {
 								if(bid.getBid()>currentBid.getMaxBid()){
 									double toCharge = bid.getMaxBid();
 									try{
-										EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+										EconomyCache.chargeWithoutPush(bid.getPlayer().getIdentifier(), toCharge);
+										EconomyCache.payWithoutPush(currentBid.getPlayer().getIdentifier(), currentBid.getMaxBid());
+										EconomyCache.pushFileAccountsUpdate();
 										StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
 										currentAuction.setCurrentBid(bid);
 										sendBidBroadcast(bid);
@@ -168,7 +170,9 @@ public class Auctioneer extends Thread {
 										bid.setCurrentBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
 										double toCharge = bid.getMaxBid();
 										try{
-											EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+											EconomyCache.chargeWithoutPush(bid.getPlayer().getIdentifier(), toCharge);
+											EconomyCache.payWithoutPush(currentBid.getPlayer().getIdentifier(), currentBid.getMaxBid());
+											EconomyCache.pushFileAccountsUpdate();
 											StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
 											currentAuction.setCurrentBid(bid);
 											sendBidBroadcast(bid);
@@ -196,7 +200,9 @@ public class Auctioneer extends Thread {
 									}
 									double toCharge = bid.getMaxBid();
 									try{
-										EconomyCache.charge(bid.getPlayer().getIdentifier(), toCharge);
+										EconomyCache.chargeWithoutPush(bid.getPlayer().getIdentifier(), toCharge);
+										EconomyCache.payWithoutPush(currentBid.getPlayer().getIdentifier(), currentBid.getMaxBid());
+										EconomyCache.pushFileAccountsUpdate();
 										StaticsHandler.getAuctionCache().setCurrentMaxBid(bid.getMaxBid());
 										currentAuction.setCurrentBid(bid);
 										sendBidBroadcast(bid);

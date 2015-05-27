@@ -76,6 +76,7 @@ public class EconomyCache {
 		}
 	}
 	
+	
 	public static Set<String> getAllPlayers(){
 		return playerNameToID.keySet();
 	}
@@ -128,6 +129,10 @@ public class EconomyCache {
 	}
 	
 	public synchronized static void pay(String playerId, double amount) throws TransferException{
+		payWithoutPush(playerId, amount);
+		pushFileAccountsUpdate();
+	}
+	public synchronized static void payWithoutPush(String playerId, double amount) throws TransferException{
 		Account account = playerIdsToAccounts.get(playerId);
 		if(account==null){
 			throw new TransferException("Player not found, " + playerId);
@@ -136,10 +141,13 @@ public class EconomyCache {
 			throw new TransferException("Cannot pay player negative amount");
 		}
 		account.ammendBal(amount);
-		pushFileAccountsUpdate();
 	}
 
 	public synchronized static void charge(String playerId, double amount) throws TransferException{
+		chargeWithoutPush(playerId, amount);
+		pushFileAccountsUpdate();
+	}
+	public synchronized static void chargeWithoutPush(String playerId, double amount) throws TransferException{
 		Account account = playerIdsToAccounts.get(playerId);
 		if(account==null){
 			throw new TransferException("Player not found, " + playerId);
@@ -151,7 +159,6 @@ public class EconomyCache {
 			throw new TransferException("Player does not have enough money to make the payment");			
 		}
 		account.ammendBal(amount*-1);
-		pushFileAccountsUpdate();
 	}
 	
 	public synchronized static boolean hasAccountByName(String playerName){
@@ -196,7 +203,7 @@ public class EconomyCache {
 		pushFileAccountsUpdate();
 	}
 	
-	private synchronized static void pushFileAccountsUpdate(){
+	public synchronized static void pushFileAccountsUpdate(){
 		try{
 			File accountsFile = new File(ACCOUNTS_PATH);
 			if(!accountsFile.exists()) {
@@ -220,7 +227,7 @@ public class EconomyCache {
 		}
 	}
 	
-	private synchronized static void pushFileMappingsUpdate(){
+	public synchronized static void pushFileMappingsUpdate(){
 		try {
 			File accountsFile = new File(NAME_TO_UID_MAPPINGS);
 			if(!accountsFile.exists()) {
