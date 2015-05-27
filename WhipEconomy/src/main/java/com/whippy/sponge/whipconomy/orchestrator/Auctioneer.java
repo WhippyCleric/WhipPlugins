@@ -45,12 +45,27 @@ public class Auctioneer extends Thread {
 
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
 		if(auctions.size()<maxAuctions){
-			auctions.add(auction);
-			StringBuilder auctionNotification = new StringBuilder();
-			auctionNotification .append("Auction queued number ");
-			auctionNotification .append(auctions.indexOf(auction) + 1);
-			auctionNotification .append(" in line");
-			player.sendMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
+			boolean hasAuction = false;
+			for (Auction auctionInQueue : auctions) {
+				if(auctionInQueue.getPlayerId().equals(player.getIdentifier())){
+					hasAuction=true;
+				}
+			}
+			if(currentAuction!=null){
+				if(currentAuction.getPlayerId().equals(player.getIdentifier())){
+					hasAuction=true;
+				}
+			}
+			if(hasAuction){				
+				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Allready have auction in queue", TextColors.RED));
+			}else{				
+				auctions.add(auction);
+				StringBuilder auctionNotification = new StringBuilder();
+				auctionNotification .append("Auction queued number ");
+				auctionNotification .append(auctions.indexOf(auction) + 1);
+				auctionNotification .append(" in line");
+				player.sendMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
+			}
 		}else{
 			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Auction queue is full, please try again later", TextColors.RED));
 		}
