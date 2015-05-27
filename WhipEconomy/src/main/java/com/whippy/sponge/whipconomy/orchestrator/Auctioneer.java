@@ -89,24 +89,51 @@ public class Auctioneer extends Thread {
 							sendBidBroadcast(bid);
 						}else{
 							Bid currentBid = currentAuction.getCurrentBid();
-							if(currentBid.getBid()+currentAuction.getIncrement()>bid.getMaxBid()){						
-								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
-							}else if(currentBid.getCurrentBid()+currentAuction.getIncrement()>bid.getMaxBid()){
-								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
-							}else if(currentBid.getMaxBid()+currentAuction.getIncrement()>bid.getMaxBid()){
-								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
-								if(bid.getMaxBid()<currentBid.getMaxBid()){								
-									currentAuction.raiseCurrentBid(bid.getMaxBid());						
+							double increment  =currentAuction.getIncrement();
+							//They're base bid is higher than the current
+							if(bid.getBid()>currentBid.getCurrentBid()+increment){
+								//They also have outbid the max bid
+								if(bid.getBid()>currentBid.getMaxBid()){
+									currentAuction.setCurrentBid(bid);
+									sendBidBroadcast(bid);
 								}else{
-									currentAuction.raiseCurrentBid(currentBid.getMaxBid());														
+									//They are lower than the max, how about their max bid?
+									if(bid.getMaxBid()>currentBid.getMaxBid()){
+										//Their max is higher
+										bid.setBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
+										bid.setCurrentBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
+										currentAuction.setCurrentBid(bid);
+										sendBidBroadcast(bid);
+									}else{
+										//Current max is higher
+										bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
+										currentAuction.raiseCurrentBid(bid.getMaxBid());
+										sendIncreasedBidBroadcast(bid.getMaxBid());
+									}
+								}
+							//Their bid is too low, however how is their maximum?
+							}else if(bid.getMaxBid()>currentBid.getCurrentBid()+increment){
+								//New max bid is higher than current max bid
+								if(bid.getMaxBid()>currentBid.getMaxBid()){
+									//New bid is better, do we need the increment?
+									if(currentBid.getCurrentBid()>currentBid.getMaxBid()-increment){										
+										bid.setBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
+										bid.setCurrentBid(currentBid.getCurrentBid()+currentAuction.getIncrement());
+									}else{										
+										bid.setBid(currentBid.getMaxBid());
+										bid.setCurrentBid(currentBid.getMaxBid());
+									}
+									currentAuction.setCurrentBid(bid);
+									sendBidBroadcast(bid);
+								}else{
+									//current max bid is higher, current bid is raised to match max bid
+									bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have been automatically outbid",TextColors.RED));
+									currentAuction.raiseCurrentBid(bid.getMaxBid());
+									sendIncreasedBidBroadcast(bid.getMaxBid());
 								}
 							}else{
-								if(bid.getBid()<=currentBid.getMaxBid()+currentAuction.getIncrement()){
-									bid.setCurrentBid(currentBid.getMaxBid()+currentAuction.getIncrement());
-									bid.setBid(currentBid.getMaxBid()+currentAuction.getIncrement());								
-								}
-								currentAuction.setCurrentBid(bid);
-								sendBidBroadcast(bid);
+								//The max bid specified does not cover the current bid + increment
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("Bid too low",TextColors.RED));
 							}
 						}
 					}else{
@@ -122,12 +149,19 @@ public class Auctioneer extends Thread {
 	}
 
 
+	private void sendIncreasedBidBroadcast(double bid){
+		StringBuilder bidMessage = new StringBuilder();
+		bidMessage.append("Bid has been raised to ");
+		bidMessage.append(bid);						
+		StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(bidMessage.toString(),TextColors.BLUE));
+	}
+	
 	private void sendBidBroadcast(Bid bid) {
 		StringBuilder bidMessage = new StringBuilder();
 		bidMessage.append(bid.getPlayer().getName());
 		bidMessage.append(" bids ");
 		bidMessage.append(bid.getBid());						
-		StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(bidMessage.toString(),TextColors.RED));
+		StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(bidMessage.toString(),TextColors.BLUE));
 	}
 
 	public synchronized void bid(Player player, double initialBid) {

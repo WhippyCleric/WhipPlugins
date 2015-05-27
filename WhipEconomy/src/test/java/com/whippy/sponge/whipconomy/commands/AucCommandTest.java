@@ -246,7 +246,7 @@ public class AucCommandTest {
 		Thread.sleep(100);
 		bidCommand.process(bidder, "14.5");
 		Thread.sleep(100);
-		bidCommand.process(bidder, "5 20");
+		bidCommand.process(bidder, "5 20.5");
 		Thread.sleep(1000);
 		bidCommand.process(bidder, "5 200");
 		Thread.sleep(100);
@@ -257,24 +257,28 @@ public class AucCommandTest {
 		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
 		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 1.0");
-		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.2");
+		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.0");
+		expectedBroadcasts.add("[WhipAuction] Bid has been raised to 15.0");
+		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 20.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 21.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 201.0");
 		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] "+ bidder2.getName() +" won the auction with a bid of 201");
+		expectedBroadcasts.add("[WhipAuction] "+ bidder2.getName() +" won the auction with a bid of 201.0");
 		
-		verify(server, times(11)).broadcastMessage(broadcastCaptor.capture());
+		verify(server, times(13)).broadcastMessage(broadcastCaptor.capture());
 		verify(bidder3, times(1)).sendMessage(bidder3Captor.capture());
-		verify(bidder, times(4)).sendMessage(bidderCaptor.capture());
+		verify(bidder, times(3)).sendMessage(bidderCaptor.capture());
 		
 		assertEquals("[WhipAuction] You have been automatically outbid", bidder3Captor.getValue().getContent());
 		
 		List<Literal> broadcasts = broadcastCaptor.getAllValues();
-		for(int i=0 ; i<10; i++){
+		for(int i=0 ; i<13; i++){
 			System.out.println(broadcasts.get(i).getContent());
+		}
+		for(int i=0 ; i<13; i++){
 			assertEquals(expectedBroadcasts.get(i), broadcasts.get(i).getContent());
 		}
 
@@ -283,8 +287,7 @@ public class AucCommandTest {
 		expectedBidderMessages.add("[WhipAuction] Bid too low");
 		expectedBidderMessages.add("[WhipAuction] Bid too low");
 		expectedBidderMessages.add("[WhipAuction] You have been automatically outbid");;
-		expectedBidderMessages.add("[WhipAuction] You have been automatically outbid");;
-		for(int i=0 ; i<4; i++){
+		for(int i=0 ; i<3; i++){
 			System.out.println(bidderMessages.get(i).getContent());
 			assertEquals(expectedBidderMessages.get(i), bidderMessages.get(i).getContent());
 		}
