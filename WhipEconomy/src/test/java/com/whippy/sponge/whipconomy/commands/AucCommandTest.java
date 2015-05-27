@@ -49,6 +49,7 @@ public class AucCommandTest {
 		mockColor(TextColors.class.getField("GREEN"), Color.GREEN);
 		mockColor(TextColors.class.getField("BLUE"), Color.BLUE);
 		mockItemType(ItemTypes.class.getField("BONE"), "Bones");
+		mockItemType(ItemTypes.class.getField("BOAT"), "Boats");
 		ConfigurationLoader.init();
         
 	}
@@ -78,6 +79,166 @@ public class AucCommandTest {
 	}
 	
 	@Test
+	public void testMultipleAuctions() throws CommandException, InterruptedException{
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		ItemStack itemStackBoat = objectCreator.createMockItemStack(ItemTypes.BOAT, 1);
+		Server server = objectCreator.mockServer();
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		Player player2 = objectCreator.createRandomPlayerWithObject(itemStackBoat);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
+		AucCommand command = new AucCommand();
+		command.process(player, "s 1 1 1 45");
+		command.process(player2, "s 1 1 1 45");
+		Thread.sleep(91000);
+		verify(server, times(14)).broadcastMessage(broadcastCaptor.capture());
+		List<Literal> broadcasted = broadcastCaptor.getAllValues();
+		List<String> expectedBroadcasts = new ArrayList<String>();
+		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+		expectedBroadcasts.add("[WhipAuction] " +  player2.getName() +" is auctioning 1 Boats. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+
+		for(int i=0 ; i<14; i++){
+			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
+		}
+	}
+	
+	@Test
+	public void testAuctionCurrentCancelTooLate() throws CommandException, InterruptedException{	
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		Server server = objectCreator.mockServer();
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 45");
+		Thread.sleep(17000);
+		command.process(player, "c");
+		
+		Thread.sleep(1000);
+		verify(player, times(2)).sendMessage(playerMessageCaptor.capture());
+		verify(server, times(2)).broadcastMessage(broadcastCaptor.capture());
+		
+		List<Literal> capturedPlayerMessages = playerMessageCaptor.getAllValues();
+		List<Literal> broadcasted = broadcastCaptor.getAllValues();
+		List<String> expectedBroadcasts = new ArrayList<String>();
+		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
+		List<String> expectedPlayerMessages = new ArrayList<String>();
+		expectedBroadcasts.add("[WhipAuction] Auction queued number 0 in line");
+		expectedBroadcasts.add("[WhipAuction] Auction can not be cancelled at this time");
+
+	
+		for(int i=0 ; i<2; i++){
+			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
+		}
+		for(int i=0 ; i<2; i++){
+			assertEquals(capturedPlayerMessages.get(i).getContent(), expectedPlayerMessages.get(i));
+		}
+	}
+	@Test
+	public void testAuctionCurrentCancel() throws CommandException, InterruptedException{	
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		Server server = objectCreator.mockServer();
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 45");
+		command.process(player, "c");
+		Thread.sleep(17000);
+		
+		Thread.sleep(1000);
+		verify(server, times(2)).broadcastMessage(broadcastCaptor.capture());
+		
+		List<Literal> broadcasted = broadcastCaptor.getAllValues();
+		List<String> expectedBroadcasts = new ArrayList<String>();
+		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add("[WhipAuction] Auction Cancelled");
+		for(int i=0 ; i<2; i++){
+			assertEquals( expectedBroadcasts.get(i), broadcasted.get(i).getContent());
+		}
+	}
+	@Test
+	public void testAuctionNextCancel() throws CommandException, InterruptedException{	
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		Server server = objectCreator.mockServer();
+		ItemStack itemStackBoat = objectCreator.createMockItemStack(ItemTypes.BOAT, 1);
+		Player player2 = objectCreator.createRandomPlayerWithObject(itemStackBoat);
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
+		ArgumentCaptor<Literal> playerMessageCaptor = ArgumentCaptor.forClass(Literal.class);
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 1 1 1 45");
+		Thread.sleep(10000);
+		command.process(player2, "s 1 1 1 45");
+		Thread.sleep(10000);
+		command.process(player2, "c");
+		Thread.sleep(28000);
+		
+		verify(server, times(7)).broadcastMessage(broadcastCaptor.capture());
+		verify(player2, times(2)).sendMessage(playerMessageCaptor.capture());
+		List<Literal> broadcasted = broadcastCaptor.getAllValues();
+		List<Literal> playerMessaged = playerMessageCaptor.getAllValues();
+		
+		List<String> expectedPlayerMessages = new ArrayList<String>();
+		expectedPlayerMessages.add("[WhipAuction] Auction queued number 1 in line");
+		expectedPlayerMessages.add("[WhipAuction] Auction Cancelled");
+
+		List<String> expectedBroadcasts = new ArrayList<String>();
+		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
+		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+
+		for(int i=0 ; i<7; i++){
+			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
+		}
+		for(int i=0 ; i<2; i++){
+			assertEquals(playerMessaged.get(i).getContent(), expectedPlayerMessages.get(i));
+		}
+		
+	}
+	
+	@Test
 	public void testAuctionNoBids() throws CommandException, InterruptedException{	
 		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
@@ -100,7 +261,7 @@ public class AucCommandTest {
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
 		List<Literal> broadcasted = broadcastCaptor.getAllValues();
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 31 seconds.");
+		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
 		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");

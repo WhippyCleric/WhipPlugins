@@ -48,7 +48,7 @@ public class Auctioneer extends Thread {
 			auctions.add(auction);
 			StringBuilder auctionNotification = new StringBuilder();
 			auctionNotification .append("Auction queued number ");
-			auctionNotification .append(auctions.indexOf(auction));
+			auctionNotification .append(auctions.indexOf(auction) + 1);
 			auctionNotification .append(" in line");
 			player.sendMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
 		}else{
@@ -57,21 +57,35 @@ public class Auctioneer extends Thread {
 	}
 
 	public synchronized void cancel(Player player){
-		synchronized(currentAuction){			
-			if(currentAuction!=null){
-				if(currentAuction.getPlayerId().equals(player.getIdentifier())){
-					if(currentAuction.isCancelable()){
-						currentAuction.interrupt();
-						StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("Auction Cancelled",TextColors.BLUE));
-					}else{
-						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Auction can not be cancelled at this time",TextColors.RED));
-					}
+		if(currentAuction!=null){
+			if(currentAuction.getPlayerId().equals(player.getIdentifier())){
+				if(currentAuction.isCancelable()){
+					currentAuction.cancelAuction();
+					StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("Auction Cancelled",TextColors.BLUE));
 				}else{
-					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("This is not your auction to cancel",TextColors.RED));
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Auction can not be cancelled at this time",TextColors.RED));
 				}
 			}else{
-				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("There is no auction currently running",TextColors.RED));
+				cancelFromAllAuctions(player);
 			}
+		}else{
+			cancelFromAllAuctions(player);
+		}
+	}
+
+
+
+	private void cancelFromAllAuctions(Player player) {
+		//any other auctions to cancel?
+		List<Integer> indexesToRemove = new ArrayList<Integer>();
+		for (Auction auction : auctions) {
+			if(auction.getPlayerId().equals(player.getIdentifier())){
+				indexesToRemove.add(auctions.indexOf(auction));
+				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Auction Cancelled",TextColors.BLUE));
+			}
+		}
+		for (int index : indexesToRemove) {
+			auctions.remove(index);
 		}
 	}
 
@@ -123,7 +137,7 @@ public class Auctioneer extends Thread {
 										sendIncreasedBidBroadcast(bid.getMaxBid());
 									}
 								}
-							//Their bid is too low, however how is their maximum?
+								//Their bid is too low, however how is their maximum?
 							}else if(bid.getMaxBid()>currentBid.getCurrentBid()+increment){
 								//New max bid is higher than current max bid
 								if(bid.getMaxBid()>currentBid.getMaxBid()){
@@ -167,7 +181,7 @@ public class Auctioneer extends Thread {
 		bidMessage.append(bid);						
 		StaticsHandler.getGame().getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(bidMessage.toString(),TextColors.BLUE));
 	}
-	
+
 	private void sendBidBroadcast(Bid bid) {
 		StringBuilder bidMessage = new StringBuilder();
 		bidMessage.append(bid.getPlayer().getName());

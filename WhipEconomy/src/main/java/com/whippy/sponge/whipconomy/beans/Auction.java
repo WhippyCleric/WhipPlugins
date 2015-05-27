@@ -17,6 +17,7 @@ public class Auction extends Thread{
 	private Bid currentBid;
 	private boolean isBidable;
 	private String playerId;
+	private boolean isCancelled;
 	
 	public Auction(String itemId, String itemName, int numberOfItem,
 			double startingBid, double increment, int time, Player player) {
@@ -30,6 +31,7 @@ public class Auction extends Thread{
 		this.playerName = player.getName();
 		this.playerId = player.getIdentifier();
 		this.cancelable = true;
+		this.isCancelled=false;
 	}
 
 	public String getPlayerName() {
@@ -81,11 +83,14 @@ public class Auction extends Thread{
 		currentBid.setCurrentBid(maxBid);
 	}
 	
+	
+	public void cancelAuction(){
+		isCancelled=true;
+	}
+	
 	@Override
 	public void run(){
-
 			Game game = StaticsHandler.getGame();
-
 			StringBuilder auctionStartingBuilder = new StringBuilder();
 			auctionStartingBuilder.append(getPlayerName());
 			auctionStartingBuilder.append(" is auctioning ");
@@ -100,41 +105,50 @@ public class Auction extends Thread{
 			auctionStartingBuilder.append(getTime());
 			auctionStartingBuilder.append(" seconds.");
 
-			int time = getTime()*1000;
+			int time = getTime();
 			game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionStartingBuilder.toString(),TextColors.BLUE));
 			isBidable = true;
 			try {
-				Thread.sleep(time-30000);
-				setCancelable(false);
-				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("30 seconds remaining", TextColors.BLUE));
+				for(int i=0; i<time-30;i++){
+					Thread.sleep(1000);
+					if(isCancelled){
+						break;
+					}
+				}
 				
-				Thread.sleep(20000);
-				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("10 seconds remaining", TextColors.BLUE));
 				
-				Thread.sleep(7000);
-				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("3 seconds remaining", TextColors.BLUE));
+				if(!isCancelled){
+					setCancelable(false);
+					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("30 seconds remaining", TextColors.BLUE));
 
-				Thread.sleep(1000);
-				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("2 seconds remaining", TextColors.BLUE));
-
-				Thread.sleep(1000);
-				game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("1 seconds remaining", TextColors.BLUE));
-				
-				Thread.sleep(1000);
-				isBidable = false;
-				Bid finalBid = getCurrentBid();
-				setCurrentBid(null);
-				if(finalBid==null){
-					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("Auction completed with no bids", TextColors.BLUE));
-				}else{
-					StringBuilder auctionNotification = new StringBuilder();
-					auctionNotification.append(finalBid.getPlayer().getName());
-					auctionNotification.append(" won the auction with a bid of ");
-					auctionNotification.append(finalBid.getCurrentBid());
-					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
+					Thread.sleep(20000);
+					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("10 seconds remaining", TextColors.BLUE));
+					
+					Thread.sleep(7000);
+					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("3 seconds remaining", TextColors.BLUE));
+	
+					Thread.sleep(1000);
+					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("2 seconds remaining", TextColors.BLUE));
+	
+					Thread.sleep(1000);
+					game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("1 seconds remaining", TextColors.BLUE));
+					
+					Thread.sleep(1000);
+					isBidable = false;
+					Bid finalBid = getCurrentBid();
+					setCurrentBid(null);
+					if(finalBid==null){
+						game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin("Auction completed with no bids", TextColors.BLUE));
+					}else{
+						StringBuilder auctionNotification = new StringBuilder();
+						auctionNotification.append(finalBid.getPlayer().getName());
+						auctionNotification.append(" won the auction with a bid of ");
+						auctionNotification.append(finalBid.getCurrentBid());
+						game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
+					}
 				}
 			} catch (InterruptedException e) {
-				// Auction has been killed
+				System.out.println("INERRUPTED");
 			}
 	}
 
