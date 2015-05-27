@@ -41,6 +41,7 @@ public class AucCommandTest {
 
 	
 	private static SpongeObjectCreator objectCreator;
+	private static String AUCTION_PREFIX;
 	
 	@BeforeClass
 	public static void setup() throws NoSuchFieldException, SecurityException, Exception{
@@ -51,12 +52,12 @@ public class AucCommandTest {
 		mockItemType(ItemTypes.class.getField("BONE"), "Bones");
 		mockItemType(ItemTypes.class.getField("BOAT"), "Boats");
 		ConfigurationLoader.init();
-        
+		AUCTION_PREFIX = ConfigurationLoader.getAuctionPrefix();
 	}
 	@Test
 	public void testEmptyArguments() throws CommandException{
 		final Player player = objectCreator.createRandomPlayer();
-		testMessageSend(player, "[WhipAuction] Invalid command format, no arguments received", new CommandExecution(){
+		testMessageSend(player, AUCTION_PREFIX + "Invalid command format, no arguments received", new CommandExecution(){
 			@Override
 			public void execute() throws CommandException {
 				AucCommand command = new AucCommand();
@@ -69,7 +70,7 @@ public class AucCommandTest {
 	@Test
 	public void testNullArguments() throws CommandException{
 		final Player player = objectCreator.createRandomPlayer();
-		testMessageSend(player, "[WhipAuction] Invalid command format, no arguments received", new CommandExecution(){
+		testMessageSend(player, AUCTION_PREFIX + "Invalid command format, no arguments received", new CommandExecution(){
 			@Override
 			public void execute() throws CommandException {
 				AucCommand command = new AucCommand();
@@ -98,20 +99,20 @@ public class AucCommandTest {
 		verify(server, times(14)).broadcastMessage(broadcastCaptor.capture());
 		List<Literal> broadcasted = broadcastCaptor.getAllValues();
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
-		expectedBroadcasts.add("[WhipAuction] " +  player2.getName() +" is auctioning 1 Boats. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction completed with no bids");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player2.getName() +" is auctioning 1 Boats. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction completed with no bids");
 
 		for(int i=0 ; i<14; i++){
 			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
@@ -144,11 +145,11 @@ public class AucCommandTest {
 		List<Literal> capturedPlayerMessages = playerMessageCaptor.getAllValues();
 		List<Literal> broadcasted = broadcastCaptor.getAllValues();
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
 		List<String> expectedPlayerMessages = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] Auction queued number 0 in line");
-		expectedBroadcasts.add("[WhipAuction] Auction can not be cancelled at this time");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction queued number 0 in line");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction can not be cancelled at this time");
 
 	
 		for(int i=0 ; i<2; i++){
@@ -181,8 +182,8 @@ public class AucCommandTest {
 		
 		List<Literal> broadcasted = broadcastCaptor.getAllValues();
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] Auction Cancelled");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction Cancelled");
 		for(int i=0 ; i<2; i++){
 			assertEquals( expectedBroadcasts.get(i), broadcasted.get(i).getContent());
 		}
@@ -217,17 +218,17 @@ public class AucCommandTest {
 		List<Literal> playerMessaged = playerMessageCaptor.getAllValues();
 		
 		List<String> expectedPlayerMessages = new ArrayList<String>();
-		expectedPlayerMessages.add("[WhipAuction] Auction queued number 1 in line");
-		expectedPlayerMessages.add("[WhipAuction] Auction Cancelled");
+		expectedPlayerMessages.add(AUCTION_PREFIX + "Auction queued number 1 in line");
+		expectedPlayerMessages.add(AUCTION_PREFIX + "Auction Cancelled");
 
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction completed with no bids");
 
 		for(int i=0 ; i<7; i++){
 			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
@@ -261,19 +262,19 @@ public class AucCommandTest {
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
 		List<Literal> broadcasted = broadcastCaptor.getAllValues();
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] " +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] Auction completed with no bids");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction completed with no bids");
 
 		for(int i=0 ; i<7; i++){
 			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
 		}
 		
-		assertEquals(capturedPlayerMessage.getContent(), "[WhipAuction] Auction queued number 0 in line");
+		assertEquals(capturedPlayerMessage.getContent(), AUCTION_PREFIX + "Auction queued number 0 in line");
 	}
 	
 	@Test
@@ -293,7 +294,7 @@ public class AucCommandTest {
 		command.process(player, "s 1 -1 1 45");
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
-		assertEquals("[WhipAuction] Starting bid must be a greater than 0" , capturedPlayerMessage.getContent());
+		assertEquals(AUCTION_PREFIX + "Starting bid must be a greater than 0" , capturedPlayerMessage.getContent());
 	}
 
 	@Test
@@ -313,7 +314,7 @@ public class AucCommandTest {
 		command.process(player, "s 1 1 -1 45");
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
-		assertEquals("[WhipAuction] Increment must be greater than 0" , capturedPlayerMessage.getContent());
+		assertEquals(AUCTION_PREFIX + "Increment must be greater than 0" , capturedPlayerMessage.getContent());
 	}
 	@Test
 	public void testSellWithTooLowTime() throws InterruptedException, CommandException{
@@ -332,7 +333,7 @@ public class AucCommandTest {
 		command.process(player, "s 1 1 1 44");
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
-		assertEquals("[WhipAuction] Time must be at least 45 seconds" , capturedPlayerMessage.getContent());
+		assertEquals(AUCTION_PREFIX + "Time must be at least 45 seconds" , capturedPlayerMessage.getContent());
 	}
 	@Test
 	public void testSellWithTooMuchTime() throws InterruptedException, CommandException{
@@ -351,7 +352,7 @@ public class AucCommandTest {
 		command.process(player, "s 1 1 1 91");
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
-		assertEquals("[WhipAuction] Time must be at most 90 seconds" , capturedPlayerMessage.getContent());
+		assertEquals(AUCTION_PREFIX + "Time must be at most 90 seconds" , capturedPlayerMessage.getContent());
 	}
 	
 	@Test
@@ -371,7 +372,7 @@ public class AucCommandTest {
 		command.process(player, "s -1 1 1 45");
 		verify(player, times(1)).sendMessage(playerMessageCaptor.capture());
 		Literal capturedPlayerMessage = playerMessageCaptor.getValue();
-		assertEquals("[WhipAuction] Must hold at least 1 item to auction" , capturedPlayerMessage.getContent());
+		assertEquals(AUCTION_PREFIX + "Must hold at least 1 item to auction" , capturedPlayerMessage.getContent());
 	}
 	@Test
 	public void testAttemptMultipleAuctions() throws InterruptedException, CommandException{
@@ -394,8 +395,8 @@ public class AucCommandTest {
 		verify(player, times(2)).sendMessage(playerMessageCaptor.capture());
 		List<Literal> capturedPlayerMessage = playerMessageCaptor.getAllValues();
 		List<String> expectPlayerMessages = new ArrayList<String>();
-		expectPlayerMessages.add("[WhipAuction] Auction queued number 1 in line");
-		expectPlayerMessages.add("[WhipAuction] Allready have auction in queue");
+		expectPlayerMessages.add(AUCTION_PREFIX + "Auction queued number 1 in line");
+		expectPlayerMessages.add(AUCTION_PREFIX + "Allready have auction in queue");
 		for(int i=0;i<2;i++){			
 			assertEquals(expectPlayerMessages.get(i), capturedPlayerMessage.get(i).getContent());
 		}
@@ -444,24 +445,24 @@ public class AucCommandTest {
 		Thread.sleep(30000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 1.0");
-		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.0");
-		expectedBroadcasts.add("[WhipAuction] Bid has been raised to 15.0");
-		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 20.0");
-		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 201.0");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] "+ bidder2.getName() +" won the auction with a bid of 201.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + ""+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder.getName() + " bids 1.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder2.getName() + " bids 12.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Bid has been raised to 15.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder.getName() + " bids 20.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder2.getName() + " bids 201.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + ""+ bidder2.getName() +" won the auction with a bid of 201.0");
 		
 		verify(server, times(12)).broadcastMessage(broadcastCaptor.capture());
 		verify(bidder3, times(1)).sendMessage(bidder3Captor.capture());
 		verify(bidder, times(5)).sendMessage(bidderCaptor.capture());
 		
-		assertEquals("[WhipAuction] You have been automatically outbid", bidder3Captor.getValue().getContent());
+		assertEquals(AUCTION_PREFIX + "You have been automatically outbid", bidder3Captor.getValue().getContent());
 		
 		List<Literal> broadcasts = broadcastCaptor.getAllValues();
 		for(int i=0 ; i<12; i++){
@@ -473,11 +474,11 @@ public class AucCommandTest {
 
 		List<Literal> bidderMessages = bidderCaptor.getAllValues();
 		List<String> expectedBidderMessages = new ArrayList<String>();
-		expectedBidderMessages.add("[WhipAuction] Bid too low");
-		expectedBidderMessages.add("[WhipAuction] Bid too low");
-		expectedBidderMessages.add("[WhipAuction] Bid too low");
-		expectedBidderMessages.add("[WhipAuction] You have raised your max bid");
-		expectedBidderMessages.add("[WhipAuction] You are currently the highest bidder, add a higher max bid to increase your maximum");
+		expectedBidderMessages.add(AUCTION_PREFIX + "Bid too low");
+		expectedBidderMessages.add(AUCTION_PREFIX + "Bid too low");
+		expectedBidderMessages.add(AUCTION_PREFIX + "Bid too low");
+		expectedBidderMessages.add(AUCTION_PREFIX + "You have raised your max bid");
+		expectedBidderMessages.add(AUCTION_PREFIX + "You are currently the highest bidder, add a higher max bid to increase your maximum");
 		for(int i=0 ; i<5; i++){
 			System.out.println(bidderMessages.get(i).getContent());
 			assertEquals(expectedBidderMessages.get(i), bidderMessages.get(i).getContent());
@@ -504,14 +505,14 @@ public class AucCommandTest {
 		Thread.sleep(32000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add("[WhipAuction] "+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
-		expectedBroadcasts.add("[WhipAuction] 30 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 10.0");
-		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 2 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
-		expectedBroadcasts.add("[WhipAuction] "+ bidder.getName() +" won the auction with a bid of 10.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + ""+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder.getName() + " bids 10.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "10 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "3 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "2 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + "1 seconds remaining");
+		expectedBroadcasts.add(AUCTION_PREFIX + ""+ bidder.getName() +" won the auction with a bid of 10.0");
 		
 		verify(server, times(8)).broadcastMessage(broadcastCaptor.capture());
 		List<Literal> broadcasts = broadcastCaptor.getAllValues();
