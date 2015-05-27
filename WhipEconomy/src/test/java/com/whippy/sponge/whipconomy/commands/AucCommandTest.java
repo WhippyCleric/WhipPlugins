@@ -91,11 +91,15 @@ public class AucCommandTest {
 		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		ItemStack itemStackBoat = objectCreator.createMockItemStack(ItemTypes.BOAT, 1);
 		Server server = objectCreator.mockServer();
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
 		Player player2 = objectCreator.createRandomPlayerWithObject(itemStackBoat);
+		EconomyCache.updatePlayerMapping(player);
+		EconomyCache.updatePlayerMapping(player2);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
@@ -133,6 +137,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		Server server = objectCreator.mockServer();
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
@@ -173,6 +180,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		Server server = objectCreator.mockServer();
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
@@ -205,6 +215,10 @@ public class AucCommandTest {
 		Server server = objectCreator.mockServer();
 		ItemStack itemStackBoat = objectCreator.createMockItemStack(ItemTypes.BOAT, 1);
 		Player player2 = objectCreator.createRandomPlayerWithObject(itemStackBoat);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
+		EconomyCache.updatePlayerMapping(player2);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -253,6 +267,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		Server server = objectCreator.mockServer();
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
@@ -291,6 +308,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -311,6 +331,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -330,6 +353,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -349,6 +375,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -369,6 +398,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
 		
@@ -388,6 +420,9 @@ public class AucCommandTest {
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
 		objectCreator.mockServer();
 		AuctionRunner runner = new AuctionRunner();
 		runner.start();
