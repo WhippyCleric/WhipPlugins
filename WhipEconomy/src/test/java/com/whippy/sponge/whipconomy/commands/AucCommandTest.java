@@ -249,6 +249,8 @@ public class AucCommandTest {
 		bidCommand.process(bidder, "5 20.5");
 		Thread.sleep(1000);
 		bidCommand.process(bidder, "5 200");
+		Thread.sleep(1000);
+		bidCommand.process(bidder, "199");
 		Thread.sleep(100);
 		bidCommand.process(bidder2, null);
 		Thread.sleep(30000);
@@ -260,7 +262,6 @@ public class AucCommandTest {
 		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 12.0");
 		expectedBroadcasts.add("[WhipAuction] Bid has been raised to 15.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 20.0");
-		expectedBroadcasts.add("[WhipAuction] " + bidder.getName() + " bids 21.0");
 		expectedBroadcasts.add("[WhipAuction] " + bidder2.getName() + " bids 201.0");
 		expectedBroadcasts.add("[WhipAuction] 10 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] 3 seconds remaining");
@@ -268,17 +269,17 @@ public class AucCommandTest {
 		expectedBroadcasts.add("[WhipAuction] 1 seconds remaining");
 		expectedBroadcasts.add("[WhipAuction] "+ bidder2.getName() +" won the auction with a bid of 201.0");
 		
-		verify(server, times(13)).broadcastMessage(broadcastCaptor.capture());
+		verify(server, times(12)).broadcastMessage(broadcastCaptor.capture());
 		verify(bidder3, times(1)).sendMessage(bidder3Captor.capture());
-		verify(bidder, times(3)).sendMessage(bidderCaptor.capture());
+		verify(bidder, times(5)).sendMessage(bidderCaptor.capture());
 		
 		assertEquals("[WhipAuction] You have been automatically outbid", bidder3Captor.getValue().getContent());
 		
 		List<Literal> broadcasts = broadcastCaptor.getAllValues();
-		for(int i=0 ; i<13; i++){
+		for(int i=0 ; i<12; i++){
 			System.out.println(broadcasts.get(i).getContent());
 		}
-		for(int i=0 ; i<13; i++){
+		for(int i=0 ; i<12; i++){
 			assertEquals(expectedBroadcasts.get(i), broadcasts.get(i).getContent());
 		}
 
@@ -286,8 +287,10 @@ public class AucCommandTest {
 		List<String> expectedBidderMessages = new ArrayList<String>();
 		expectedBidderMessages.add("[WhipAuction] Bid too low");
 		expectedBidderMessages.add("[WhipAuction] Bid too low");
-		expectedBidderMessages.add("[WhipAuction] You have been automatically outbid");;
-		for(int i=0 ; i<3; i++){
+		expectedBidderMessages.add("[WhipAuction] Bid too low");
+		expectedBidderMessages.add("[WhipAuction] You have raised your max bid");
+		expectedBidderMessages.add("[WhipAuction] You are currently the highest bidder, add a higher max bid to increase your maximum");
+		for(int i=0 ; i<5; i++){
 			System.out.println(bidderMessages.get(i).getContent());
 			assertEquals(expectedBidderMessages.get(i), bidderMessages.get(i).getContent());
 		}

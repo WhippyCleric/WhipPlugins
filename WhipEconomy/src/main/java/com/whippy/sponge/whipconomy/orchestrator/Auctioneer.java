@@ -87,6 +87,18 @@ public class Auctioneer extends Thread {
 							}
 							currentAuction.setCurrentBid(bid);
 							sendBidBroadcast(bid);
+						}else if(currentAuction.getCurrentBid().getPlayer().getIdentifier().equals(bid.getPlayer().getIdentifier())){
+							//Player who is the current bidder is bidding again
+							Bid currentBid = currentAuction.getCurrentBid();
+							if(currentBid.getMaxBid()<=bid.getMaxBid()){
+								//player wishes to increase max bid
+								bid.setBid(currentBid.getBid());
+								bid.setBid(currentBid.getCurrentBid());
+								currentAuction.setCurrentBid(bid);								
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You have raised your max bid",TextColors.RED));
+							}else{
+								bid.getPlayer().sendMessage(StaticsHandler.buildTextForEcoPlugin("You are currently the highest bidder, add a higher max bid to increase your maximum",TextColors.RED));
+							}
 						}else{
 							Bid currentBid = currentAuction.getCurrentBid();
 							double increment  =currentAuction.getIncrement();
