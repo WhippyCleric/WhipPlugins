@@ -4,6 +4,9 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.format.TextColors;
 
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
+import com.whippy.sponge.whipconomy.exceptions.TransferException;
+
 public class Auction extends Thread{
 
 	private String itemId;
@@ -145,10 +148,14 @@ public class Auction extends Thread{
 						auctionNotification.append(" won the auction with a bid of ");
 						auctionNotification.append(finalBid.getCurrentBid());
 						game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionNotification.toString(), TextColors.BLUE));
+						if(finalBid.getMaxBid()!=finalBid.getCurrentBid()){							
+							EconomyCache.pay(finalBid.getPlayer().getIdentifier(), finalBid.getMaxBid()-finalBid.getCurrentBid());
+						}
+						EconomyCache.pay(playerId, finalBid.getCurrentBid());
 					}
 				}
-			} catch (InterruptedException e) {
-				System.out.println("INERRUPTED");
+			} catch (InterruptedException | TransferException e) {
+				System.out.println(e);
 			}
 	}
 

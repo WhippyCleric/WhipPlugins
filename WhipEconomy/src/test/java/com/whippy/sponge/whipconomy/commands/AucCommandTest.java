@@ -298,7 +298,7 @@ public class AucCommandTest {
 			assertEquals(broadcasted.get(i).getContent(), expectedBroadcasts.get(i));
 		}
 		
-		assertEquals(capturedPlayerMessage.getContent(), AUCTION_PREFIX + "Auction queued number 0 in line");
+		assertEquals(capturedPlayerMessage.getContent(), AUCTION_PREFIX + "Auction queued number 1 in line");
 	}
 	
 	@Test
@@ -541,6 +541,7 @@ public class AucCommandTest {
 		assertTrue(EconomyCache.getBalance(bidder.getIdentifier())==210);
 		assertTrue(EconomyCache.getBalance(bidder2.getIdentifier())==100);
 		assertTrue(EconomyCache.getBalance(bidder3.getIdentifier())==15);
+		assertTrue(EconomyCache.getBalance(player.getIdentifier())==201);
 	}
 	
 	@Test
