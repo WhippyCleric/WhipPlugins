@@ -79,7 +79,7 @@ public class AucCommandTest {
 	
 	@Test
 	public void testAuctionNoBids() throws CommandException, InterruptedException{	
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -117,7 +117,7 @@ public class AucCommandTest {
 	
 	@Test
 	public void testSellWithNegativeStartBid() throws InterruptedException, CommandException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -137,7 +137,7 @@ public class AucCommandTest {
 
 	@Test
 	public void testSellWithNegativeIncrement() throws InterruptedException, CommandException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -156,7 +156,7 @@ public class AucCommandTest {
 	}
 	@Test
 	public void testSellWithTooLowTime() throws InterruptedException, CommandException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -175,7 +175,7 @@ public class AucCommandTest {
 	}
 	@Test
 	public void testSellWithTooMuchTime() throws InterruptedException, CommandException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -195,7 +195,7 @@ public class AucCommandTest {
 	
 	@Test
 	public void testSellWithNegativeItemCount() throws InterruptedException, CommandException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -215,7 +215,7 @@ public class AucCommandTest {
 	
 	@Test
 	public void testAuctionMultipleBids() throws CommandException, InterruptedException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
@@ -292,7 +292,7 @@ public class AucCommandTest {
 	
 	@Test
 	public void testAuction1Bid() throws CommandException, InterruptedException{
-		Auctioneer auctioneer = new Auctioneer(4);
+		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
 		StaticsHandler.setGame(objectCreator.getMockGame());
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
