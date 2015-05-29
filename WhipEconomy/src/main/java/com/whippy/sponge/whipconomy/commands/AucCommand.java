@@ -1,5 +1,6 @@
 package com.whippy.sponge.whipconomy.commands;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,8 +55,12 @@ public class AucCommand implements CommandCallable {
 			Player player = (Player) sender;
 				if(args!=null && !args.equals("")){
 					String[] arguments = args.split(" ");
-					if(arguments.length==5){
+					if(arguments.length==6){
+						sixArgumentCommand(arguments, player);
+					}else if(arguments.length==5){
 						fiveArgumentCommand(arguments, player);
+					}else if(arguments.length==4){
+						fourArgumentCommand(arguments, player);
 					}else if(arguments.length==1){
 						singleArgumentCommand(arguments, player);
 					}else{
@@ -70,6 +75,19 @@ public class AucCommand implements CommandCallable {
 		return null;
 	}
 	
+	private void sixArgumentCommand(String[] arguments, Player player) {
+		String subCommand = arguments[0];
+		if(subCommand.equalsIgnoreCase("sbn")){
+			List<String> arguementsList = new ArrayList<String>();
+			for (String argument : arguments) {
+				arguementsList.add(argument);
+			}
+			sellCommand(arguementsList, player);
+		}else{								
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received 6 arguments but not a sell buy it now command",TextColors.RED));
+		}
+	}
+
 	private void singleArgumentCommand(String[] arguments, Player player) {
 		String subCommand = arguments[0];
 		if(subCommand.equalsIgnoreCase("c")){
@@ -86,24 +104,60 @@ public class AucCommand implements CommandCallable {
 	private void fiveArgumentCommand(String[] arguments, Player player){
 		String subCommand = arguments[0];
 		if(subCommand.equalsIgnoreCase("s")){
-			sellCommand(arguments, player);
+			List<String> arguementsList = new ArrayList<String>();
+			for (String argument : arguments) {
+				arguementsList.add(argument);
+			}
+			sellCommand(arguementsList, player);
+		}else if(subCommand.equalsIgnoreCase("sbn")){
+			List<String> arguementsList = new ArrayList<String>();
+			for (String argument : arguments) {
+				arguementsList.add(argument);
+			}
+			arguementsList.add(3, "" + ConfigurationLoader.getDefaultIncrement());
+			sellCommand(arguementsList, player);
+		}else{								
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received 5 arguments but not a sell command",TextColors.RED));
+		}
+	}
+
+	private void fourArgumentCommand(String[] arguments, Player player){
+		String subCommand = arguments[0];
+		if(subCommand.equalsIgnoreCase("s")){
+			List<String> arguementsList = new ArrayList<String>();
+			for (String argument : arguments) {
+				arguementsList.add(argument);
+			}
+			arguementsList.add(3, "" + ConfigurationLoader.getDefaultIncrement());
+			sellCommand(arguementsList, player);
 		}else{								
 			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received 5 arguments but not a sell command",TextColors.RED));
 		}
 	}
 	
-	private void sellCommand(String[] arguments, Player player){
+	private void sellCommand(List<String> arguments, Player player){
 		Optional<ItemStack> holdingOptional = player.getItemInHand();
 		if(holdingOptional.isPresent()){
 			ItemStack item = holdingOptional.get();
 			String itemId = item.getItem().getId();
 			String itemName = item.getItem().getName();
 			try{
-				int numberOfItem = Integer.valueOf(arguments[1]);
-				double startingBid = EconomyCache.round(Double.valueOf(arguments[2]), ConfigurationLoader.getDecPlaces());
-				double increment  = EconomyCache.round(Double.valueOf(arguments[3]), ConfigurationLoader.getDecPlaces());
-				int time = Integer.valueOf(arguments[4]);
-				if(numberOfItem<1){
+				int numberOfItem = Integer.valueOf(arguments.get(1));
+				double startingBid = EconomyCache.round(Double.valueOf(arguments.get(2)), ConfigurationLoader.getDecPlaces());
+				double increment  = EconomyCache.round(Double.valueOf(arguments.get(3)), ConfigurationLoader.getDecPlaces());
+				int time = Integer.valueOf(arguments.get(4));
+				int buyItNow=-1;
+				if(arguments.size()==6){
+					buyItNow = Integer.parseInt(arguments.get(5));
+					if(buyItNow<=0){						
+						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Buy it now price must be a positive number",TextColors.RED));
+					}else if(buyItNow<startingBid){
+						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Buy it now price must be at least starting bid",TextColors.RED));						
+					}else{						
+						Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player, buyItNow);
+						StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
+					}
+				}else if(numberOfItem<1){
 					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Must hold at least 1 item to auction",TextColors.RED));
 				}else if(startingBid<=0){
 					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Starting bid must be a greater than 0",TextColors.RED));
@@ -114,7 +168,7 @@ public class AucCommand implements CommandCallable {
 				}else if(time>ConfigurationLoader.getMaxAuctionTime()){
 					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Time must be at most " + ConfigurationLoader.getMaxAuctionTime() + " seconds",TextColors.RED));
 				}else{					
-					Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player);
+					Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player, buyItNow);
 					StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
 				}
 			}catch(NumberFormatException e){

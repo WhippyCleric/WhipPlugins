@@ -174,6 +174,38 @@ public class AucCommandTest {
 		}
 	}
 	@Test
+	public void testDefaultIncrement() throws CommandException, InterruptedException{
+		Auctioneer auctioneer = new Auctioneer();
+		StaticsHandler.setAuctioneer(auctioneer);
+		StaticsHandler.setGame(objectCreator.getMockGame());
+		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
+		AuctionCache auctionCache = new AuctionCache();
+		StaticsHandler.setAuctionCache(auctionCache);
+		EconomyCache.updatePlayerMapping(player);
+		Server server = objectCreator.mockServer();
+		AuctionRunner runner = new AuctionRunner();
+		runner.start();
+		
+		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
+		AucCommand command = new AucCommand();
+		
+		command.process(player, "s 10 10 45");
+		command.process(player, "c");
+		
+		Thread.sleep(1000);
+		verify(server, times(2)).broadcastMessage(broadcastCaptor.capture());
+		
+		List<Literal> broadcasted = broadcastCaptor.getAllValues();
+		List<String> expectedBroadcasts = new ArrayList<String>();
+		expectedBroadcasts.add(AUCTION_PREFIX + "" +  player.getName() +" is auctioning 10 Bones. Starting bid: 10.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + "Auction Cancelled");
+		for(int i=0 ; i<2; i++){
+			assertEquals( expectedBroadcasts.get(i), broadcasted.get(i).getContent());
+		}
+	}
+	
+	@Test
 	public void testAuctionCurrentCancel() throws CommandException, InterruptedException{	
 		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
@@ -471,7 +503,7 @@ public class AucCommandTest {
 		runner.start();
 		ArgumentCaptor<Literal> broadcastCaptor = ArgumentCaptor.forClass(Literal.class);
 		AucCommand command = new AucCommand();
-		command.process(player, "s 1 1 1 45");
+		command.process(player, "sbn 1 1.555 1 45 120");
 		Thread.sleep(15000);
 		BidCommand bidCommand = new BidCommand();
 		
@@ -479,7 +511,7 @@ public class AucCommandTest {
 		Thread.sleep(100);
 		bidCommand.process(bidder, "0.5 11.2");
 		Thread.sleep(100);
-		bidCommand.process(bidder2, "12 20");
+		bidCommand.process(bidder2, "12.0125 20");
 		Thread.sleep(100);
 		ArgumentCaptor<Literal> bidder3Captor = ArgumentCaptor.forClass(Literal.class);
 		bidCommand.process(bidder3, "15");
@@ -499,10 +531,10 @@ public class AucCommandTest {
 		Thread.sleep(30000);
 		
 		List<String> expectedBroadcasts = new ArrayList<String>();
-		expectedBroadcasts.add(AUCTION_PREFIX + ""+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds.");
+		expectedBroadcasts.add(AUCTION_PREFIX + ""+ player.getName() +" is auctioning 1 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds. Buy it now for 120.0");
 		expectedBroadcasts.add(AUCTION_PREFIX + "30 seconds remaining");
 		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder.getName() + " bids 1.0");
-		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder2.getName() + " bids 12.0");
+		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder2.getName() + " bids 12.01");
 		expectedBroadcasts.add(AUCTION_PREFIX + "Bid has been raised to 15.0");
 		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder.getName() + " bids 20.0");
 		expectedBroadcasts.add(AUCTION_PREFIX + "" + bidder2.getName() + " bids 201.0");

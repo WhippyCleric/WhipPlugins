@@ -249,29 +249,34 @@ public class Auctioneer extends Thread {
 	}
 
 	public synchronized void bid(Player player, double initialBid) {
-		synchronized (currentAuction){
 			initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
-			Bid bid = new Bid(player, initialBid, initialBid);
-			bid(bid);
-		}
+			bid(player, initialBid, initialBid);
 	}
 
 	public synchronized void bid(Player player) {
-		synchronized (currentAuction){
+		if(currentAuction!=null){
 			Bid currentBid = currentAuction.getCurrentBid();
 			double increment = currentAuction.getIncrement();
-			Bid bid = new Bid(player, currentBid.getMaxBid() + increment, currentBid.getMaxBid() + increment);
-			bid(bid);
+			bid(player, currentBid.getMaxBid() + increment, currentBid.getMaxBid() + increment);
+		}else{			
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("No auction currently running",TextColors.RED));			
 		}
 	}
+	
 	public synchronized void bid(Player player, double initialBid, double max) {
-		if(max>=initialBid){
-			initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
-			max = EconomyCache.round(max, ConfigurationLoader.getDecPlaces());
-			Bid bid = new Bid(player, initialBid, max);
-			bid(bid);
+		if(currentAuction!=null){
+			synchronized (currentAuction){
+				if(max>=initialBid){
+					initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
+					max = EconomyCache.round(max, ConfigurationLoader.getDecPlaces());
+					Bid bid = new Bid(player, initialBid, max);
+					bid(bid);
+				}else{
+					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Max bid can not be lower than intial bid",TextColors.RED));
+				}
+			}
 		}else{
-			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Max bid can not be lower than intial bid",TextColors.RED));
+			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("No auction currently running",TextColors.RED));			
 		}
 	}
 

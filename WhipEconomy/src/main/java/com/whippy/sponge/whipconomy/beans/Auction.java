@@ -21,9 +21,10 @@ public class Auction extends Thread{
 	private boolean isBidable;
 	private String playerId;
 	private boolean isCancelled;
+	private double buyItNow;
 	
 	public Auction(String itemId, String itemName, int numberOfItem,
-			double startingBid, double increment, int time, Player player) {
+			double startingBid, double increment, int time, Player player, double buyItNow) {
 		super();
 		this.itemId = itemId;
 		this.itemName = itemName;
@@ -35,6 +36,7 @@ public class Auction extends Thread{
 		this.playerId = player.getIdentifier();
 		this.cancelable = true;
 		this.isCancelled=false;
+		this.buyItNow = buyItNow;
 	}
 
 	public String getPlayerName() {
@@ -107,6 +109,11 @@ public class Auction extends Thread{
 			auctionStartingBuilder.append(". This auction will last ");
 			auctionStartingBuilder.append(getTime());
 			auctionStartingBuilder.append(" seconds.");
+			
+			if(buyItNow>0){
+				auctionStartingBuilder.append(" Buy it now for ");				
+				auctionStartingBuilder.append(buyItNow);				
+			}
 
 			int time = getTime();
 			game.getServer().broadcastMessage(StaticsHandler.buildTextForEcoPlugin(auctionStartingBuilder.toString(),TextColors.BLUE));
