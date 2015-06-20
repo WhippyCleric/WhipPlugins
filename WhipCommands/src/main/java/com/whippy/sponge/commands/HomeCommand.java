@@ -1,5 +1,6 @@
 package com.whippy.sponge.commands;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,9 +13,10 @@ import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
@@ -47,9 +49,15 @@ public class HomeCommand implements CommandCallable {
 	public Optional<CommandResult> process(CommandSource sender, String arg1) throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			NoWorldLocation location = CommandConfiguration.getHome(player);
+			WorldLocation location = CommandConfiguration.getHome(player);
 			if(location!=null){
-				player.setLocation(new Location(player.getWorld(), location.getX(), location.getY(), location.getZ()));
+				Collection<World> worlds = StaticsHandler.getGame().getServer().getWorlds();
+				for (World world : worlds) {
+					if(world.getName().equals(location.getWorldName())){
+						player.setLocation(new Location(world, location.getX(), location.getY(), location.getZ()));
+						break;
+					}
+				}
 			}else{
 				player.sendMessage(Texts.builder("You have no home! Use /setHome to set a home.").color(TextColors.RED).build());
 			}

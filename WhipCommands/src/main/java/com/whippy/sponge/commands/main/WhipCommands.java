@@ -31,6 +31,7 @@ public class WhipCommands {
 	@Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException  {
 		StaticsHandler.setLogger(logger);
+		StaticsHandler.setGame(game);
 		CommandConfiguration.refreshFromFile();
     }
 	

@@ -14,7 +14,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
@@ -48,7 +48,7 @@ public class BedCommand implements CommandCallable {
 			throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			NoWorldLocation location = CommandConfiguration.getBedHome(player);
+			WorldLocation location = CommandConfiguration.getBedHome(player);
 			if(location!=null){
 				player.setLocation(new Location(player.getWorld(), location.getX(), location.getY(), location.getZ()));
 			}else{

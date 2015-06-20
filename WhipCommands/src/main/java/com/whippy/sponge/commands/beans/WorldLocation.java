@@ -2,16 +2,18 @@ package com.whippy.sponge.commands.beans;
 
 import org.json.simple.JSONObject;
 
-public class NoWorldLocation{
+public class WorldLocation{
 
 	private double y;
 	private double z;
 	private double x;
+	private String worldName;
 	
-	public NoWorldLocation(double x, double y, double z) {
+	public WorldLocation(String worldName, double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.worldName = worldName;
 	}
 
 	public double getX() {
@@ -29,10 +31,15 @@ public class NoWorldLocation{
 	
 	public JSONObject toJSONObject() {
 		JSONObject obj = new JSONObject();
+		obj.put("worldName", getWorldName());
 		obj.put("x", getX());
 		obj.put("y", getY());
 		obj.put("z", getZ());
 		return obj;
 	}
-	
+
+	public String getWorldName() {
+		return worldName;
+	}
+
 }

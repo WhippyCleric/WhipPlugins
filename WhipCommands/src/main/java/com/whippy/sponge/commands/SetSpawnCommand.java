@@ -14,7 +14,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
@@ -42,7 +42,8 @@ public class SetSpawnCommand implements CommandCallable{
 		if(sender instanceof Player){
 			Player player = (Player) sender;
 			Location location = player.getLocation();
-			CommandConfiguration.setSpawn(new NoWorldLocation(location.getX(), location.getY(), location.getZ()));
+			String worldName = player.getWorld().getName();
+			CommandConfiguration.setSpawn(new WorldLocation(worldName, location.getX(), location.getY(), location.getZ()));
 		}else{
 			StaticsHandler.getLogger().warn("setSpawn called by non player entity");
 		}

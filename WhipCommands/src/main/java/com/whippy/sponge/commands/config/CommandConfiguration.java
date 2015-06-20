@@ -13,7 +13,7 @@ import org.json.simple.parser.ParseException;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
-import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.PlayerLocations;
 
 public class CommandConfiguration {
@@ -21,15 +21,15 @@ public class CommandConfiguration {
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\data\\whipcommands.json";
 	public static final String BED_HOMES = "bedHomes";
 	public static final String HOMES = "homes";
-	private static NoWorldLocation spawn;
+	private static WorldLocation spawn;
 	private static PlayerLocations bedHomes;
 	private static PlayerLocations homes;
 
-	public synchronized static NoWorldLocation getSpawn() {
+	public synchronized static WorldLocation getSpawn() {
 		return spawn;
 	}
 
-	public synchronized static void setSpawn(NoWorldLocation spawn2) {
+	public synchronized static void setSpawn(WorldLocation spawn2) {
 		spawn = spawn2;
 		pushFileUpdate();
 	}
@@ -50,7 +50,7 @@ public class CommandConfiguration {
 		pushFileUpdate();
 	}
 	
-	public synchronized static NoWorldLocation getHome(Player player){
+	public synchronized static WorldLocation getHome(Player player){
 		if(homes!=null){
 			return homes.getLocation(player.getIdentifier());
 		}else{
@@ -58,7 +58,7 @@ public class CommandConfiguration {
 		}
 	}
 	
-	public synchronized static NoWorldLocation getBedHome(Player player){
+	public synchronized static WorldLocation getBedHome(Player player){
 		if(bedHomes!=null){
 			return bedHomes.getLocation(player.getIdentifier());
 		}else{
@@ -95,10 +95,11 @@ public class CommandConfiguration {
 			Object spawnObj = jsonObject.get("spawn");
 			if(spawnObj!=null){
 				JSONObject spawnJson = (JSONObject) spawnObj; 
+				String worldName = (String) spawnJson.get("worldName");
 				Double x = (Double) spawnJson.get("x");
 				Double y = (Double) spawnJson.get("y");
 				Double z = (Double) spawnJson.get("z");	
-				spawn = new NoWorldLocation(x,y,z);
+				spawn = new WorldLocation(worldName, x,y,z);
 			}
 			
 			Object homesFromFile = jsonObject.get(HOMES);

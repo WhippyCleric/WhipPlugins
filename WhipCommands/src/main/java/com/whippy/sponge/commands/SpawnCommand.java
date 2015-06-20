@@ -1,5 +1,6 @@
 package com.whippy.sponge.commands;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,9 +13,10 @@ import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import com.google.common.base.Optional;
-import com.whippy.sponge.commands.beans.NoWorldLocation;
+import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.config.CommandConfiguration;
 
@@ -41,9 +43,15 @@ public class SpawnCommand implements CommandCallable{
 			throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			NoWorldLocation spawn = CommandConfiguration.getSpawn();
+			WorldLocation spawn = CommandConfiguration.getSpawn();
 			if(spawn!=null){
-				player.setLocation(new Location(player.getWorld(), spawn.getX(), spawn.getY(), spawn.getZ()));
+				Collection<World> worlds = StaticsHandler.getGame().getServer().getWorlds();
+				for (World world : worlds) {
+					if(world.getName().equals(spawn.getWorldName())){						
+						player.setLocation(new Location(world, spawn.getX(), spawn.getY(), spawn.getZ()));
+						break;
+					}
+				}
 			}else{
 				player.sendMessage(Texts.builder("No spawn has been set on this server! Use /setSpawn to set a spawn.").color(TextColors.RED).build());
 			}

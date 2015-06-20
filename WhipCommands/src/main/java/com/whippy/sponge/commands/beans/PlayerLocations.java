@@ -10,14 +10,14 @@ import org.spongepowered.api.world.Location;
 
 public class PlayerLocations {
 	
-	private  Map<String, NoWorldLocation> playerToLocations;
+	private  Map<String, WorldLocation> playerToLocations;
 
 	
 	public PlayerLocations(){
-		playerToLocations = new HashMap<String, NoWorldLocation>();
+		playerToLocations = new HashMap<String, WorldLocation>();
 	}
 	
-	public NoWorldLocation getLocation(String playerId){
+	public WorldLocation getLocation(String playerId){
 		return playerToLocations.get(playerId);
 	}
 	
@@ -26,15 +26,15 @@ public class PlayerLocations {
 	    	playerToLocations.remove(player.getIdentifier());
 	    }
 	    Location playerLocation = player.getLocation();
-	    NoWorldLocation noWorldLocation = new NoWorldLocation(playerLocation.getX(), playerLocation.getY(),playerLocation.getZ());
+	    WorldLocation noWorldLocation = new WorldLocation(player.getWorld().getName(), playerLocation.getX(), playerLocation.getY(),playerLocation.getZ());
 	    playerToLocations.put(player.getIdentifier(), noWorldLocation);
 	}
 	
-	public Map<String, NoWorldLocation> getPlayerToLocations() {
+	public Map<String, WorldLocation> getPlayerToLocations() {
 		return playerToLocations;
 	}
 
-	public void setPlayerToLocations(Map<String, NoWorldLocation> playerToLocations) {
+	public void setPlayerToLocations(Map<String, WorldLocation> playerToLocations) {
 		this.playerToLocations = playerToLocations;
 	}
 
@@ -42,8 +42,9 @@ public class PlayerLocations {
 		JSONArray all = new JSONArray();
 		for (String player : playerToLocations.keySet()) {
 			JSONObject playerToLocation = new JSONObject();
-			NoWorldLocation location = playerToLocations.get(player);
+			WorldLocation location = playerToLocations.get(player);
 			playerToLocation.put("playerId", player);
+			playerToLocation.put("worldName", location.getWorldName());
 			playerToLocation.put("x", location.getX());
 			playerToLocation.put("y", location.getY());
 			playerToLocation.put("z", location.getZ());
@@ -55,15 +56,16 @@ public class PlayerLocations {
 	
 	public static PlayerLocations fromJSONObject(Object object){
 		PlayerLocations playerLocations = new PlayerLocations();
-		Map<String, NoWorldLocation> playerToLocations = new HashMap<String, NoWorldLocation>();
+		Map<String, WorldLocation> playerToLocations = new HashMap<String, WorldLocation>();
 		if(object!=null){
 			JSONArray arrayHomes = (JSONArray) object;
 			for (Object arrayHome : arrayHomes) {
 				String playerId = (String) ((JSONObject) arrayHome).get("playerId"); 
+				String worldName = (String) ((JSONObject) arrayHome).get("worldName"); 
 				Double xHome = (Double) ((JSONObject) arrayHome).get("x");
 				Double yHome = (Double) ((JSONObject) arrayHome).get("y");
 				Double zHome = (Double) ((JSONObject) arrayHome).get("z");
-				playerToLocations.put(playerId, new NoWorldLocation(xHome, yHome, zHome));
+				playerToLocations.put(playerId, new WorldLocation(worldName, xHome, yHome, zHome));
 			}
 		}
 		playerLocations.setPlayerToLocations(playerToLocations);
