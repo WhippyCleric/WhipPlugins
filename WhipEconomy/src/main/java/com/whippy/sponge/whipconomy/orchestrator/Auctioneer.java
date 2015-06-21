@@ -3,8 +3,17 @@ package com.whippy.sponge.whipconomy.orchestrator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.spongepowered.api.data.DataManipulator;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.properties.SlotIndex;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.common.item.SpongeItemStackBuilder;
 
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.Bid;
@@ -61,6 +70,23 @@ public class Auctioneer extends Thread {
 				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Allready have auction in queue", TextColors.RED));
 			}else{				
 				auctions.add(auction);
+				ItemStackBuilder builder = new SpongeItemStackBuilder();
+				ItemStack itemStack = builder.itemType(auction.getItemType()).quantity(auction.getNumberOfItem()).build();
+				StaticsHandler.getAuctionCache().addPlayerAndItem(player.getIdentifier(), itemStack);
+				int itemsToTake = auction.getNumberOfItem();
+				for(int i=0; i<9; i ++){
+					if(player.getInventory().query(Hotbar.class).query(new SlotIndex(i)).contains(auction.getItemType())){
+						if(itemsToTake>0){
+
+							//Slot contains right item
+							int numberOfItem = player.getInventory().query(Hotbar.class).query(new SlotIndex(i)).peek().get().getQuantity();
+							if(itemsToTake>=numberOfItem){
+								player.getInventory().query(Hotbar.class).query(new SlotIndex(i)).set(null);
+							}
+							itemsToTake = itemsToTake - numberOfItem;
+						}
+					}
+				}
 				StringBuilder auctionNotification = new StringBuilder();
 				auctionNotification .append("Auction queued number ");
 				auctionNotification .append(auctions.indexOf(auction) + 1);
@@ -249,8 +275,8 @@ public class Auctioneer extends Thread {
 	}
 
 	public synchronized void bid(Player player, double initialBid) {
-			initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
-			bid(player, initialBid, initialBid);
+		initialBid = EconomyCache.round(initialBid, ConfigurationLoader.getDecPlaces());
+		bid(player, initialBid, initialBid);
 	}
 
 	public synchronized void bid(Player player) {
@@ -262,7 +288,7 @@ public class Auctioneer extends Thread {
 			player.sendMessage(StaticsHandler.buildTextForEcoPlugin("No auction currently running",TextColors.RED));			
 		}
 	}
-	
+
 	public synchronized void bid(Player player, double initialBid, double max) {
 		if(currentAuction!=null){
 			synchronized (currentAuction){

@@ -20,13 +20,13 @@
 			<groupId>org.spongepowered</groupId>
 			<artifactId>sponge</artifactId>
 			<version>1.8-1371-2.1DEV-460</version>
-			<exclusions>
+			<!--exclusions>
 				<exclusion>
 					<groupId>org.spongepowered</groupId>
 					<artifactId>spongecommon</artifactId>
 				</exclusion>
 			</exclusions>
-			<scope>test</scope>
+			<scope>test</scope-->
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
@@ -66,12 +66,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
+		<!-- dependency>
 			<groupId>com.whipppy</groupId>
 			<artifactId>whip-sponge-testing-harness</artifactId>
 			<version>1.0</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency-->
 		
 		<dependency>
 			<groupId>org.easymock</groupId>

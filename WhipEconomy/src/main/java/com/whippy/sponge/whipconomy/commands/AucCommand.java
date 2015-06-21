@@ -139,8 +139,6 @@ public class AucCommand implements CommandCallable {
 		Optional<ItemStack> holdingOptional = player.getItemInHand();
 		if(holdingOptional.isPresent()){
 			ItemStack item = holdingOptional.get();
-			String itemId = item.getItem().getId();
-			String itemName = item.getItem().getName();
 			try{
 				int numberOfItem = Integer.valueOf(arguments.get(1));
 				double startingBid = EconomyCache.round(Double.valueOf(arguments.get(2)), ConfigurationLoader.getDecPlaces());
@@ -154,7 +152,7 @@ public class AucCommand implements CommandCallable {
 					}else if(buyItNow<startingBid){
 						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Buy it now price must be at least starting bid",TextColors.RED));						
 					}else{						
-						Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player, buyItNow);
+						Auction auction = new Auction(item.getItem(),numberOfItem, startingBid, increment, time, player, buyItNow);
 						StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
 					}
 				}else if(numberOfItem<1){
@@ -168,7 +166,7 @@ public class AucCommand implements CommandCallable {
 				}else if(time>ConfigurationLoader.getMaxAuctionTime()){
 					player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Time must be at most " + ConfigurationLoader.getMaxAuctionTime() + " seconds",TextColors.RED));
 				}else{					
-					Auction auction = new Auction(itemId, itemName,numberOfItem, startingBid, increment, time, player, buyItNow);
+					Auction auction = new Auction(item.getItem(), numberOfItem, startingBid, increment, time, player, buyItNow);
 					StaticsHandler.getAuctioneer().pushAuctionToQueue(auction, player);
 				}
 			}catch(NumberFormatException e){

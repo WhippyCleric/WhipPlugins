@@ -2,6 +2,7 @@ package com.whippy.sponge.whipconomy.beans;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
@@ -9,8 +10,6 @@ import com.whippy.sponge.whipconomy.exceptions.TransferException;
 
 public class Auction extends Thread{
 
-	private String itemId;
-	private String itemName;
 	private int numberOfItem;
 	private double startingBid;
 	private double increment;
@@ -22,12 +21,12 @@ public class Auction extends Thread{
 	private String playerId;
 	private boolean isCancelled;
 	private double buyItNow;
+	private ItemType itemType;
 	
-	public Auction(String itemId, String itemName, int numberOfItem,
+	public Auction(ItemType itemType, int numberOfItem,
 			double startingBid, double increment, int time, Player player, double buyItNow) {
 		super();
-		this.itemId = itemId;
-		this.itemName = itemName;
+		this.itemType = itemType;
 		this.numberOfItem = numberOfItem;
 		this.startingBid = startingBid;
 		this.increment = increment;
@@ -48,13 +47,16 @@ public class Auction extends Thread{
 	}
 	
 	public String getItemId() {
-		return itemId;
+		return itemType.getId();
 	}
 	public String getItemName() {
-		return itemName;
+		return itemType.getName();
 	}
 	public int getNumberOfItem() {
 		return numberOfItem;
+	}
+	public ItemType getItemType(){
+		return this.itemType;
 	}
 	public double getStartingBid() {
 		return startingBid;
