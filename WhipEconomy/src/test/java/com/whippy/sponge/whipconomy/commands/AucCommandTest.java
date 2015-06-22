@@ -2,8 +2,12 @@ package com.whippy.sponge.whipconomy.commands;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.awt.Color;
 import java.lang.reflect.Field;
@@ -17,12 +21,15 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.data.Property;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.text.Text.Literal;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
@@ -134,8 +141,19 @@ public class AucCommandTest {
 	public void testAuctionCurrentCancelTooLate() throws CommandException, InterruptedException{	
 		Auctioneer auctioneer = new Auctioneer();
 		StaticsHandler.setAuctioneer(auctioneer);
-		StaticsHandler.setGame(objectCreator.getMockGame());
+		
+		Game mockGame = objectCreator.getMockGame();
+		GameRegistry mockGameRegistry = mock(GameRegistry.class);
+		ItemStackBuilder mockItemStackBuilder = mock(ItemStackBuilder.class);
+		when(mockGameRegistry.getItemBuilder()).thenReturn(mockItemStackBuilder );
+		when(mockGame.getRegistry()).thenReturn(mockGameRegistry);
+		StaticsHandler.setGame(mockGame);
+		
 		ItemStack itemStack = objectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		when(mockItemStackBuilder.itemType(any(ItemType.class))).thenReturn(mockItemStackBuilder);
+		when(mockItemStackBuilder.quantity(anyInt())).thenReturn(mockItemStackBuilder);
+		when(mockItemStackBuilder.build()).thenReturn(itemStack);
+		
 		Player player = objectCreator.createRandomPlayerWithObject(itemStack);
 		AuctionCache auctionCache = new AuctionCache();
 		StaticsHandler.setAuctionCache(auctionCache);
