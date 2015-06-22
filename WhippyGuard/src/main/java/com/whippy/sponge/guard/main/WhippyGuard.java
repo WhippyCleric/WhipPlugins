@@ -5,6 +5,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.EntityInteractionTypes;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
@@ -15,6 +16,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
@@ -57,7 +59,14 @@ public class WhippyGuard {
 	
 	@Subscribe 
 	public void onPlayerBreakBlockEvent(PlayerBreakBlockEvent event){
-
+		Player player = event.getPlayer();
+		Location block = event.getBlock();
+		String worldName = player.getWorld().getName();
+		if(!StaticsHandler.getAreaHandler().isAllowed(player, block, worldName)){
+			event.setCancelled(true);
+			player.sendMessage(Texts.builder("You do not have permission to do that in this area").color(TextColors.RED).build());	
+		}
+	
 	}
 	
 	@Subscribe
@@ -74,7 +83,7 @@ public class WhippyGuard {
 							Vector3d vectorPoint = event.getClickedPosition().get();
 							World world = event.getPlayer().getWorld();
 							WorldLocation point = new WorldLocation(world.getName(), vectorPoint.getX(), vectorPoint.getY(), vectorPoint.getZ());
-							StaticsHandler.getClickHandler().playerAreaDefineClick( event.getPlayer(), point);
+							StaticsHandler.getAreaHandler().playerAreaDefineClick( event.getPlayer(), point);
 						}
 					}else if (RIGHT_CLICK_BUG){
 						inRightClick = false;						

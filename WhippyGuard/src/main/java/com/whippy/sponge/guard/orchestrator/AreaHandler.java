@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.whippy.sponge.guard.beans.Area;
@@ -25,7 +26,7 @@ import com.whippy.sponge.guard.exceptions.MultipleWorldInAreaException;
 
 public class AreaHandler {
 
-	private static final String CONFIG_PATH =  ".\\config\\plugins\\whip\\data\\guardareas.json";
+	private static final String AREA_DEFINITION_PATH =  ".\\config\\plugins\\whip\\data\\guardareas.json";
 	private Map<String, Area> playerIDToAreaInProgress;
 	private Map<String, Area> definedAreas;
 	
@@ -131,12 +132,12 @@ public class AreaHandler {
 		try {
 			JSONObject all = new JSONObject();
 			all.put("allAreas", areasToJSONArray());
-			File areasFile = new File(CONFIG_PATH);
+			File areasFile = new File(AREA_DEFINITION_PATH);
 			if(!areasFile.exists()) {
 				areasFile.getParentFile().mkdirs();
 				areasFile.createNewFile();
 			} 
-			FileWriter file = new FileWriter(CONFIG_PATH);
+			FileWriter file = new FileWriter(AREA_DEFINITION_PATH);
 			file.write(all.toJSONString());
 			file.flush();
 			file.close();
@@ -150,7 +151,7 @@ public class AreaHandler {
 			
 			definedAreas = new HashMap<String, Area>();
 
-			FileReader reader = new FileReader(CONFIG_PATH);
+			FileReader reader = new FileReader(AREA_DEFINITION_PATH);
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(reader);
 			JSONObject jsonObject = (JSONObject) obj;
@@ -190,6 +191,17 @@ public class AreaHandler {
 		for (Area area : definedAreas.values()) {
 			player.sendMessage(Texts.builder(area.getName()).color(TextColors.BLUE).build());
 		}
+		
+	}
+
+	public boolean isAllowed(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			if(isInArea){
+				return false;
+			}
+		}
+		return true;
 		
 	}
 }

@@ -26,7 +26,7 @@ public class StaticsHandler {
 	public static void setGame(Game gameNew){
 		game = gameNew;
 	}
-	public static AreaHandler getClickHandler(){
+	public static AreaHandler getAreaHandler(){
 		return clickHandler;
 	}
 

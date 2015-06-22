@@ -42,7 +42,7 @@ public class ListAreasCommand implements CommandCallable{
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			StaticsHandler.getClickHandler().listAreas(player);
+			StaticsHandler.getAreaHandler().listAreas(player);
 		}else{
 			StaticsHandler.getLogger().warn("List areas called by non player entity!");
 		}
