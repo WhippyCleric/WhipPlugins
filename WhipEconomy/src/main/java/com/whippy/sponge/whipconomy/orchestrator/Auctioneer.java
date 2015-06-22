@@ -3,17 +3,12 @@ package com.whippy.sponge.whipconomy.orchestrator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.spongepowered.api.data.DataManipulator;
 import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackBuilder;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
-import org.spongepowered.api.item.inventory.properties.SlotIndex;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.common.item.SpongeItemStackBuilder;
 
 import com.whippy.sponge.whipconomy.beans.Auction;
 import com.whippy.sponge.whipconomy.beans.Bid;
@@ -70,7 +65,7 @@ public class Auctioneer extends Thread {
 				player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Allready have auction in queue", TextColors.RED));
 			}else{				
 				auctions.add(auction);
-				ItemStackBuilder builder = new SpongeItemStackBuilder();
+				ItemStackBuilder builder = StaticsHandler.getGame().getRegistry().getItemBuilder();
 				ItemStack itemStack = builder.itemType(auction.getItemType()).quantity(auction.getNumberOfItem()).build();
 				StaticsHandler.getAuctionCache().addPlayerAndItem(player.getIdentifier(), itemStack);
 				int itemsToTake = auction.getNumberOfItem();
