@@ -23,13 +23,13 @@ import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.exceptions.AreaFinalisedException;
 import com.whippy.sponge.guard.exceptions.MultipleWorldInAreaException;
 
-public class ClickHandler {
+public class AreaHandler {
 
 	private static final String CONFIG_PATH =  ".\\config\\plugins\\whip\\data\\guardareas.json";
 	private Map<String, Area> playerIDToAreaInProgress;
 	private Map<String, Area> definedAreas;
 	
-	public ClickHandler(){
+	public AreaHandler(){
 		playerIDToAreaInProgress  =new HashMap<String, Area>();
 		refreshFromFile();
 	}

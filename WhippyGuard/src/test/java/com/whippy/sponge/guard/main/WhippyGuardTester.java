@@ -17,7 +17,7 @@ import org.spongepowered.api.world.World;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
 import com.whippy.sponge.guard.beans.StaticsHandler;
-import com.whippy.sponge.guard.orchestrator.ClickHandler;
+import com.whippy.sponge.guard.orchestrator.AreaHandler;
 import com.whippy.sponge.whip.sponge.testing.harness.SpongeObjectCreator;
 
 public class WhippyGuardTester {
@@ -30,7 +30,7 @@ public class WhippyGuardTester {
 	public void setup() throws Exception{
 		whippyGuard = new WhippyGuard();
 		spongeObjectCreator = new SpongeObjectCreator();
-		StaticsHandler.setClickHandler(new ClickHandler());
+		StaticsHandler.setClickHandler(new AreaHandler());
 		spongeObjectCreator.mockItemType(ItemTypes.class.getField("BONE"), "Bones", WhippyGuard.WAND_ID);
 		spongeObjectCreator.mockEntityInteractionTypes(EntityInteractionTypes.class.getField("USE"), "1", "USE");
 		spongeObjectCreator.mockColor(TextColors.class.getField("RED"), Color.RED);

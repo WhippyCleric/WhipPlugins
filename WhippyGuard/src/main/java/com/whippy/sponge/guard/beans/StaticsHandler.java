@@ -3,11 +3,11 @@ package com.whippy.sponge.guard.beans;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 
-import com.whippy.sponge.guard.orchestrator.ClickHandler;
+import com.whippy.sponge.guard.orchestrator.AreaHandler;
 
 public class StaticsHandler {
 
-	private static ClickHandler clickHandler;
+	private static AreaHandler clickHandler;
     private static Logger logger;
 	private static Game game;
 
@@ -26,11 +26,11 @@ public class StaticsHandler {
 	public static void setGame(Game gameNew){
 		game = gameNew;
 	}
-	public static ClickHandler getClickHandler(){
+	public static AreaHandler getClickHandler(){
 		return clickHandler;
 	}
 
-	public static void setClickHandler(ClickHandler clickHandlerNew) {
+	public static void setClickHandler(AreaHandler clickHandlerNew) {
 		clickHandler = clickHandlerNew;
 	}
 	

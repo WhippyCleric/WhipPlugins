@@ -24,7 +24,7 @@ import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.commands.FinaliseCommand;
 import com.whippy.sponge.guard.commands.ListAreasCommand;
-import com.whippy.sponge.guard.orchestrator.ClickHandler;
+import com.whippy.sponge.guard.orchestrator.AreaHandler;
 
 @Plugin(id = "WhippyGuard", name = "WhippyGuard")
 public class WhippyGuard {
@@ -42,7 +42,7 @@ public class WhippyGuard {
 	
 	@Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException  {	
-		StaticsHandler.setClickHandler(new ClickHandler());
+		StaticsHandler.setClickHandler(new AreaHandler());
 		StaticsHandler.setGame(game);
 		StaticsHandler.setLogger(logger);
     }

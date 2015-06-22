@@ -44,7 +44,7 @@ public class ListAreasCommand implements CommandCallable{
 			Player player = (Player) sender;
 			StaticsHandler.getClickHandler().listAreas(player);
 		}else{
-			StaticsHandler.getLogger().warn("Finalsie area called by non player entity!");
+			StaticsHandler.getLogger().warn("List areas called by non player entity!");
 		}
 		return null;
 	}
