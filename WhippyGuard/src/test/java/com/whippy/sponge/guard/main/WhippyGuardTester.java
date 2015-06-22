@@ -52,16 +52,16 @@ public class WhippyGuardTester {
 		
 		Optional<Vector3d> clickedPosition = Optional.of(clickedPositionVector );
 		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
-	//	whippyGuard.onPlayerInteractEvent(mockEvent );
-	//	whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
 		
 		Vector3d clickedPositionVector2 = new Vector3d(1,2,3);
 		Optional<Vector3d> clickedPosition2 = Optional.of(clickedPositionVector2 );
 		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition2 );
-	//	whippyGuard.onPlayerInteractEvent(mockEvent );
-	//	whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
 		
-	//	StaticsHandler.getClickHandler().finaliseCurrentArea(mockPlayer, "TestArea2", -1.0 ,-1.0);
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea2", -1.0 ,-1.0);
 		
 		
 		Vector3d clickedPositionVector3 = new Vector3d(0,0,2);

@@ -17,6 +17,7 @@ public class Area {
 	private String areaName;
 	private double height;
 	private double base;
+	private AreaRights rights;
 
 	private String worldName;
 
@@ -24,15 +25,17 @@ public class Area {
 		points = new ArrayList<Vector3i>();
 		height = -1.0;
 		base = -1.0;
+		rights = new AreaRights();
 	}
 
-	public Area(String areaName, String worldName, List<Vector3i> points, Double height, Double base) {
+	public Area(String areaName, String worldName, List<Vector3i> points, Double height, Double base, AreaRights playerAreaRights) {
 		finalised = true;
 		this.areaName = areaName;
 		this.worldName = worldName;
 		this.points = points;
 		this.height = height;
 		this.base = base;
+		this.rights = playerAreaRights;
 	}
 
 	public void addPoint(WorldLocation point) throws AreaFinalisedException, MultipleWorldInAreaException {
@@ -105,6 +108,7 @@ public class Area {
 			arrayOfPoints.add(vector);
 		}
 		jsonObject.put("points", arrayOfPoints);
+		jsonObject.put("areaRights", rights.toJSONObject());
 		return jsonObject;
 	}
 
@@ -117,6 +121,11 @@ public class Area {
 			}
 		}
 		return doesOverlap;
+	}
+
+	public void giveFullRights(String identifier) {
+		rights.givePlayerFullRights(identifier);
+		
 	}
 
 

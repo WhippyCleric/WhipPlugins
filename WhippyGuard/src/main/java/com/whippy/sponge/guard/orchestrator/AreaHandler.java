@@ -20,6 +20,8 @@ import org.spongepowered.api.world.Location;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.whippy.sponge.guard.beans.Area;
+import com.whippy.sponge.guard.beans.AreaRights;
+import com.whippy.sponge.guard.beans.Rights;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.exceptions.AreaFinalisedException;
 import com.whippy.sponge.guard.exceptions.MultipleWorldInAreaException;
@@ -101,6 +103,7 @@ public class AreaHandler {
 			}else{
 				if(!checkOverlap(area)){					
 					area.finalise(areaName,height,base);
+					area.giveFullRights(player.getIdentifier());
 					definedAreas.put(areaName, area);
 					playerIDToAreaInProgress.remove(area);
 					pushFileUpdate();
@@ -169,9 +172,20 @@ public class AreaHandler {
 					Double x = new Double((Long) ((JSONObject) pointObj).get("x"));
 					Double y = new Double((Long) ((JSONObject) pointObj).get("y"));
 					Double z = new Double((Long) ((JSONObject) pointObj).get("z"));
+					
 					pointList.add(new Vector3i(x,y,z));
 				}
-				Area area = new Area(areaName, worldName, pointList, height, base);
+				JSONObject areaRights = (JSONObject) ((JSONObject) areaObj).get("areaRights");
+				JSONArray playerRights = (JSONArray) areaRights.get("playerRights");
+				Map<String, Rights> playerAreaRights = new HashMap<String, Rights>();
+				for (Object playerRight : playerRights) {
+					String playerId = (String) ((JSONObject) playerRight).get("playerId");
+					JSONObject individualRights = (JSONObject) ((JSONObject) playerRight).get("rights");
+					Boolean canBreak = Boolean.valueOf((String) individualRights.get("canBreak"));
+					Boolean canPalce = Boolean.valueOf((String) individualRights.get("canPlace"));
+					playerAreaRights.put(playerId, new Rights(canBreak, canPalce));
+				}
+				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights));
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
