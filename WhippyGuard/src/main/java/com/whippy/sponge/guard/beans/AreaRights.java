@@ -61,6 +61,14 @@ public class AreaRights {
 			return defaultCanBreak;
 		}
 	}
+
+	public boolean canPlace(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanPlace();
+		}else{
+			return defaultCanPlace;
+		}
+	}
 	
 }
 

@@ -133,5 +133,9 @@ public class Area {
 		return rights.canBreak(identifier); 		
 	}
 
+	public boolean canPlace(String identifier) {
+		return rights.canPlace(identifier); 		
+	}
+
 
 }

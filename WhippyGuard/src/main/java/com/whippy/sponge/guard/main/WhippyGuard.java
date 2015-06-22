@@ -9,6 +9,7 @@ import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
+import org.spongepowered.api.event.entity.player.PlayerPlaceBlockEvent;
 import org.spongepowered.api.event.state.ServerStartingEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -66,7 +67,16 @@ public class WhippyGuard {
 			event.setCancelled(true);
 			player.sendMessage(Texts.builder("You do not have permission to do that in this area").color(TextColors.RED).build());	
 		}
-	
+	}
+	@Subscribe 
+	public void onPlayerPlaceBlockEvent(PlayerPlaceBlockEvent event){
+		Player player = event.getPlayer();
+		Location block = event.getBlock();
+		String worldName = player.getWorld().getName();
+		if(!StaticsHandler.getAreaHandler().canPlace(player, block, worldName)){
+			event.setCancelled(true);
+			player.sendMessage(Texts.builder("You do not have permission to do that in this area").color(TextColors.RED).build());	
+		}
 	}
 	
 	@Subscribe

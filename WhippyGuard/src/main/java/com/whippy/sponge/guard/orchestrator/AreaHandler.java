@@ -220,4 +220,14 @@ public class AreaHandler {
 		return true;
 		
 	}
+
+	public boolean canPlace(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			if(isInArea){
+				return area.canPlace(player.getIdentifier());
+			}
+		}
+		return true;
+	}
 }
