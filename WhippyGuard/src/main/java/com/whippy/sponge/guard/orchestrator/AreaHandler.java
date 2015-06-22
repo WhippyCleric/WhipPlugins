@@ -38,26 +38,57 @@ public class AreaHandler {
 		Area area = playerIDToAreaInProgress.remove(player.getIdentifier());
 		if(area!=null){
 			try {
-				area.addPoint(worldLocation);
-				playerIDToAreaInProgress.put(player.getIdentifier(), area);
+				boolean isOverlap = checkOverlap(worldLocation);
+				if(!isOverlap){					
+					area.addPoint(worldLocation);
+					playerIDToAreaInProgress.put(player.getIdentifier(), area);
+				}else{					
+					playerIDToAreaInProgress.put(player.getIdentifier(), area);
+					player.sendMessage(Texts.builder("Area overlaps with another").color(TextColors.RED).build());	
+				}
 			} catch (AreaFinalisedException | MultipleWorldInAreaException e) {
-				player.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());	
 			}
 		}else{
 			//Is a new area
 			try {
-				area = new Area();
-				area.addPoint(worldLocation);
-				playerIDToAreaInProgress.put(player.getIdentifier(), area);
-				sendPointAddedMessage(player, worldLocation);
+				boolean isOverlap = checkOverlap(worldLocation);
+				if(!isOverlap){										
+					area = new Area();
+					area.addPoint(worldLocation);
+					playerIDToAreaInProgress.put(player.getIdentifier(), area);
+					sendPointAddedMessage(player, worldLocation);
+				}else{					
+					player.sendMessage(Texts.builder("Area overlaps with another").color(TextColors.RED).build());	
+				}
 			} catch (AreaFinalisedException | MultipleWorldInAreaException e) {
 				//not possible
 			}
 		}
 	}
 	
+	public boolean checkOverlap(WorldLocation worldLocation){
+		boolean isOverlap = false;
+		for (Area area : definedAreas.values()) {			
+			isOverlap =  area.contains(worldLocation);
+			if(isOverlap){
+				return true;
+			}
+		}
+		return isOverlap;
+	}
+	public boolean checkOverlap(Area areaToFinalise){
+		boolean isOverlap = false;
+		for (Area area : definedAreas.values()) {			
+			isOverlap =  area.overlaps(area);
+			if(isOverlap){
+				return true;
+			}
+		}
+		return isOverlap;
+	}
 	
-	public void finaliseCurrentArea(Player player, String areaName){
+	
+	public void finaliseCurrentArea(Player player, String areaName, Double height, Double base){
 		Area area = playerIDToAreaInProgress.get(player.getIdentifier());
 		if(area!=null){
 			if(area.getPoints().size()<=1){				
@@ -67,10 +98,15 @@ public class AreaHandler {
 			}else if(definedAreas.containsKey(areaName)){
 				player.sendMessage(Texts.builder("Area with name " + areaName + " already exists!").color(TextColors.RED).build());
 			}else{
-				area.finalise(areaName);
-				definedAreas.put(areaName, area);
-				playerIDToAreaInProgress.remove(area);
-				pushFileUpdate();
+				if(!checkOverlap(area)){					
+					area.finalise(areaName,height,base);
+					definedAreas.put(areaName, area);
+					playerIDToAreaInProgress.remove(area);
+					pushFileUpdate();
+				}else{				
+					playerIDToAreaInProgress.remove(player.getIdentifier());
+					player.sendMessage(Texts.builder("Area overlaps with another, current seleciton wiped").color(TextColors.RED).build());	
+				}
 			}
 		}else{
 			player.sendMessage(Texts.builder("No area defined!").color(TextColors.RED).build());	
@@ -124,6 +160,8 @@ public class AreaHandler {
 			for (Object areaObj : arrayAreas) {
 				String areaName = (String) ((JSONObject) areaObj).get("areaName");
 				String worldName = (String) ((JSONObject) areaObj).get("worldName");
+				Double height= (Double) ((JSONObject) areaObj).get("height");
+				Double base = (Double)  ((JSONObject) areaObj).get("base");
 				JSONArray points = (JSONArray) ((JSONObject) areaObj).get("points");
 				List<Vector3i> pointList = new ArrayList<Vector3i>();
 				for (Object pointObj : points) {
@@ -132,7 +170,7 @@ public class AreaHandler {
 					Double z = new Double((Long) ((JSONObject) pointObj).get("z"));
 					pointList.add(new Vector3i(x,y,z));
 				}
-				Area area = new Area(areaName, worldName, pointList);
+				Area area = new Area(areaName, worldName, pointList, height, base);
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {

@@ -15,19 +15,24 @@ public class Area {
 	private List<Vector3i> points;
 	private boolean finalised = false;
 	private String areaName;
-	
+	private double height;
+	private double base;
+
 	private String worldName;
-	
+
 	public Area(){
 		points = new ArrayList<Vector3i>();
+		height = -1.0;
+		base = -1.0;
 	}
-	
-	public Area(String areaName, String worldName, List<Vector3i> points) {
+
+	public Area(String areaName, String worldName, List<Vector3i> points, Double height, Double base) {
 		finalised = true;
 		this.areaName = areaName;
 		this.worldName = worldName;
 		this.points = points;
-	
+		this.height = height;
+		this.base = base;
 	}
 
 	public void addPoint(WorldLocation point) throws AreaFinalisedException, MultipleWorldInAreaException {
@@ -46,17 +51,19 @@ public class Area {
 			}
 		}
 	}
-	
+
 	public String getName(){
 		return areaName;
 	}
-	
-	public void finalise(String areaName){
+
+	public void finalise(String areaName, Double height, Double base){
 		this.areaName = areaName;
+		this.height = height;
+		this.base = base;
 		this.finalised = true;
 	}
-	
-	
+
+
 	public boolean isFinalised(){
 		return finalised;
 	}
@@ -65,12 +72,31 @@ public class Area {
 		return points;
 	}
 
+	public boolean contains(WorldLocation worldLocation) {
+		int i;
+		int j;
+		boolean result = false;
+		if(!worldLocation.getWorldName().equals(worldName)){
+			return false;
+		}
+		for (i = 0, j = points.size() - 1; i < points.size(); j = i++) {
+			if ((points.get(i).getZ() > worldLocation.getZ()) != (points.get(j).getZ() > worldLocation.getZ()) &&
+					(worldLocation.getX() < (points.get(j).getX() - points.get(i).getX()) * (worldLocation.getZ() - points.get(i).getZ()) / (points.get(j).getZ()-points.get(i).getZ()) + points.get(i).getX())) {
+				result = !result;
+			}
+		}
+		return result;
+
+	}
+
 	public JSONObject toJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("areaName", areaName);
 		jsonObject.put("worldName", areaName);
+		jsonObject.put("height", height);
+		jsonObject.put("base", base);
 		JSONArray arrayOfPoints = new JSONArray();
-		
+
 		for (Vector3i vector3i : points) {
 			JSONObject vector = new JSONObject();
 			vector.put("x", vector3i.getX());
@@ -82,5 +108,16 @@ public class Area {
 		return jsonObject;
 	}
 
-	
+	public boolean overlaps(Area area) {
+		boolean doesOverlap = false;
+		for (Vector3i vector3i : area.getPoints()) {
+			doesOverlap = this.contains(new WorldLocation(area.getName(), vector3i.getX(), vector3i.getY(), vector3i.getZ()));
+			if(doesOverlap){
+				return true;
+			}
+		}
+		return doesOverlap;
+	}
+
+
 }
