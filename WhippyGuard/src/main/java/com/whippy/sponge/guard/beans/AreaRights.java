@@ -9,15 +9,21 @@ import org.json.simple.JSONObject;
 public class AreaRights {
 
 	private Map<String, Rights> playerToRights;
+	private boolean defaultCanBreak;
+	private boolean defaultCanPlace;
 
 	
 	
-	public AreaRights(Map<String, Rights> playerToRights) {
+	public AreaRights(Map<String, Rights> playerToRights,boolean defaultCanBreak ,boolean defaultCanPlace) {
 		this.playerToRights = playerToRights;
+		this.defaultCanPlace = defaultCanPlace;
+		this.defaultCanBreak = defaultCanBreak;
 	}
 	
 	public AreaRights() {
 		playerToRights  =new HashMap<String, Rights>();
+		defaultCanBreak = false;
+		defaultCanPlace = false;
 	}
 
 
@@ -36,6 +42,8 @@ public class AreaRights {
 			rights.add(playerRightsObject);
 		}
 		jsonObject.put("playerRights", rights);
+		jsonObject.put("defaultCanPlace", defaultCanPlace);
+		jsonObject.put("defaultCanBreak", defaultCanBreak);
 		return jsonObject;
 	}
 
@@ -44,6 +52,14 @@ public class AreaRights {
 			playerToRights.remove(identifier);
 		}
 		playerToRights.put(identifier, new Rights(true, true));
+	}
+
+	public boolean canBreak(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanBreak();
+		}else{
+			return defaultCanBreak;
+		}
 	}
 	
 }

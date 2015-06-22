@@ -177,15 +177,17 @@ public class AreaHandler {
 				}
 				JSONObject areaRights = (JSONObject) ((JSONObject) areaObj).get("areaRights");
 				JSONArray playerRights = (JSONArray) areaRights.get("playerRights");
+				Boolean defaultCanPlace= (Boolean) areaRights.get("defaultCanPlace");
+				Boolean defaultCanBreak= (Boolean) areaRights.get("defaultCanBreak");
 				Map<String, Rights> playerAreaRights = new HashMap<String, Rights>();
 				for (Object playerRight : playerRights) {
 					String playerId = (String) ((JSONObject) playerRight).get("playerId");
 					JSONObject individualRights = (JSONObject) ((JSONObject) playerRight).get("rights");
-					Boolean canBreak = Boolean.valueOf((String) individualRights.get("canBreak"));
-					Boolean canPalce = Boolean.valueOf((String) individualRights.get("canPlace"));
+					Boolean canBreak = (Boolean) individualRights.get("canBreak");
+					Boolean canPalce = (Boolean) individualRights.get("canPlace");
 					playerAreaRights.put(playerId, new Rights(canBreak, canPalce));
 				}
-				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights));
+				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights,defaultCanBreak, defaultCanPlace));
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
@@ -208,11 +210,11 @@ public class AreaHandler {
 		
 	}
 
-	public boolean isAllowed(Player player, Location block, String worldName) {
+	public boolean canBreak(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
 			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
 			if(isInArea){
-				return false;
+				return area.canBreak(player.getIdentifier());
 			}
 		}
 		return true;

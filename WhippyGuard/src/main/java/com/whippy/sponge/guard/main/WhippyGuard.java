@@ -62,7 +62,7 @@ public class WhippyGuard {
 		Player player = event.getPlayer();
 		Location block = event.getBlock();
 		String worldName = player.getWorld().getName();
-		if(!StaticsHandler.getAreaHandler().isAllowed(player, block, worldName)){
+		if(!StaticsHandler.getAreaHandler().canBreak(player, block, worldName)){
 			event.setCancelled(true);
 			player.sendMessage(Texts.builder("You do not have permission to do that in this area").color(TextColors.RED).build());	
 		}

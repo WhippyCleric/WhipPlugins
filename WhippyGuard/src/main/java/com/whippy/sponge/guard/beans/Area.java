@@ -18,6 +18,7 @@ public class Area {
 	private double height;
 	private double base;
 	private AreaRights rights;
+	
 
 	private String worldName;
 
@@ -126,6 +127,10 @@ public class Area {
 	public void giveFullRights(String identifier) {
 		rights.givePlayerFullRights(identifier);
 		
+	}
+
+	public boolean canBreak(String identifier) {
+		return rights.canBreak(identifier); 		
 	}
 
 
