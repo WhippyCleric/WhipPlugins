@@ -4,17 +4,18 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.api.event.state.ServerStartingEvent;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
@@ -22,12 +23,13 @@ import com.google.inject.Inject;
 import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.commands.FinaliseCommand;
+import com.whippy.sponge.guard.commands.ListAreasCommand;
 import com.whippy.sponge.guard.orchestrator.ClickHandler;
 
 @Plugin(id = "WhippyGuard", name = "WhippyGuard")
 public class WhippyGuard {
 
-	private static final String WAND_ID = "minecraft:bone";
+	public static final String WAND_ID = "minecraft:bone";
 	private static final boolean RIGHT_CLICK_BUG=true;
 	private boolean inRightClick = false;
 	
@@ -49,6 +51,7 @@ public class WhippyGuard {
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
 		cmdService.register(this, new FinaliseCommand(), "areaCommit");
+		cmdService.register(this, new ListAreasCommand(), "listAreas");
 	}
 	
 	
@@ -59,16 +62,19 @@ public class WhippyGuard {
 	
 	@Subscribe
 	public void onPlayerInteractEvent(PlayerInteractEvent event){
-		Optional<ItemStack> itemInHand = event.getEntity().getItemInHand();
+		Optional<ItemStack> itemInHand = event.getPlayer().getItemInHand();
 		if(itemInHand.isPresent()){
-			if(itemInHand.get().getItem().getId().equals(WAND_ID)){
+			ItemType item = itemInHand.get().getItem();
+			String id = item.getId();
+			if(id.equals(WAND_ID)){
 				if(event.getInteractionType().equals(EntityInteractionTypes.USE)){	
 					if((RIGHT_CLICK_BUG && !inRightClick) || !RIGHT_CLICK_BUG){
 						inRightClick = true;
 						if(event.getClickedPosition().isPresent()){
 							Vector3d vectorPoint = event.getClickedPosition().get();
-							WorldLocation point = new WorldLocation(event.getPlayer().getWorld().getName(), vectorPoint.getX(), vectorPoint.getY(), vectorPoint.getZ());
-							StaticsHandler.getClickHandler().playerAreaDefineClick( event.getEntity(), point);
+							World world = event.getPlayer().getWorld();
+							WorldLocation point = new WorldLocation(world.getName(), vectorPoint.getX(), vectorPoint.getY(), vectorPoint.getZ());
+							StaticsHandler.getClickHandler().playerAreaDefineClick( event.getPlayer(), point);
 						}
 					}else if (RIGHT_CLICK_BUG){
 						inRightClick = false;						

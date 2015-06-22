@@ -1,9 +1,11 @@
 package com.whippy.sponge.guard.orchestrator;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,17 +27,19 @@ public class ClickHandler {
 
 	private static final String CONFIG_PATH =  ".\\config\\plugins\\whip\\data\\guardareas.json";
 	private Map<String, Area> playerIDToAreaInProgress;
-	private List<Area> definedAreas;
+	private Map<String, Area> definedAreas;
 	
 	public ClickHandler(){
+		playerIDToAreaInProgress  =new HashMap<String, Area>();
 		refreshFromFile();
 	}
 	
 	public void playerAreaDefineClick(Player player, WorldLocation worldLocation){
-		Area area = playerIDToAreaInProgress.get(player.getIdentifier());
+		Area area = playerIDToAreaInProgress.remove(player.getIdentifier());
 		if(area!=null){
 			try {
 				area.addPoint(worldLocation);
+				playerIDToAreaInProgress.put(player.getIdentifier(), area);
 			} catch (AreaFinalisedException | MultipleWorldInAreaException e) {
 				player.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());	
 			}
@@ -44,6 +48,7 @@ public class ClickHandler {
 			try {
 				area = new Area();
 				area.addPoint(worldLocation);
+				playerIDToAreaInProgress.put(player.getIdentifier(), area);
 				sendPointAddedMessage(player, worldLocation);
 			} catch (AreaFinalisedException | MultipleWorldInAreaException e) {
 				//not possible
@@ -57,9 +62,13 @@ public class ClickHandler {
 		if(area!=null){
 			if(area.getPoints().size()<=1){				
 				player.sendMessage(Texts.builder("Area must be more than 1 point!").color(TextColors.RED).build());	
+			}else if(areaName==null || areaName.isEmpty()){
+				player.sendMessage(Texts.builder("Must specify area name").color(TextColors.RED).build());
+			}else if(definedAreas.containsKey(areaName)){
+				player.sendMessage(Texts.builder("Area with name " + areaName + " already exists!").color(TextColors.RED).build());
 			}else{
 				area.finalise(areaName);
-				definedAreas.add(area);
+				definedAreas.put(areaName, area);
 				playerIDToAreaInProgress.remove(area);
 				pushFileUpdate();
 			}
@@ -86,6 +95,11 @@ public class ClickHandler {
 		try {
 			JSONObject all = new JSONObject();
 			all.put("allAreas", areasToJSONArray());
+			File areasFile = new File(CONFIG_PATH);
+			if(!areasFile.exists()) {
+				areasFile.getParentFile().mkdirs();
+				areasFile.createNewFile();
+			} 
 			FileWriter file = new FileWriter(CONFIG_PATH);
 			file.write(all.toJSONString());
 			file.flush();
@@ -97,7 +111,8 @@ public class ClickHandler {
 
 	public synchronized void refreshFromFile(){
 		try {
-			definedAreas = new ArrayList<Area>();
+			
+			definedAreas = new HashMap<String, Area>();
 
 			FileReader reader = new FileReader(CONFIG_PATH);
 			JSONParser parser = new JSONParser();
@@ -112,13 +127,13 @@ public class ClickHandler {
 				JSONArray points = (JSONArray) ((JSONObject) areaObj).get("points");
 				List<Vector3i> pointList = new ArrayList<Vector3i>();
 				for (Object pointObj : points) {
-					Double x = (Double) ((JSONObject) pointObj).get("x");
-					Double y = (Double) ((JSONObject) pointObj).get("y");
-					Double z = (Double) ((JSONObject) pointObj).get("z");
+					Double x = new Double((Long) ((JSONObject) pointObj).get("x"));
+					Double y = new Double((Long) ((JSONObject) pointObj).get("y"));
+					Double z = new Double((Long) ((JSONObject) pointObj).get("z"));
 					pointList.add(new Vector3i(x,y,z));
 				}
 				Area area = new Area(areaName, worldName, pointList);
-				definedAreas.add(area);
+				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
@@ -127,9 +142,16 @@ public class ClickHandler {
 	
 	public JSONArray areasToJSONArray() {
 		JSONArray allAreas = new JSONArray();
-		for (Area area : definedAreas) {
+		for (Area area : definedAreas.values()) {
 			allAreas.add(area.toJSONObject());
 		}
 		return allAreas;
+	}
+
+	public void listAreas(Player player) {
+		for (Area area : definedAreas.values()) {
+			player.sendMessage(Texts.builder(area.getName()).color(TextColors.BLUE).build());
+		}
+		
 	}
 }
