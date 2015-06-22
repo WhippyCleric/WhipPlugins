@@ -96,7 +96,7 @@ public class Area {
 	public JSONObject toJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("areaName", areaName);
-		jsonObject.put("worldName", areaName);
+		jsonObject.put("worldName", worldName);
 		jsonObject.put("height", height);
 		jsonObject.put("base", base);
 		JSONArray arrayOfPoints = new JSONArray();
@@ -135,6 +135,14 @@ public class Area {
 
 	public boolean canPlace(String identifier) {
 		return rights.canPlace(identifier); 		
+	}
+
+	public boolean canOpenDoor(String identifier) {
+		return rights.canOpenDoor(identifier); 	
+	}
+
+	public boolean canOpenChests(String identifier) {
+		return rights.canOpenChests(identifier); 	
 	}
 
 

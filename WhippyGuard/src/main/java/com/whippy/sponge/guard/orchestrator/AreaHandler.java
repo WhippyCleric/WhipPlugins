@@ -179,15 +179,19 @@ public class AreaHandler {
 				JSONArray playerRights = (JSONArray) areaRights.get("playerRights");
 				Boolean defaultCanPlace= (Boolean) areaRights.get("defaultCanPlace");
 				Boolean defaultCanBreak= (Boolean) areaRights.get("defaultCanBreak");
+				Boolean defaultCanOpenDoor = (Boolean) areaRights.get("defaultCanOpenDoor");
+				Boolean defaultCanOpenChests = (Boolean) areaRights.get("defaultCanOpenChests");
 				Map<String, Rights> playerAreaRights = new HashMap<String, Rights>();
 				for (Object playerRight : playerRights) {
 					String playerId = (String) ((JSONObject) playerRight).get("playerId");
 					JSONObject individualRights = (JSONObject) ((JSONObject) playerRight).get("rights");
 					Boolean canBreak = (Boolean) individualRights.get("canBreak");
 					Boolean canPalce = (Boolean) individualRights.get("canPlace");
-					playerAreaRights.put(playerId, new Rights(canBreak, canPalce));
+					Boolean canOpenDoor = (Boolean) individualRights.get("canOpenDoor");
+					Boolean canOpenChests = (Boolean) individualRights.get("canOpenChests");
+					playerAreaRights.put(playerId, new Rights(canBreak, canPalce, canOpenDoor, canOpenChests));
 				}
-				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights,defaultCanBreak, defaultCanPlace));
+				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights,defaultCanBreak, defaultCanPlace, defaultCanOpenDoor, defaultCanOpenChests));
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
@@ -215,6 +219,26 @@ public class AreaHandler {
 			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
 			if(isInArea){
 				return area.canBreak(player.getIdentifier());
+			}
+		}
+		return true;
+		
+	}
+	public boolean canOpenDoor(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			if(isInArea){
+				return area.canOpenDoor(player.getIdentifier());
+			}
+		}
+		return true;
+		
+	}
+	public boolean canOpenChests(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			if(isInArea){
+				return area.canOpenChests(player.getIdentifier());
 			}
 		}
 		return true;

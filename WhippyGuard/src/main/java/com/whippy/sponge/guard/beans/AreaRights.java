@@ -11,19 +11,24 @@ public class AreaRights {
 	private Map<String, Rights> playerToRights;
 	private boolean defaultCanBreak;
 	private boolean defaultCanPlace;
-
+	private boolean defaultCanOpenDoor;
+	private boolean defaultCanOpenChests;
 	
 	
-	public AreaRights(Map<String, Rights> playerToRights,boolean defaultCanBreak ,boolean defaultCanPlace) {
+	public AreaRights(Map<String, Rights> playerToRights,boolean defaultCanBreak ,boolean defaultCanPlace, boolean defaultCanOpenDoor, Boolean defaultCanOpenChests) {
 		this.playerToRights = playerToRights;
 		this.defaultCanPlace = defaultCanPlace;
 		this.defaultCanBreak = defaultCanBreak;
+		this.defaultCanOpenDoor = defaultCanOpenDoor;
+		this.defaultCanOpenChests =defaultCanOpenChests;
 	}
 	
 	public AreaRights() {
 		playerToRights  =new HashMap<String, Rights>();
 		defaultCanBreak = false;
 		defaultCanPlace = false;
+		defaultCanOpenDoor  =false;
+		defaultCanOpenChests = false;
 	}
 
 
@@ -44,6 +49,8 @@ public class AreaRights {
 		jsonObject.put("playerRights", rights);
 		jsonObject.put("defaultCanPlace", defaultCanPlace);
 		jsonObject.put("defaultCanBreak", defaultCanBreak);
+		jsonObject.put("defaultCanOpenDoor", defaultCanOpenDoor);
+		jsonObject.put("defaultCanOpenChests", defaultCanOpenChests);
 		return jsonObject;
 	}
 
@@ -51,7 +58,7 @@ public class AreaRights {
 		if(playerToRights.containsKey(identifier)){
 			playerToRights.remove(identifier);
 		}
-		playerToRights.put(identifier, new Rights(true, true));
+		playerToRights.put(identifier, new Rights(true, true, true, true));
 	}
 
 	public boolean canBreak(String identifier) {
@@ -67,6 +74,22 @@ public class AreaRights {
 			return playerToRights.get(identifier).isCanPlace();
 		}else{
 			return defaultCanPlace;
+		}
+	}
+
+	public boolean canOpenDoor(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanOpenDoor();
+		}else{
+			return defaultCanOpenDoor;
+		}
+	}
+
+	public boolean canOpenChests(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanOpenChests();
+		}else{
+			return defaultCanOpenChests;
 		}
 	}
 	
