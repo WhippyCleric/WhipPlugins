@@ -48,6 +48,13 @@ public class Area {
 		rights = new AreaRights();
 	}
 
+	public Area(double height, double base){
+		points = new ArrayList<Vector3i>();
+		this.height = height;
+		this.base = base;
+		rights = new AreaRights();
+	}
+
 	public Area(String areaName, String worldName, List<Vector3i> points, Double height, Double base, AreaRights playerAreaRights) {
 		finalised = true;
 		this.areaName = areaName;

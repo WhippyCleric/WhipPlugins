@@ -37,6 +37,15 @@ public class AreaHandler {
 		refreshFromFile();
 	}
 	
+	public boolean addAreaInProgres(Player player, Area area){
+		if(playerIDToAreaInProgress.containsKey(player.getIdentifier())){
+			return false;
+		}else{
+			playerIDToAreaInProgress.put(player.getIdentifier(), area);
+			return true;
+		}
+	}
+	
 	public void playerAreaDefineClick(Player player, WorldLocation worldLocation){
 		Area area = playerIDToAreaInProgress.remove(player.getIdentifier());
 		if(area!=null){
@@ -45,6 +54,7 @@ public class AreaHandler {
 				if(!isOverlap){					
 					area.addPoint(worldLocation);
 					playerIDToAreaInProgress.put(player.getIdentifier(), area);
+					sendPointAddedMessage(player, worldLocation);
 				}else{					
 					playerIDToAreaInProgress.put(player.getIdentifier(), area);
 					player.sendMessage(Texts.builder("Area overlaps with another").color(TextColors.RED).build());	
@@ -60,6 +70,7 @@ public class AreaHandler {
 					area.addPoint(worldLocation);
 					playerIDToAreaInProgress.put(player.getIdentifier(), area);
 					sendPointAddedMessage(player, worldLocation);
+					player.sendMessage(Texts.builder("New area started created with boundless height and depth").color(TextColors.BLUE).build());	
 				}else{					
 					player.sendMessage(Texts.builder("Area overlaps with another").color(TextColors.RED).build());	
 				}
@@ -122,8 +133,6 @@ public class AreaHandler {
 		StringBuilder messageBuilder = new StringBuilder();
 		messageBuilder.append("Point x:");
 		messageBuilder.append(point.getX());
-		messageBuilder.append(" y:");
-		messageBuilder.append(point.getY());
 		messageBuilder.append(" z:");
 		messageBuilder.append(point.getZ());
 		messageBuilder.append(" added.");

@@ -27,6 +27,7 @@ import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.commands.FinaliseCommand;
 import com.whippy.sponge.guard.commands.ListAreasCommand;
+import com.whippy.sponge.guard.commands.NewAreaCommand;
 import com.whippy.sponge.guard.orchestrator.AreaHandler;
 
 @Plugin(id = "WhippyGuard", name = "WhippyGuard")
@@ -54,7 +55,8 @@ public class WhippyGuard {
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
 		cmdService.register(this, new FinaliseCommand(), "areaCommit");
-		cmdService.register(this, new ListAreasCommand(), "listAreas");
+		cmdService.register(this, new ListAreasCommand(), "areaList");
+		cmdService.register(this, new NewAreaCommand(), "areaNew");
 	}
 	
 	
