@@ -18,38 +18,13 @@ public class Area {
 	private boolean finalised = false;
 	private String areaName;
 	private double height;
-	public double getHeight() {
-		return height;
-	}
-
-
-	public void setHeight(double height) {
-		this.height = height;
-	}
-
-
-	public double getBase() {
-		return base;
-	}
-
-
-	public void setBase(double base) {
-		this.base = base;
-	}
-
 	private double base;
 	private AreaRights rights;
 	private GeneralPath polygon;
 	private String worldName;
-
 	
-	public String getWorldName() {
-		return worldName;
-	}
-
 
 	private GeneralPath buildPolygon(){		
-		
 		Vector3i start = points.get(0);
 		
 		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD,points.size());
@@ -107,6 +82,30 @@ public class Area {
 		}
 	}
 
+
+	public double getHeight() {
+		return height;
+	}
+
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+
+	public double getBase() {
+		return base;
+	}
+
+
+	public void setBase(double base) {
+		this.base = base;
+	}
+
+	public String getWorldName() {
+		return worldName;
+	}
+	
 	public String getName(){
 		return areaName;
 	}
