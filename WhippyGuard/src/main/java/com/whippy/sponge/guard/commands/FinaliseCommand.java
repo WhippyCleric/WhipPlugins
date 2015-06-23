@@ -48,9 +48,9 @@ public class FinaliseCommand implements CommandCallable{
 				String[] argArray =  args.split(" ");
 				try{
 					if(argArray.length==1){					
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], -1.0, -1.0);
+						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0]);
 					}else if(argArray.length==2){
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]), -1.0);
+						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]));
 					}else if(argArray.length==3){
 						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]), Double.valueOf(argArray[2]));
 					}

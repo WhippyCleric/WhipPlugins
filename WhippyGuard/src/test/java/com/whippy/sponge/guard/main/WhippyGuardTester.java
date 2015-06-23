@@ -16,6 +16,7 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
+import com.whippy.sponge.guard.beans.Area;
 import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.orchestrator.AreaHandler;
 import com.whippy.sponge.whip.sponge.testing.harness.SpongeObjectCreator;
@@ -154,6 +155,242 @@ public class WhippyGuardTester {
 		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea3", -1.0 ,-1.0);
 	}
 	
+	
+	@Test
+	public void testOneAboveTheOther(){
+		PlayerInteractEvent mockEvent = mock(PlayerInteractEvent.class);
+		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
+		World mockWorld = mock(World.class);
+		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockPlayer.getWorld()).thenReturn(mockWorld);
+		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
+		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
+		
+		Area area = new Area(10.0, -1);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		Vector3d clickedPositionVector = new Vector3d(0,0,0);
+		Optional<Vector3d> clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
+		
+		area = new Area(-1.0, 11.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		clickedPositionVector = new Vector3d(0,0,0);
+		clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea5");
+		
+	}
+	
+	@Test
+	public void testOneBelowTheOther(){
+		PlayerInteractEvent mockEvent = mock(PlayerInteractEvent.class);
+		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
+		World mockWorld = mock(World.class);
+		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockPlayer.getWorld()).thenReturn(mockWorld);
+		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
+		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
+		
+		Area area = new Area(10.0, 0.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		Vector3d clickedPositionVector = new Vector3d(0,0,0);
+		Optional<Vector3d> clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
+		
+		area = new Area(-10.0, -20.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		clickedPositionVector = new Vector3d(0,0,0);
+		clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea5");
+		
+	}
+	
+	@Test
+	public void testOverlapTheOther(){
+		PlayerInteractEvent mockEvent = mock(PlayerInteractEvent.class);
+		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
+		World mockWorld = mock(World.class);
+		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockPlayer.getWorld()).thenReturn(mockWorld);
+		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
+		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
+		
+		Area area = new Area(10.0, 0.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		Vector3d clickedPositionVector = new Vector3d(0,0,0);
+		Optional<Vector3d> clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
+		
+		area = new Area(-1.0, -20.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		clickedPositionVector = new Vector3d(0,0,0);
+		clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea5");
+		
+	}
+	
+	@Test
+	public void testOverlapVerticalButNotHorizontal(){
+		PlayerInteractEvent mockEvent = mock(PlayerInteractEvent.class);
+		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
+		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
+		World mockWorld = mock(World.class);
+		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockPlayer.getWorld()).thenReturn(mockWorld);
+		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
+		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
+		
+		Area area = new Area(-1, -1);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		Vector3d clickedPositionVector = new Vector3d(0,0,0);
+		Optional<Vector3d> clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(0,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,4);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
+		
+		area = new Area(-1.0, 11.0);
+		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
+		
+		clickedPositionVector = new Vector3d(3,0,4);
+		clickedPosition = Optional.of(clickedPositionVector );
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(8,0,8);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		clickedPositionVector = new Vector3d(4,0,8);
+		clickedPosition = Optional.of(clickedPositionVector);
+		when(mockEvent.getClickedPosition()).thenReturn(clickedPosition);
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		whippyGuard.onPlayerInteractEvent(mockEvent );
+		
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea5");
+		
+	}
 	
 	
 }

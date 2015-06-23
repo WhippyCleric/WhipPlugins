@@ -50,7 +50,7 @@ public class AreaHandler {
 		Area area = playerIDToAreaInProgress.remove(player.getIdentifier());
 		if(area!=null){
 			try {
-				boolean isOverlap = checkOverlap(worldLocation);
+				boolean isOverlap = checkOverlap(worldLocation, area.getHeight(), area.getBase());
 				if(!isOverlap){					
 					area.addPoint(worldLocation);
 					playerIDToAreaInProgress.put(player.getIdentifier(), area);
@@ -64,7 +64,7 @@ public class AreaHandler {
 		}else{
 			//Is a new area
 			try {
-				boolean isOverlap = checkOverlap(worldLocation);
+				boolean isOverlap = checkOverlap(worldLocation, -1.0 ,-1.0);
 				if(!isOverlap){										
 					area = new Area();
 					area.addPoint(worldLocation);
@@ -80,10 +80,10 @@ public class AreaHandler {
 		}
 	}
 	
-	public boolean checkOverlap(WorldLocation worldLocation){
+	public boolean checkOverlap(WorldLocation worldLocation, double height, double base){
 		boolean isOverlap = false;
 		for (Area area : definedAreas.values()) {			
-			isOverlap =  area.contains(worldLocation);
+			isOverlap =  area.contains(worldLocation,height ,base);
 			if(isOverlap){
 				return true;
 			}
@@ -93,7 +93,7 @@ public class AreaHandler {
 	public boolean checkOverlap(Area areaToFinalise){
 		boolean isOverlap = false;
 		for (Area area : definedAreas.values()) {			
-			isOverlap =  area.overlaps(area);
+			isOverlap =  area.overlaps(areaToFinalise);
 			if(isOverlap){
 				return true;
 			}
@@ -116,7 +116,7 @@ public class AreaHandler {
 					area.finalise(areaName,height,base);
 					area.giveFullRights(player.getIdentifier());
 					definedAreas.put(areaName, area);
-					playerIDToAreaInProgress.remove(area);
+					playerIDToAreaInProgress.remove(player.getIdentifier());
 					pushFileUpdate();
 				}else{				
 					playerIDToAreaInProgress.remove(player.getIdentifier());
@@ -225,7 +225,7 @@ public class AreaHandler {
 
 	public boolean canBreak(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
-			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
 			if(isInArea){
 				return area.canBreak(player.getIdentifier());
 			}
@@ -235,7 +235,7 @@ public class AreaHandler {
 	}
 	public boolean canOpenDoor(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
-			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
 			if(isInArea){
 				return area.canOpenDoor(player.getIdentifier());
 			}
@@ -245,7 +245,7 @@ public class AreaHandler {
 	}
 	public boolean canOpenChests(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
-			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
 			if(isInArea){
 				return area.canOpenChests(player.getIdentifier());
 			}
@@ -256,11 +256,31 @@ public class AreaHandler {
 
 	public boolean canPlace(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
-			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()));
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
 			if(isInArea){
 				return area.canPlace(player.getIdentifier());
 			}
 		}
 		return true;
+	}
+
+	public void finaliseCurrentArea(Player player, String areaName) {
+		Area area = playerIDToAreaInProgress.get(player.getIdentifier());
+		if(area!=null){
+			finaliseCurrentArea(player, areaName, area.getHeight(), area.getBase());
+		}else{
+			player.sendMessage(Texts.builder("No area defined!").color(TextColors.RED).build());	
+		}
+		
+	}
+
+	public void finaliseCurrentArea(Player player, String areaName, Double height) {
+		Area area = playerIDToAreaInProgress.get(player.getIdentifier());
+		if(area!=null){
+			finaliseCurrentArea(player, areaName, height, area.getBase());
+		}else{
+			player.sendMessage(Texts.builder("No area defined!").color(TextColors.RED).build());	
+		}
+		
 	}
 }

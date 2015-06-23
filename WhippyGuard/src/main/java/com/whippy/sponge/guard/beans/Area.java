@@ -1,5 +1,6 @@
 package com.whippy.sponge.guard.beans;
 
+import java.awt.Rectangle;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +18,37 @@ public class Area {
 	private boolean finalised = false;
 	private String areaName;
 	private double height;
+	public double getHeight() {
+		return height;
+	}
+
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+
+	public double getBase() {
+		return base;
+	}
+
+
+	public void setBase(double base) {
+		this.base = base;
+	}
+
 	private double base;
 	private AreaRights rights;
 	private GeneralPath polygon;
-
 	private String worldName;
 
 	
-	private void buildPolygon(){		
+	public String getWorldName() {
+		return worldName;
+	}
+
+
+	private GeneralPath buildPolygon(){		
 		
 		Vector3i start = points.get(0);
 		
@@ -37,7 +61,7 @@ public class Area {
 		
 		polygon.closePath();
 		
-		this.polygon = polygon;
+		 return polygon;
 	}
 	
 	
@@ -63,7 +87,7 @@ public class Area {
 		this.height = height;
 		this.base = base;
 		this.rights = playerAreaRights;
-		buildPolygon();
+		this.polygon = buildPolygon();
 	}
 
 	public void addPoint(WorldLocation point) throws AreaFinalisedException, MultipleWorldInAreaException {
@@ -92,7 +116,7 @@ public class Area {
 		this.height = height;
 		this.base = base;
 		this.finalised = true;
-		buildPolygon();
+		this.polygon = buildPolygon();
 	}
 
 
@@ -104,14 +128,64 @@ public class Area {
 		return points;
 	}
 
-	public boolean contains(WorldLocation worldLocation) {
+	public boolean contains(WorldLocation worldLocation, double height, double base) {
 		if(isFinalised()){
 			if(!worldLocation.getWorldName().equals(worldName)){
 				return false;
+			}		
+			if(overlapsOnVertical(height, base)){				
+				return polygon.contains(worldLocation.getX(), worldLocation.getZ());
+			}else{
+				return false;
 			}
-			return polygon.contains(worldLocation.getX(), worldLocation.getZ());
 		}else{
 			return false;
+		}
+	}
+	
+	public boolean overlapsOnVertical( double height, double base){
+		if(this.height==-1 && this.base ==-1){		
+			return true;
+		}else if(height ==-1 && base==-1){
+			return true;
+		}else if(this.height==-1){
+			if(height>=this.base || height==-1){
+				//They do overlap vertically
+				return true;
+			}else{
+				//New area is below current area
+				return false;
+			}
+		}else if(this.base==-1){
+			if(base<=this.height || base == -1){
+				return true;					
+			}else{
+				//New area is above current area
+				return false;
+			}
+		}else if(height==-1){
+			if(this.height>=base || this.height==-1){
+				//They do overlap vertically
+				return true;
+			}else{
+				//Old Area is below new area
+				return false;
+			}
+		}else if(base ==-1){
+			if(this.base<=height || this.base == -1){
+				return true;					
+			}else{
+				//Old area is above current area
+				return false;
+			}
+		}else{
+			if(this.base>height){
+				return false;
+			}else if(base > this.height){
+				return false;
+			}else{					
+				return true;
+			}
 		}
 	}
 
@@ -136,14 +210,29 @@ public class Area {
 	}
 
 	public boolean overlaps(Area area) {
-		boolean doesOverlap = false;
-		for (Vector3i vector3i : area.getPoints()) {
-			doesOverlap = this.contains(new WorldLocation(area.getName(), vector3i.getX(), vector3i.getY(), vector3i.getZ()));
-			if(doesOverlap){
-				return true;
-			}
+		if(!area.getWorldName().equals(worldName)){
+			return false;
 		}
-		return doesOverlap;
+		if(overlapsOnVertical(area.getHeight(), area.getBase())){			
+			boolean doesOverlap = false;
+			GeneralPath areaPolygon = area.buildPolygon();
+			GeneralPath ourPolygon = buildPolygon();
+			
+			java.awt.geom.Area areaGemo = new java.awt.geom.Area(areaPolygon);
+			java.awt.geom.Area ourGemo = new java.awt.geom.Area(ourPolygon);
+			
+			areaGemo.intersect(ourGemo);
+			
+			Rectangle bounds = areaGemo.getBounds();
+			if(bounds.height>0 || bounds.width >0){
+				doesOverlap = true;
+			}else{
+				doesOverlap = false;
+			}
+			return doesOverlap;
+		}else{
+			return false;
+		}
 	}
 
 	public void giveFullRights(String identifier) {
