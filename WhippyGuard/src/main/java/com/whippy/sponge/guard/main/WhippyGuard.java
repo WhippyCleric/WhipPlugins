@@ -25,6 +25,7 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
+import com.whippy.sponge.guard.commands.AreaCancelCommand;
 import com.whippy.sponge.guard.commands.FinaliseCommand;
 import com.whippy.sponge.guard.commands.ListAreasCommand;
 import com.whippy.sponge.guard.commands.NewAreaCommand;
@@ -57,6 +58,7 @@ public class WhippyGuard {
 		cmdService.register(this, new FinaliseCommand(), "areaCommit");
 		cmdService.register(this, new ListAreasCommand(), "areaList");
 		cmdService.register(this, new NewAreaCommand(), "areaNew");
+		cmdService.register(this, new AreaCancelCommand(), "areaCancel");
 	}
 	
 	

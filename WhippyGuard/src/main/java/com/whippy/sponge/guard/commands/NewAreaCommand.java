@@ -59,7 +59,7 @@ public class NewAreaCommand implements CommandCallable{
 					}
 				}else{
 					Area area = new Area(Double.valueOf(argArray[0]), Double.valueOf(argArray[1]));
-					if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){							
+					if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){						
 						player.sendMessage(Texts.builder("New area started with height: "+Double.valueOf(argArray[0])+" and depth: " +  Double.valueOf(argArray[1])).color(TextColors.BLUE).build());		
 					}else{						
 						player.sendMessage(Texts.builder("Player already in progress of defining area, either run /areaCommit or /areaCancel before starting a new area").color(TextColors.RED).build());		

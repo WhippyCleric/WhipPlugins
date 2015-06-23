@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
@@ -14,7 +12,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import com.google.common.base.Optional;
 import com.whippy.sponge.guard.beans.StaticsHandler;
 
-public class FinaliseCommand implements CommandCallable{ 
+public class AreaCancelCommand implements CommandCallable{ 
 	@Override
 	public Optional<Text> getHelp(CommandSource arg0) {
 		// TODO Auto-generated method stub
@@ -44,24 +42,9 @@ public class FinaliseCommand implements CommandCallable{
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			if(args!=null && !args.isEmpty()){
-				String[] argArray =  args.split(" ");
-				try{
-					if(argArray.length==1){					
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0]);
-					}else if(argArray.length==2){
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]));
-					}else if(argArray.length==3){
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]), Double.valueOf(argArray[2]));
-					}
-				}catch(NumberFormatException e){					
-					player.sendMessage(Texts.builder("Maximum height and base must be numeric").color(TextColors.RED).build());		
-				}
-			}else{
-				player.sendMessage(Texts.builder("Must specify area name").color(TextColors.RED).build());		
-			}
+			StaticsHandler.getAreaHandler().cancelArea(player);
 		}else{
-			StaticsHandler.getLogger().warn("Finalise area called by non player entity!");
+			StaticsHandler.getLogger().warn("Cancel area called by non player entity!");
 		}
 		return null;
 	}

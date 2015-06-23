@@ -283,4 +283,27 @@ public class AreaHandler {
 		}
 		
 	}
+
+	public void cancelArea(Player player) {
+		Area area = playerIDToAreaInProgress.get(player.getIdentifier());
+		if(area!=null){
+			playerIDToAreaInProgress.remove(player.getIdentifier());
+			player.sendMessage(Texts.builder("Area in progress canceled").color(TextColors.BLUE).build());	
+		}else{
+			player.sendMessage(Texts.builder("No area currently in progress").color(TextColors.RED).build());	
+		}
+		
+	}
+
+	public void deleteArea(Player player, String areaName) {
+		Area area = definedAreas.get(areaName);
+		if(area!=null){
+			definedAreas.remove(areaName);
+			pushFileUpdate();
+			player.sendMessage(Texts.builder("Area deleted").color(TextColors.BLUE).build());	
+		}else{
+			player.sendMessage(Texts.builder("No area called " + areaName).color(TextColors.RED).build());	
+		}
+		
+	}
 }
