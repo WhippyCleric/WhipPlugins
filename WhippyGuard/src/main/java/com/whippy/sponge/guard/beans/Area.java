@@ -1,5 +1,6 @@
 package com.whippy.sponge.guard.beans;
 
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +19,28 @@ public class Area {
 	private double height;
 	private double base;
 	private AreaRights rights;
-	
+	private GeneralPath polygon;
 
 	private String worldName;
 
+	
+	private void buildPolygon(){		
+		
+		Vector3i start = points.get(0);
+		
+		GeneralPath polygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD,points.size());
+		polygon.moveTo(start.getX(), start.getZ());
+		
+		for (int i = 1; i < points.size(); i++) {
+			polygon.lineTo(points.get(i).getX(), points.get(i).getZ());
+		};
+		
+		polygon.closePath();
+		
+		this.polygon = polygon;
+	}
+	
+	
 	public Area(){
 		points = new ArrayList<Vector3i>();
 		height = -1.0;
@@ -37,6 +56,7 @@ public class Area {
 		this.height = height;
 		this.base = base;
 		this.rights = playerAreaRights;
+		buildPolygon();
 	}
 
 	public void addPoint(WorldLocation point) throws AreaFinalisedException, MultipleWorldInAreaException {
@@ -65,6 +85,7 @@ public class Area {
 		this.height = height;
 		this.base = base;
 		this.finalised = true;
+		buildPolygon();
 	}
 
 
@@ -77,20 +98,14 @@ public class Area {
 	}
 
 	public boolean contains(WorldLocation worldLocation) {
-		int i;
-		int j;
-		boolean result = false;
-		if(!worldLocation.getWorldName().equals(worldName)){
+		if(isFinalised()){
+			if(!worldLocation.getWorldName().equals(worldName)){
+				return false;
+			}
+			return polygon.contains(worldLocation.getX(), worldLocation.getZ());
+		}else{
 			return false;
 		}
-		for (i = 0, j = points.size() - 1; i < points.size(); j = i++) {
-			if ((points.get(i).getZ() > worldLocation.getZ()) != (points.get(j).getZ() > worldLocation.getZ()) &&
-					(worldLocation.getX() < (points.get(j).getX() - points.get(i).getX()) * (worldLocation.getZ() - points.get(i).getZ()) / (points.get(j).getZ()-points.get(i).getZ()) + points.get(i).getX())) {
-				result = !result;
-			}
-		}
-		return result;
-
 	}
 
 	public JSONObject toJSONObject() {
