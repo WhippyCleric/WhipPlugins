@@ -8,12 +8,17 @@ public class Rights {
 	private boolean canOpenDoor;
 	private boolean canPlace;
 	private boolean canOpenChests;
-	public Rights(boolean canBreak, boolean canPlace, boolean canOpenDoor, Boolean canOpenChests) {
+	private boolean canAttackPlayers;
+	private boolean canAttackAnimals;
+	
+	public Rights(boolean canBreak, boolean canPlace, boolean canOpenDoor, boolean canOpenChests, boolean canAttackPlayers, boolean canAttackAnimals) {
 		super();
 		this.canBreak = canBreak;
 		this.canPlace = canPlace;
 		this.canOpenDoor = canOpenDoor;
 		this.canOpenChests = canOpenChests;
+		this.canAttackPlayers = canAttackPlayers;
+		this.canAttackAnimals = canAttackAnimals;
 	}
 	
 	public boolean isCanBreak() {
@@ -42,7 +47,25 @@ public class Rights {
 		jsonObject.put("canPlace", canPlace);
 		jsonObject.put("canOpenDoor", canOpenDoor);
 		jsonObject.put("canOpenChests", canOpenChests);
+		jsonObject.put("canAttackAnimals", canAttackAnimals);
+		jsonObject.put("canAttackPlayers", canAttackPlayers);
 		return jsonObject;
+	}
+
+	public boolean isCanAttackPlayers() {
+		return canAttackPlayers;
+	}
+
+	public void setCanAttackPlayers(boolean canAttackPlayers) {
+		this.canAttackPlayers = canAttackPlayers;
+	}
+
+	public boolean isCanAttackAnimals() {
+		return canAttackAnimals;
+	}
+
+	public void setCanAttackAnimals(boolean canAttackAnimals) {
+		this.canAttackAnimals = canAttackAnimals;
 	}
 
 	public boolean isCanOpenDoor() {

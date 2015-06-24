@@ -13,22 +13,76 @@ public class AreaRights {
 	private boolean defaultCanPlace;
 	private boolean defaultCanOpenDoor;
 	private boolean defaultCanOpenChests;
+	private boolean defaultCanAttackPlayers;
+	private boolean defaultCanAttackAnimals;
 	
 	
-	public AreaRights(Map<String, Rights> playerToRights,boolean defaultCanBreak ,boolean defaultCanPlace, boolean defaultCanOpenDoor, Boolean defaultCanOpenChests) {
+	public AreaRights(Map<String, Rights> playerToRights,boolean defaultCanBreak ,boolean defaultCanPlace, boolean defaultCanOpenDoor, boolean defaultCanOpenChests, boolean defaultCanAttackPlayers, boolean defaultCanAttackAnimals) {
 		this.playerToRights = playerToRights;
 		this.defaultCanPlace = defaultCanPlace;
 		this.defaultCanBreak = defaultCanBreak;
 		this.defaultCanOpenDoor = defaultCanOpenDoor;
 		this.defaultCanOpenChests =defaultCanOpenChests;
+		this.defaultCanAttackPlayers = defaultCanAttackPlayers;
+		this.defaultCanAttackAnimals = defaultCanAttackAnimals;
 	}
 	
+	public boolean isDefaultCanBreak() {
+		return defaultCanBreak;
+	}
+
+	public void setDefaultCanBreak(boolean defaultCanBreak) {
+		this.defaultCanBreak = defaultCanBreak;
+	}
+
+	public boolean isDefaultCanPlace() {
+		return defaultCanPlace;
+	}
+
+	public void setDefaultCanPlace(boolean defaultCanPlace) {
+		this.defaultCanPlace = defaultCanPlace;
+	}
+
+	public boolean isDefaultCanOpenDoor() {
+		return defaultCanOpenDoor;
+	}
+
+	public void setDefaultCanOpenDoor(boolean defaultCanOpenDoor) {
+		this.defaultCanOpenDoor = defaultCanOpenDoor;
+	}
+
+	public boolean isDefaultCanOpenChests() {
+		return defaultCanOpenChests;
+	}
+
+	public void setDefaultCanOpenChests(boolean defaultCanOpenChests) {
+		this.defaultCanOpenChests = defaultCanOpenChests;
+	}
+
+	public boolean isDefaultCanAttackPlayers() {
+		return defaultCanAttackPlayers;
+	}
+
+	public void setDefaultCanAttackPlayers(boolean defaultCanAttackPlayers) {
+		this.defaultCanAttackPlayers = defaultCanAttackPlayers;
+	}
+
+	public boolean isDefaultCanAttackAnimals() {
+		return defaultCanAttackAnimals;
+	}
+
+	public void setDefaultCanAttackAnimals(boolean defaultCanAttackAnimals) {
+		this.defaultCanAttackAnimals = defaultCanAttackAnimals;
+	}
+
 	public AreaRights() {
-		playerToRights  =new HashMap<String, Rights>();
+		playerToRights  = new HashMap<String, Rights>();
 		defaultCanBreak = false;
 		defaultCanPlace = false;
-		defaultCanOpenDoor  =false;
+		defaultCanOpenDoor  = false;
 		defaultCanOpenChests = false;
+		defaultCanAttackPlayers = false;
+		defaultCanAttackAnimals = false;
 	}
 
 
@@ -51,6 +105,8 @@ public class AreaRights {
 		jsonObject.put("defaultCanBreak", defaultCanBreak);
 		jsonObject.put("defaultCanOpenDoor", defaultCanOpenDoor);
 		jsonObject.put("defaultCanOpenChests", defaultCanOpenChests);
+		jsonObject.put("defaultCanAttackPlayers", defaultCanAttackPlayers);
+		jsonObject.put("defaultCanAttackAnimals", defaultCanAttackAnimals);
 		return jsonObject;
 	}
 
@@ -58,7 +114,7 @@ public class AreaRights {
 		if(playerToRights.containsKey(identifier)){
 			playerToRights.remove(identifier);
 		}
-		playerToRights.put(identifier, new Rights(true, true, true, true));
+		playerToRights.put(identifier, new Rights(true, true, true, true, true, true));
 	}
 
 	public boolean canBreak(String identifier) {
@@ -90,6 +146,22 @@ public class AreaRights {
 			return playerToRights.get(identifier).isCanOpenChests();
 		}else{
 			return defaultCanOpenChests;
+		}
+	}
+
+	public boolean canAttackAnimals(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanAttackAnimals();
+		}else{
+			return defaultCanAttackAnimals;
+		}
+	}
+
+	public boolean canAttackPlayers(String identifier) {
+		if(playerToRights.containsKey(identifier)){
+			return playerToRights.get(identifier).isCanAttackPlayers();
+		}else{
+			return defaultCanAttackPlayers;
 		}
 	}
 	

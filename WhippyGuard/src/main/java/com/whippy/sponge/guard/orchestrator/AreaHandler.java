@@ -191,6 +191,8 @@ public class AreaHandler {
 				Boolean defaultCanBreak= (Boolean) areaRights.get("defaultCanBreak");
 				Boolean defaultCanOpenDoor = (Boolean) areaRights.get("defaultCanOpenDoor");
 				Boolean defaultCanOpenChests = (Boolean) areaRights.get("defaultCanOpenChests");
+				Boolean defaultCanAttackPlayers = (Boolean) areaRights.get("defaultCanAttackPlayers");
+				Boolean defaultCanAttackAnimals = (Boolean) areaRights.get("defaultCanAttackAnimals");
 				Map<String, Rights> playerAreaRights = new HashMap<String, Rights>();
 				for (Object playerRight : playerRights) {
 					String playerId = (String) ((JSONObject) playerRight).get("playerId");
@@ -199,9 +201,11 @@ public class AreaHandler {
 					Boolean canPalce = (Boolean) individualRights.get("canPlace");
 					Boolean canOpenDoor = (Boolean) individualRights.get("canOpenDoor");
 					Boolean canOpenChests = (Boolean) individualRights.get("canOpenChests");
-					playerAreaRights.put(playerId, new Rights(canBreak, canPalce, canOpenDoor, canOpenChests));
+					Boolean canAttackPlayers = (Boolean) individualRights.get("canAttackPlayers");
+					Boolean canAttackAnimals = (Boolean) individualRights.get("canAttackAnimals");
+					playerAreaRights.put(playerId, new Rights(canBreak, canPalce, canOpenDoor, canOpenChests, canAttackPlayers, canAttackAnimals));
 				}
-				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights,defaultCanBreak, defaultCanPlace, defaultCanOpenDoor, defaultCanOpenChests));
+				Area area = new Area(areaName, worldName, pointList, height, base, new AreaRights(playerAreaRights,defaultCanBreak, defaultCanPlace, defaultCanOpenDoor, defaultCanOpenChests, defaultCanAttackPlayers ,defaultCanAttackAnimals));
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
