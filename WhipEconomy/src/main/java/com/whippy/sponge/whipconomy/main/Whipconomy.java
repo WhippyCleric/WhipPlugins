@@ -26,7 +26,7 @@ import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
-import com.whippy.sponge.whipconomy.commands.TransferCommand;
+import com.whippy.sponge.whipconomy.commands.PayCommand;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -99,8 +99,8 @@ public class Whipconomy {
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
 		cmdService.register(this, new BalCommand(), "bal");
-		cmdService.register(this, new TransferCommand(), "pay");
-		cmdService.register(this, new TransactionsCommand(), "accountHistory");
+		cmdService.register(this, new PayCommand(), "pay");
+		cmdService.register(this, new TransactionsCommand(), "accHistory");
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
 	        cmdService.register(this, new BidCommand(), "bid");

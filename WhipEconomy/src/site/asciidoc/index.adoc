@@ -1,0 +1,787 @@
+= Whippyconomy Economy Plugin Documentation
+:sectnums:
+:sectanchors:
+:toc: left
+:toclevels: 6
+:docinfo2:
+
+== Introduction
+
+The Whippyconomy plugin is a server side economy and auction plugin built using the link:https://www.spongepowered.org/[sponge] forge mod.
+
+== Features
+
+* Players can pay each other money
+
+* Charge players money
+
+* Transfer money between 2 players
+
+* Pay all players
+
+* Charge all players
+
+* 2 accounts per player, 1 current account and 1 savings account, and the ability to transfer money between these 2 accounts
+
+* History of transactions
+
+* Ability to pay, charge, and transfer using offline players
+
+* Print out your balance(s)
+
+* Print the balance(s) rankings
+
+* Automatic notification of offline transactions when joining server
+
+* Configurable:
+
+** Starting ballance
+
+** Overdraft limit
+
+** Currency symbol
+
+** Whether currency symbol comes before or after amount
+
+** Number of decimal places for the currency
+
+** Size of transaction history (per player)
+
+** Minimum amount allowed to be paid to all players
+
+** Whether to have the savings account feature
+
+** Whether baltop is enabled
+
+* Ability to auction based on item in hand
+
+* Can set initial bid, bid increment, buy now price, and duraction of auction
+
+* Can bid with current bid, and optionally max bid
+
+* Configurable:
+
+** Whether auctions are enabled
+
+** Auction prefix
+
+** Default bid increment
+
+** Minimum auction time
+
+** Maximum auction time
+
+** Number of auctions allowed to be queued
+
+== General Usage
+
+This plugin is designed to be used for the whole economy of the server. It may be integrated with shop plugins which allow you to override the commands the shop pluign is calling. Alternatively though you can use the WhippyShop Plugin which will be released later (or maybe directly integrated into future versions of Whippyconomy.
+
+== Command Summary
+
+=== Economy Commands
+
+.Economy Commands
+[cols="1,8"]
+|===
+|Command | Description
+
+|<<_pay ,pay>>
+|Pay money from your account to another player (or all)
+
+|<<_transfer ,transfer>>
+|Transfer money from one player to another
+
+|<<_charge ,charge>>
+|Charge a player (or all players) money
+
+|<<_bal ,bal>>
+|Check the ballance on your accounts
+
+|<<_baltop ,baltop>>
+|Print the rankings of ballances on the server
+
+|<<_bank ,bank>>
+|Move money from your current account into your savings account
+
+|<<_withdraw ,withdraw>>
+|Move money from your savings account into your current account
+
+|<<_acchistory ,accHistory>>
+|Print a list of past transactions you were involved in
+
+|===
+
+=== Auction Commands
+
+.Auction Commands
+[cols="1,8"]
+|===
+|Command | Description
+
+|<<_auc ,auc>>
+|Used to auction the current item in your hand (or many of this item)
+
+|<<_auccancel ,aucCancel>>
+|Used to cancel the current auction
+
+|<<_aucinfo ,aucInfo>>
+|Used to look up information about the current auction, and the amount in the queue
+
+|<<_bid ,bid>>
+|Used to bid on the auction in progress
+
+|===
+
+== Detailed Commands
+
+=== Economy Commands
+
+==== pay
+
+===== Purpose
+
+To pay another player a specified amount from your current account
+
+===== Parameters
+
+====== Required
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The player to pay, * to pay everyone online, or *offline to pay everyone *including offline players*
+|String
+
+|2
+|The amount of money to pay
+|Numeric
+|===
+
+====== Optional
+
+There are no optional parameters for the pay command.
+
+===== Notifications
+
+Upon sending payment you will receive a notification saying:
+
+`Transfer complete, new balance: 90`
+
+Upon receiving a payment you will receive a notificaiton saying:
+
+`Receieved 10 from mrMisterson`
+
+===== Example Usage
+
+To pay player mrMisterson 100.56
+
+[source,cmd]
+----
+/pay mrMisterson 100.56
+----
+
+To pay everyone online 10
+
+[source,cmd]
+----
+/pay * 10
+----
+
+To pay everyone including offline players 10
+
+[source,cmd]
+----
+/pay *offline 10
+----
+
+==== transfer
+
+===== Purpose
+
+The transfer command is used to pay money from one player to another, without either player having a choice. This commands usage is clearly more aimed towards either admins settling a dispute, or for a shop plugin to call directly.
+
+===== Parameters
+
+====== Required
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The player the money is from
+|String
+
+|2
+|The player to pay
+|String
+
+|3
+|The amount of money to transfer
+|Numeric
+|===
+
+====== Optional
+
+There are no optional parameters for the transfer command.
+
+===== Notifications
+
+The player whom the payment was on behalf of will receive the following notification:
+
+`Transfer complete, new balance: 185`
+
+The player who received the money will receive the following notification:
+
+`Receieved 100 from mrsMissy`
+
+===== Example Usage
+
+To transfer 100 from mrsMissy to mrMisterson
+
+[source,cmd]
+----
+/transfer mrsMissy mrMisterson 100.56
+----
+
+==== charge
+
+===== Purpose
+
+Like the transfer command this command is to be used by admins or other plugins in order to directly charge a player money, but not give it anyone else. Likely use case is a server shop.
+
+===== Parameters
+
+====== Required
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The player to charge, or * to charge everyone online, or *offline to charge everyone *including offline players*
+|String
+
+|2
+|The amount of money to charge
+|Numeric
+|===
+
+====== Optional
+
+There are no optional parameters for the charge command
+
+===== Notifications
+
+The player who was charged will receive the following notification:
+
+`Charged 50, new balance: 185`
+
+===== Example Usage
+
+To charge player mrMisterson 50
+
+[source,cmd]
+----
+/charge mrMisterson 50
+----
+
+To charge everyone online 10
+
+[source,cmd]
+----
+/charge * 10
+----
+
+To charge everyone including offline players 10
+
+[source,cmd]
+----
+/charge *offline 10
+----
+
+==== bal
+
+===== Purpose
+
+Used to check your ballance(s)
+
+===== Parameters
+
+====== Required
+
+There are no required parameters for the bal command.
+
+====== Optional
+
+There are no optional parameters for the bal command
+
+===== Notifications
+
+After running the bal command the player will received:
+
+`Current Account Ballance: 50`
+
+`Savings Account Ballance: 10000`
+
+===== Example Usage
+
+To check your ballance(s)
+
+[source,cmd]
+----
+/bal
+----
+
+==== baltop
+
+===== Purpose
+
+To list the the top ballances of accounts on the server
+
+===== Parameters
+
+====== Required
+
+There are no required parameters for the baltop command, by default it will show you the top 10 current account ballances
+
+====== Optional
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|Account type
+|Either "current" or "savings"
+
+|2
+|The page number to display
+|Numeric
+|===
+
+===== Notifications
+
+After running the baltop command the player will received:
+
+`Page 1 of 12 for current accounts`
+
+`1: WhippyCleric: 4658441325`
+
+`2: mrMisterson: 154888`
+
+`3: playerNumber4: 45687`
+
+`4: playerNumber7: 11000`
+
+`5: fred: 10000`
+
+`6: im6768ds: 789`
+
+`7: Steve0: 568`
+
+`8: nannanananan: 100`
+
+`9: mrMinecraft: 99.5`
+
+`10: mrsMinecraft: 99`
+
+
+===== Example Usage
+
+To list the top 10 current account ballances
+
+[source,cmd]
+----
+/baltop
+----
+
+To list the top 10 savings account ballances
+
+[source,cmd]
+----
+/baltop savings
+----
+
+To list page 3 of the current account ballances
+
+[source,cmd]
+----
+/baltop current 3
+----
+
+==== bank
+
+===== Purpose
+
+Used to put money from your current account into your savings account
+
+===== Parameters
+
+====== Required
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|Amount to transfer
+|Numeric
+
+|===
+
+====== Optional
+
+There are no optional bank parameters.
+
+===== Notifications
+
+After moving money from your current account to your savings you will receive both your new ballances as notifications:
+
+`Current Account Ballance: 50`
+
+`Savings Account Ballance: 10000`
+
+===== Example Usage
+
+To move 50 from your current account to your savings account
+
+[source,cmd]
+----
+/bank 50
+----
+
+==== withdraw
+
+===== Purpose
+
+Used to withdraw money from your savings account into your current account
+
+===== Parameters
+
+====== Required
+
+.Required Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|Amount to transfer
+|Numeric
+
+|===
+
+====== Optional
+
+There are no optional withdraw parameters.
+
+===== Notifications
+
+After moving money from your savings account to your current you will receive both your new ballances as notifications:
+
+`Current Account Ballance: 50`
+
+`Savings Account Ballance: 10000`
+
+===== Example Usage
+
+To move 50 from your savings account to your current account
+
+[source,cmd]
+----
+/withdraw 50
+----
+
+==== accHistory
+
+===== Purpose
+
+Used to list a history of transactions a player has been involved in
+
+===== Parameters
+
+====== Required
+
+There are no required parameters for the accHistory command
+
+====== Optional
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|Number of transactions to list. Default is 10.
+|Numeric
+
+|1
+|Player name if wanting to list someone elses transactions. Default is your own, listing other players would normally only be available to admins.
+|Numeric
+
+|===
+
+===== Notifications
+
+After running the accHistory transaction you receive a notification like:
+
+`1. Paid 50 to mrMisterson 10:56:11 25/11/2014`
+
+`2. Received 10 from mrMisterson 9:55:55 25/11/2014`
+
+`3. Was charged 500 9:12:55 24/11/2014`
+
+`4. Received 76.5 from mrMisterson 16:55:16 30/10/2014`
+
+`5. Received 95.2 from mrMisterson 12:16:12 16/9/2014`
+
+`6. Received 58.9 from mrMisterson 3:01:10 15/8/2014`
+
+`7. paid 100.50 from mrMisterson 15:32:00 26/05/2013`
+
+`8. Was charged 500 9:12:50 24/11/2012`
+
+`9. Received 890 from mrMisterson 18:56:01 25/03/2012`
+
+`10. Paid 12.56 to steve0 19:12:11 25/01/2012`
+
+===== Example Usage
+
+To list your last 10 transactions
+
+[source,cmd]
+----
+/accHistory
+----
+
+To list your last transaction
+
+[source,cmd]
+----
+/accHistory 1
+----
+
+To list mrMisterson's last 10 transactions
+
+[source,cmd]
+----
+/accHistory mrMisterson 10
+----
+
+=== Auction Commands
+
+==== auc
+
+===== Purpose
+
+This is the command used to start an auction of the item currently in the players hand.
+
+*Each player may only have 1 auction live or in the queue at one time*
+
+===== Parameters
+
+====== Required
+
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The number of the item to auction
+|Numeric
+
+|2
+|The starting bid
+|Numeric
+|===
+
+====== Optional
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|3
+|The minimum bid increment
+|Numeric
+
+|4
+|The length of the auction
+|Numeric
+
+|5
+|The buy it now price
+|Numeric
+|===
+
+*In order to specify a buy it now price, all the optional parameters must be set.*
+
+*In order to specify the auction length, the bid increment must be set.*
+
+====== Notifications
+
+After putting an auction in the queue you will receive a notification like:
+
+`Auction queued number 1 in line`
+
+A typical auction might look like this in the chat:
+
+`mrMisterson is auctioning 10 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds. Buy it now for 120.0"`
+
+`30 seconds remaining`
+
+`steve0 bids 1.0`
+
+`fred bids 12.01`
+
+`Bid has been raised to 15.0` *This means someone has bid 15. but it was lower than Fred's max, so now the bid is with Fred at 15*
+
+`seteve0 bids 20.0`
+
+`fred bids 201.0`
+
+`10 seconds remaining`
+
+`3 seconds remaining`
+
+`2 seconds remaining`
+
+`1 seconds remaining`
+
+`fred won the auction with a bid of 201.0`
+
+===== Example Usage
+
+To auction 1 of the item in your hand, with a starting bid of 1
+
+[source,cmd]
+----
+/auc 1 1
+----
+
+To auction 10 of the item in your hand, with a starting bid of 50 and minimum increment of 11
+
+[source,cmd]
+----
+/auc 10 50 11
+----
+
+To auction 10 of the item in your hand, with a starting bid of 50, a minimum increment of 11, for 60 seconds
+
+[source,cmd]
+----
+/auc 10 50 11 60
+----
+
+To auction 10 of the item in your hand, with a starting bid of 50, a minimum increment of 11, for 60 seconds, with a buy it now price of 100
+
+[source,cmd]
+----
+/auc 10 50 11 60 100
+----
+
+==== aucCancel
+
+===== Purpose
+
+Used to cancel your auction, either in progress (if more than half the time remains) or the one in queue.
+
+===== Parameters
+
+====== Required
+
+There are no required parameters for the aucCanel command
+
+====== Optional
+
+There are no optional parameters for the aucCancel command
+
+====== Notifications
+
+Upon cancelling an auction you will receive a confirmation notifcation:
+
+`Auction cancelled`
+
+===== Example Usage
+
+To cancel your auction, either in progress (if more than half the time remains) or the one in queue.
+
+[source,cmd]
+----
+/aucCancel
+----
+
+==== aucInfo
+
+===== Purpose
+
+Used to get a notification about the current auction (if there is one) and how many auctions are queued.
+
+===== Parameters
+
+====== Required
+
+There are no required parameters for the aucInfo command.
+
+====== Optional
+
+There are no optional parameters for the aucInfo command
+
+====== Notifications
+
+After running aucInfo you will receive a 2 part notification like follows:
+
+`3 Auctions in the queue`
+
+`Currently mrMisterson is auctioning 10 Bones. Starting bid: 1.0. Increment: 1.0. This auction will last 45 seconds. Buy it now for 120.0"`
+
+===== Example Usage
+
+To get information about the auctions
+
+[source,cmd]
+----
+/aucInfo
+----
+
+==== bid
+
+===== Purpose
+
+===== Parameters
+
+====== Required
+
+====== Optional
+
+====== Notifications
+
+===== Example Usage
+
+== Configuration
+
+=== General Configuration
+
+=== Command Permissions
+
+== Distribution & Licensing
+
+This plugin can be distributed freely and is under GPL license. It is free to use, modify and distribute.
+
+Allthough not required I would ask if re-distributed you credit the original author WhippyCleric, and add a link to the ore page where the plugin is hosted to allow feedback from end users.
+
+== Contact the Author
+
+Generally I would advise you to put suggestions for improvements or bug reports on link:https://ore-staging.spongepowered.org/[ore]. However if you do wish to contact me directly by mail due to innactivity on the forum feel free to mail me at mailto:WhippyCleric@gmail.com[WhippyCleric@gmail.com]

@@ -17,7 +17,7 @@ import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
-public class TransferCommand implements CommandCallable {
+public class PayCommand implements CommandCallable {
 	
 	@Override
 	public Optional<Text> getHelp(CommandSource arg0) {
@@ -51,7 +51,7 @@ public class TransferCommand implements CommandCallable {
 
 	@Override
 	public Text getUsage(CommandSource arg0) {
-		return Texts.builder("/transfer <amount> <to>").color(TextColors.GOLD).build();
+		return Texts.builder("/pay <to> <amount>").color(TextColors.GOLD).build();
 	}
 
 	@Override
