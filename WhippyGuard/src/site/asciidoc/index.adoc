@@ -1,0 +1,352 @@
+= Whippy Guard Protection Plugin Documentation
+:sectnums:
+:sectanchors:
+:toc: left
+:toclevels: 5
+:docinfo2:
+
+== Introduction
+
+The WhippyGuard plugin is a server side protection plugin built using the link:https://www.spongepowered.org/[sponge] forge mod.
+
+== Features
+
+* Define 2D area's with unlimited number of points
+
+* Set an area's height and depth
+
+* Can define 2 completly seperate area's on the same plain, but at different heights (e.g you can give some one a plot of land with full permissions, but not give them permissions to modify an area above them)
+
+* Set permissions on these areas, such as:
+
+** Can break blocks
+
+** Can place blocks
+
+** Can open doors
+
+** Can open chests, hoppers, dispensers etc
+
+** Can kill animals
+
+** Can attack players
+
+* Permissions can be set for all players at once, and exceptions added for specific players
+
+* Ability to set block specific permissions inside an area, i.e. Player A can open this chest, but do nothing else here
+
+* Ability to list all defined areas
+
+* Ability to show details of an area, with specifiable granuality
+
+* Ability to delete area's no longer required
+
+* Area's can have child area's whose permissions overide the parent (e.g. A city area with very restrictive permissions, and plots of land inside with seperate permissions)
+
+* Area's can have multiple parent areas, i.e. a single child area can overlap multiple parent areas
+
+* Redifine the points of an area, while keeping all permissions intact
+
+* Modify the height and depth of an area after it has been saved
+
+== General Usage
+
+The plugin is to be used to define area's in a minecraft world and define permissions within the area. Areas are made up of 3 to many points, and have a specified height and depth.
+
+There are currently 2 ways in which a user can start to define a new area, either by using the /areaNew command where they can specify the height and depth of their area before defining points. Alternatively the user can right click a block with the wand (Bone by default) in order to start defining a new area with max height and depth.
+
+The normal process of actions when working with areas would be the following:
+
+* Define all the points of a new area by right clicking the blocks with a bone, the y co-ordinate is irrelevant.
+
+* Use the /areaCommit command to name and save the area, and override the height and depth if wished
+
+* By default a newly commited area will have all permissions set to false, except for the creator who will have full rights. Using the /areaDefaultPerms command the user can specify the default permissions in this area.
+
+* Using the /areaPlayerPerms the user can then change the permissions in an area for specific players
+
+
+After these 4 steps the area is fully defined.
+
+== Commands
+
+=== /areaNew
+
+==== Purpose
+
+This command can be used to start a new area with 0 points defined, usefull to have the height and depth of an area set while defining to receive warnings when overlapping with another.
+
+==== Parameters
+
+===== Required
+
+There are no required paramters for this command, using with no paramters will result in a new area with boundless height and depth and 0 points
+
+===== Optional
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The height of the area (World Y Co-ordinate)
+|Numeric or "boundless"
+
+|2
+|The depth of the area (World Y Co-ordinate)
+|Numeric or "boundless"
+|===
+
+==== Example Usage
+
+To start a new area which ranges from y=-45 to y=45
+
+[source,cmd]
+----
+/areaNew 45 -45
+----
+
+To start a new area which ranges from bedrock to y=45
+
+[source,cmd]
+----
+/areaNew 45
+----
+
+To start a new area which ranges from y-45 to maximum height
+
+[source,cmd]
+----
+/areaNew boundless -45
+----
+
+=== /areaCommit
+
+==== Purpose
+
+The command is used to finalise the creation of an area. After defining 2 points or more an area can be finalised.
+
+==== Parameters
+
+===== Required
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The name of the area
+|String
+|===
+
+===== Optional
+
+.Table Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|2
+|The height of the area (World Y Co-ordinate)
+|Numeric or "boundless"
+
+|3
+|The depth of the area (World Y Co-ordinate)
+|Numeric or "boundless"
+|===
+
+==== Example Usage
+
+To commit an area called area1, keeping it's current set height and depth
+
+[source,cmd]
+----
+/areaCommit area1
+----
+
+To commit an area but change it's height to 50 as well
+
+[source,cmd]
+----
+/areaCommit area1 50
+----
+
+To commit an area but change it's height to 50 and give it boundless depth
+
+[source,cmd]
+----
+/areaCommit area1 50 boundless
+----
+
+=== /areaCancel
+
+==== Purpose
+
+The areaCancel command is used to cancel the area you are currently defining, either after using the areaNew command, or defining some points with the wand.
+
+==== Parameters
+
+===== Required
+
+There are no required parameters for the areaCancel command.
+
+===== Optional
+
+There are no optional parameters for the areaCancel command.
+
+==== Example Usage
+
+To cancel the area in progress of being defined
+
+[source,cmd]
+----
+/areaCancel
+----
+
+=== /areaDefaultPerms
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+=== /areaPlayerPerms
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+=== /areaDelete
+
+==== Purpose
+
+Used to delete an area which has been commited.
+
+==== Parameters
+
+===== Required
+
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The name of the area
+|String
+|===
+
+===== Optional
+
+There are no optional parameters for the areaDelete command.
+
+==== Example Usage
+
+To delete area1 from the saved set of areas.
+
+[source,cmd]
+----
+/areaDelete area1
+----
+
+=== /areaList
+
+==== Purpose
+
+Used to list the names of all the areas saved.
+
+==== Parameters
+
+===== Required
+
+There are no required parameters for the areaCancel command.
+
+===== Optional
+
+There are no optional parameters for the areaCancel command.
+
+==== Example Usage
+
+To list the names of all the areas saved.
+
+[source,cmd]
+----
+/areaList
+----
+
+=== /areaDetails
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+=== /areaRedfine
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+=== /areaSetHeight
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+=== /areaSetDepth
+
+==== Purpose
+
+==== Parameters
+
+===== Required
+
+===== Optional
+
+==== Example Usage
+
+== Configuration
+
+=== General Configuration
+
+=== Command Permissions
+
+== Distribution & Licensing
+
+This plugin can be distributed freely and is under GPL license. It is free to use, modify and distribute.
+
+Allthough not required I would ask if re-distributed you credit the original author WhippyCleric, and add a link to the ore page where the plugin is hosted to allow feedback from end users.
+
+== Contact the Author
+
+Generally I would advise you to put suggestions for improvements or bug reports on link:https://ore-staging.spongepowered.org/[ore]. However if you do wish to contact me directly by mail due to innactivity on the forum feel free to mail me at mailto:WhippyCleric@gmail.com[WhippyCleric@gmail.com]
