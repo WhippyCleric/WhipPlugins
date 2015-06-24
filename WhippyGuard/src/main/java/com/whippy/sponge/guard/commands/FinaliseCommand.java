@@ -50,9 +50,23 @@ public class FinaliseCommand implements CommandCallable{
 					if(argArray.length==1){					
 						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0]);
 					}else if(argArray.length==2){
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]));
+						if(argArray[1].equals(StaticsHandler.BOUNDLESS)){							
+							StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], StaticsHandler.BOUNDLESS_NUMBER);
+						}
 					}else if(argArray.length==3){
-						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], Double.valueOf(argArray[1]), Double.valueOf(argArray[2]));
+						Double height;
+						Double depth;
+						if(argArray[1].equals(StaticsHandler.BOUNDLESS)){	
+							height = StaticsHandler.BOUNDLESS_NUMBER;
+						}else{
+							height = Double.valueOf(argArray[1]);
+						}
+						if(argArray[2].equals(StaticsHandler.BOUNDLESS)){	
+							depth = StaticsHandler.BOUNDLESS_NUMBER;
+						}else{
+							depth = Double.valueOf(argArray[2]);
+						}
+						StaticsHandler.getAreaHandler().finaliseCurrentArea(player,argArray[0], height, depth);
 					}
 				}catch(NumberFormatException e){					
 					player.sendMessage(Texts.builder("Maximum height and base must be numeric").color(TextColors.RED).build());		

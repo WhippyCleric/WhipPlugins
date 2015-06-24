@@ -42,8 +42,8 @@ public class Area {
 	
 	public Area(){
 		points = new ArrayList<Vector3i>();
-		height = -1.0;
-		base = -1.0;
+		height = StaticsHandler.BOUNDLESS_NUMBER;
+		base = StaticsHandler.BOUNDLESS_NUMBER;
 		rights = new AreaRights();
 	}
 
@@ -143,35 +143,35 @@ public class Area {
 	}
 	
 	public boolean overlapsOnVertical( double height, double base){
-		if(this.height==-1 && this.base ==-1){		
+		if(this.height==StaticsHandler.BOUNDLESS_NUMBER && this.base ==StaticsHandler.BOUNDLESS_NUMBER){		
 			return true;
-		}else if(height ==-1 && base==-1){
+		}else if(height ==StaticsHandler.BOUNDLESS_NUMBER && base==StaticsHandler.BOUNDLESS_NUMBER){
 			return true;
-		}else if(this.height==-1){
-			if(height>=this.base || height==-1){
+		}else if(this.height==StaticsHandler.BOUNDLESS_NUMBER){
+			if(height>=this.base || height==StaticsHandler.BOUNDLESS_NUMBER){
 				//They do overlap vertically
 				return true;
 			}else{
 				//New area is below current area
 				return false;
 			}
-		}else if(this.base==-1){
-			if(base<=this.height || base == -1){
+		}else if(this.base==StaticsHandler.BOUNDLESS_NUMBER){
+			if(base<=this.height || base == StaticsHandler.BOUNDLESS_NUMBER){
 				return true;					
 			}else{
 				//New area is above current area
 				return false;
 			}
-		}else if(height==-1){
-			if(this.height>=base || this.height==-1){
+		}else if(height==StaticsHandler.BOUNDLESS_NUMBER){
+			if(this.height>=base || this.height==StaticsHandler.BOUNDLESS_NUMBER){
 				//They do overlap vertically
 				return true;
 			}else{
 				//Old Area is below new area
 				return false;
 			}
-		}else if(base ==-1){
-			if(this.base<=height || this.base == -1){
+		}else if(base ==StaticsHandler.BOUNDLESS_NUMBER){
+			if(this.base<=height || this.base == StaticsHandler.BOUNDLESS_NUMBER){
 				return true;					
 			}else{
 				//Old area is above current area

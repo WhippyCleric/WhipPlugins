@@ -10,6 +10,8 @@ public class StaticsHandler {
 	private static AreaHandler clickHandler;
     private static Logger logger;
 	private static Game game;
+	public static final String BOUNDLESS = "boundless";
+	public static final Double BOUNDLESS_NUMBER = -314159.0;
 
 	public static Logger getLogger() {
 		return logger;

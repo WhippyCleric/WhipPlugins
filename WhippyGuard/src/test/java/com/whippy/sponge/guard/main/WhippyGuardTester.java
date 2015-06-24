@@ -86,7 +86,7 @@ public class WhippyGuardTester {
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		
-		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea1", -1.0 ,-1.0);
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea1", StaticsHandler.BOUNDLESS_NUMBER ,StaticsHandler.BOUNDLESS_NUMBER);
 		
 		
 	}
@@ -120,7 +120,7 @@ public class WhippyGuardTester {
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		
-		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea2", -1.0 ,-1.0);
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea2", StaticsHandler.BOUNDLESS_NUMBER ,StaticsHandler.BOUNDLESS_NUMBER);
 	}
 	
 	@Test
@@ -152,7 +152,7 @@ public class WhippyGuardTester {
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		whippyGuard.onPlayerInteractEvent(mockEvent );
 		
-		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea3", -1.0 ,-1.0);
+		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea3", StaticsHandler.BOUNDLESS_NUMBER ,StaticsHandler.BOUNDLESS_NUMBER);
 	}
 	
 	
@@ -167,7 +167,7 @@ public class WhippyGuardTester {
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
 		
-		Area area = new Area(10.0, -1);
+		Area area = new Area(10.0, StaticsHandler.BOUNDLESS_NUMBER);
 		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
 		
 		Vector3d clickedPositionVector = new Vector3d(0,0,0);
@@ -190,7 +190,7 @@ public class WhippyGuardTester {
 		
 		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
 		
-		area = new Area(-1.0, 11.0);
+		area = new Area(StaticsHandler.BOUNDLESS_NUMBER, 11.0);
 		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
 		
 		clickedPositionVector = new Vector3d(0,0,0);
@@ -308,7 +308,7 @@ public class WhippyGuardTester {
 		
 		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
 		
-		area = new Area(-1.0, -20.0);
+		area = new Area(StaticsHandler.BOUNDLESS_NUMBER, -20.0);
 		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
 		
 		clickedPositionVector = new Vector3d(0,0,0);
@@ -344,7 +344,7 @@ public class WhippyGuardTester {
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
 		
-		Area area = new Area(-1, -1);
+		Area area = new Area(StaticsHandler.BOUNDLESS_NUMBER,StaticsHandler.BOUNDLESS_NUMBER);
 		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
 		
 		Vector3d clickedPositionVector = new Vector3d(0,0,0);
@@ -367,7 +367,7 @@ public class WhippyGuardTester {
 		
 		StaticsHandler.getAreaHandler().finaliseCurrentArea(mockPlayer, "TestArea4");
 		
-		area = new Area(-1.0, 11.0);
+		area = new Area(StaticsHandler.BOUNDLESS_NUMBER, 11.0);
 		StaticsHandler.getAreaHandler().addAreaInProgres(mockPlayer, area);
 		
 		clickedPositionVector = new Vector3d(3,0,4);

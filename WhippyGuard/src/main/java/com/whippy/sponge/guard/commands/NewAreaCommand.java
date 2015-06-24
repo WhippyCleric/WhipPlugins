@@ -45,31 +45,49 @@ public class NewAreaCommand implements CommandCallable{
 	public Optional<CommandResult> process(CommandSource sender, String args) throws CommandException {
 		if(sender instanceof Player){
 			Player player = (Player) sender;
-			if(args!=null && !args.isEmpty()){
-				
-			}else{
+			if(args!=null && !args.isEmpty()){				
 				String[] argArray =  args.split(" ");
 				try{
-				if(argArray.length==1){					
-					Area area = new Area(Double.valueOf(argArray[0]), -1);
-					if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){						
-						player.sendMessage(Texts.builder("New area started with height: "+Double.valueOf(argArray[0])+" and boundless depth").color(TextColors.BLUE).build());		
-					}else{						
-						player.sendMessage(Texts.builder("Player already in progress of defining area, either run /areaCommit or /areaCancel before starting a new area").color(TextColors.RED).build());		
+					if(argArray.length==1){
+						Area area;
+						if(argArray[1].equals(StaticsHandler.BOUNDLESS)){								
+							area = new Area(StaticsHandler.BOUNDLESS_NUMBER, StaticsHandler.BOUNDLESS_NUMBER);
+						}else{
+							area = new Area(Double.valueOf(argArray[0]), StaticsHandler.BOUNDLESS_NUMBER);							
+						}
+						if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){						
+							player.sendMessage(Texts.builder("New area started with height: "+Double.valueOf(argArray[0])+" and boundless depth").color(TextColors.BLUE).build());		
+						}else{						
+							player.sendMessage(Texts.builder("Player already in progress of defining area, either run /areaCommit or /areaCancel before starting a new area").color(TextColors.RED).build());		
+						}
+					}else{
+						Double height;
+						Double depth;
+						if(argArray[1].equals(StaticsHandler.BOUNDLESS)){	
+							height = StaticsHandler.BOUNDLESS_NUMBER;
+						}else{
+							height = Double.valueOf(argArray[1]);
+						}
+						if(argArray[2].equals(StaticsHandler.BOUNDLESS)){	
+							depth = StaticsHandler.BOUNDLESS_NUMBER;
+						}else{
+							depth = Double.valueOf(argArray[2]);
+						}
+						Area area = new Area(height, depth);
+						if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){						
+							player.sendMessage(Texts.builder("New area started with height: "+Double.valueOf(argArray[0])+" and depth: " +  Double.valueOf(argArray[1])).color(TextColors.BLUE).build());		
+						}else{						
+							player.sendMessage(Texts.builder("Player already in progress of defining area, either run /areaCommit or /areaCancel before starting a new area").color(TextColors.RED).build());		
+						}
 					}
-				}else{
-					Area area = new Area(Double.valueOf(argArray[0]), Double.valueOf(argArray[1]));
-					if(StaticsHandler.getAreaHandler().addAreaInProgres(player, area)){						
-						player.sendMessage(Texts.builder("New area started with height: "+Double.valueOf(argArray[0])+" and depth: " +  Double.valueOf(argArray[1])).color(TextColors.BLUE).build());		
-					}else{						
-						player.sendMessage(Texts.builder("Player already in progress of defining area, either run /areaCommit or /areaCancel before starting a new area").color(TextColors.RED).build());		
-					}
-				}
 				}catch(NumberFormatException e){					
 					player.sendMessage(Texts.builder("Height and depth must be numeric").color(TextColors.RED).build());		
 				}
+			}else{
+				Area area = new Area();
+				StaticsHandler.getAreaHandler().addAreaInProgres(player, area);
+				player.sendMessage(Texts.builder("New area started with boundless height and depth").color(TextColors.BLUE).build());		
 			}	
-			player.sendMessage(Texts.builder("New area started with boundless height and depth").color(TextColors.BLUE).build());		
 		}else{
 			StaticsHandler.getLogger().warn("Finalsie area called by non player entity!");
 		}

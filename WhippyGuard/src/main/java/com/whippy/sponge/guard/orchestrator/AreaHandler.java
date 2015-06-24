@@ -22,6 +22,7 @@ import com.flowpowered.math.vector.Vector3i;
 import com.whippy.sponge.guard.beans.Area;
 import com.whippy.sponge.guard.beans.AreaRights;
 import com.whippy.sponge.guard.beans.Rights;
+import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.exceptions.AreaFinalisedException;
 import com.whippy.sponge.guard.exceptions.MultipleWorldInAreaException;
@@ -64,7 +65,7 @@ public class AreaHandler {
 		}else{
 			//Is a new area
 			try {
-				boolean isOverlap = checkOverlap(worldLocation, -1.0 ,-1.0);
+				boolean isOverlap = checkOverlap(worldLocation, StaticsHandler.BOUNDLESS_NUMBER ,-StaticsHandler.BOUNDLESS_NUMBER);
 				if(!isOverlap){										
 					area = new Area();
 					area.addPoint(worldLocation);
