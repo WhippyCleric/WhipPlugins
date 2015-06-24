@@ -1,5 +1,6 @@
 package com.whippy.sponge.guard.main;
 import java.io.IOException;
+import java.util.Date;
 
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
@@ -7,6 +8,8 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.EntityInteractionTypes;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.entity.EntityDeathEvent;
 import org.spongepowered.api.event.entity.player.PlayerBreakBlockEvent;
 import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.api.event.entity.player.PlayerPlaceBlockEvent;
@@ -23,6 +26,7 @@ import org.spongepowered.api.world.World;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.whippy.sponge.guard.beans.PlayerKilledAnimalEvent;
 import com.whippy.sponge.guard.beans.StaticsHandler;
 import com.whippy.sponge.guard.beans.WorldLocation;
 import com.whippy.sponge.guard.commands.AreaCancelCommand;
@@ -31,6 +35,7 @@ import com.whippy.sponge.guard.commands.FinaliseCommand;
 import com.whippy.sponge.guard.commands.ListAreasCommand;
 import com.whippy.sponge.guard.commands.NewAreaCommand;
 import com.whippy.sponge.guard.orchestrator.AreaHandler;
+import com.whippy.sponge.guard.orchestrator.LoggerHandler;
 
 @Plugin(id = "WhippyGuard", name = "WhippyGuard")
 public class WhippyGuard {
@@ -49,6 +54,7 @@ public class WhippyGuard {
 	@Subscribe
     public void onServerStarting(ServerStartingEvent event) throws IOException, ParseException  {	
 		StaticsHandler.setClickHandler(new AreaHandler());
+		StaticsHandler.setLoggerHandler(new LoggerHandler());
 		StaticsHandler.setGame(game);
 		StaticsHandler.setLogger(logger);
     }
@@ -105,9 +111,30 @@ public class WhippyGuard {
 						inRightClick = false;						
 					}
 				}else if(event.getInteractionType().equals(EntityInteractionTypes.ATTACK)){
-					event.getEntity().sendMessage(Texts.builder("leftclicked").color(TextColors.RED).build());					
+					if(StaticsHandler.isEventLoggerEnabled()){
+						
+					}
 				}
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@Subscribe
+	public void onEntityDeathEvent(EntityDeathEvent event){
+		if(StaticsHandler.isEventLoggerEnabled()){
+			if(event.getCause().isPresent()){
+				Cause cause = event.getCause().get();
+				if(cause.getCause() instanceof Player){
+					Player player  = (Player) cause.getCause();
+					if(event.getEntity() instanceof Player){
+						//Player killed a player, currently don't care
+						
+					}else{
+						PlayerKilledAnimalEvent eventLog  =new PlayerKilledAnimalEvent(player, event.getEntity(),event.getLocation(), new Date());
+						StaticsHandler.getLoggerHandler().pushEvent(eventLog);
+					}
+				}
 			}
 		}
 	}

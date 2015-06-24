@@ -151,6 +151,7 @@ public class AreaHandler {
 				areasFile.createNewFile();
 			} 
 			FileWriter file = new FileWriter(AREA_DEFINITION_PATH);
+			
 			file.write(all.toJSONString());
 			file.flush();
 			file.close();
