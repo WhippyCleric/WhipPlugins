@@ -75,7 +75,7 @@ The Whippyconomy plugin is a server side economy and auction plugin built using 
 
 == General Usage
 
-This plugin is designed to be used for the whole economy of the server. It may be integrated with shop plugins which allow you to override the commands the shop pluign is calling. Alternatively though you can use the WhippyShop Plugin which will be released later (or maybe directly integrated into future versions of Whippyconomy.
+This plugin is designed to be used for the whole economy of the server. It may be integrated with shop plugins which allow you to override the commands the shop pluign is calling. Alternatively though you can use the WhippyShop Plugin which will be released later (or maybe directly integrated into future versions of Whippyconomy).
 
 == Command Summary
 
@@ -760,21 +760,128 @@ To get information about the auctions
 
 ===== Purpose
 
+Used to bid on the auction in progess
+
 ===== Parameters
 
 ====== Required
 
+.Requried Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|1
+|The amount to bid
+|Numeric
+
+|===
+
 ====== Optional
+
+.Optional Paramerters
+[cols="1,4,2"]
+|===
+|Index | Description | Data Type 
+
+|2
+|Your maximum bid
+|Numeric
+
+|===
 
 ====== Notifications
 
+Upon a succesfull bid you will see the bid printed in the chat like everyone else. If your bid is too low, or you were automically outbid you will be notified.
+
 ===== Example Usage
+
+To bid 10
+
+[source,cmd]
+----
+/bid 10
+----
+
+To bid 10 with a maxbid of 100
+
+[source,cmd]
+----
+/bid 100
+----
 
 == Configuration
 
 === General Configuration
 
+The configuration of Whippyconomy uses standard Java properties, and the file can be found under `config\plugins\whip\config\whippyconomy-config.properties`
+
+.Configurable Properties
+[cols="1,4,1"]
+|===
+|Key | Description | Data Type 
+
+|currency
+|The symbol to be used for the currency
+|String
+
+|appendCurrency
+|Whether the currency symbol should be appended to the amount (true) or before the amount (false)
+|Boolean
+
+|decPlaces
+|How many decimal places the currency will have
+|Integer
+
+|startingBalance
+|Starting balance for new players
+|Double
+
+|savingsAccounts
+|Whether the savings account feature is active
+|Boolean
+
+|maxOverdraft
+|The overdraft allowed on current accounts
+|Double
+
+|maxTransactionHistory
+|The number of transactions per play to store
+|Integer
+
+|hasAuctions
+|Whether auctions are enabled
+|Boolean
+
+|auctionPrefix
+|An optional string to print before the auction notificaitons
+|String
+
+|maxAuctions
+|The maximum number of auctions allowed in the queue
+|Integer
+
+|defaultIncrement
+|The default increment to be used in auctions
+|Double
+
+|minAuctionTime
+|The minimum amount of time in seconds someone can hold an auction for
+|Integer
+
+|maxAuctionTime
+|The maximum amount of time in seconds someone can hold an auction for
+|Integer
+
+|defaultAuctionTime
+|The default amount of time in seconds an auction will be held for
+|Integer
+
+|===
+
 === Command Permissions
+
+*To be done*
 
 == Distribution & Licensing
 
