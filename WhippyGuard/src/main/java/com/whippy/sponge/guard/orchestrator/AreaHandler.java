@@ -238,6 +238,26 @@ public class AreaHandler {
 		return true;
 		
 	}
+	public boolean canAttackAnimals(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
+			if(isInArea){
+				return area.canAttackAnimals(player.getIdentifier());
+			}
+		}
+		return true;
+		
+	}
+	public boolean canAttackPlayers(Player player, Location block, String worldName) {
+		for (Area area : definedAreas.values()) {
+			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());
+			if(isInArea){
+				return area.canAttackPlayers(player.getIdentifier());
+			}
+		}
+		return true;
+		
+	}
 	public boolean canOpenDoor(Player player, Location block, String worldName) {
 		for (Area area : definedAreas.values()) {
 			boolean isInArea = area.contains(new WorldLocation(worldName, block.getX(), block.getY(), block.getZ()), block.getY(), block.getY());

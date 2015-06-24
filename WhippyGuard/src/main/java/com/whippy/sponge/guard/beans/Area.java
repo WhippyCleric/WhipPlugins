@@ -256,4 +256,14 @@ public class Area {
 	}
 
 
+	public boolean canAttackPlayers(String identifier) {
+		return rights.canAttackPlayers(identifier); 
+	}
+
+
+	public boolean canAttackAnimals(String identifier) {
+		return rights.canAttackAnimals(identifier); 
+	}
+
+
 }
