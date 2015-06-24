@@ -1,5 +1,7 @@
 package com.whippy.sponge.guard.beans;
 
+import java.text.SimpleDateFormat;
+
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 
@@ -15,6 +17,7 @@ public class StaticsHandler {
 	public static final Double BOUNDLESS_NUMBER = -314159.0;
 	private static boolean eventLoggerEnabled = true;
 	private static LoggerHandler loggerHandler;
+	private static SimpleDateFormat formatter = new SimpleDateFormat("ss:mm:hh DDMMYYYY");
 
 	public static Logger getLogger() {
 		return logger;
@@ -53,6 +56,14 @@ public class StaticsHandler {
 
 	public static void setLoggerHandler(LoggerHandler loggerHandler) {
 		StaticsHandler.loggerHandler = loggerHandler;
+	}
+
+	public static SimpleDateFormat getFormatter() {
+		return formatter;
+	}
+
+	public static void setFormatter(SimpleDateFormat formatter) {
+		StaticsHandler.formatter = formatter;
 	}
 	
 }

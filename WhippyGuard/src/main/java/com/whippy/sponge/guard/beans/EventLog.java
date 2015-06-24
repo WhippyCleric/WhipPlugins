@@ -21,5 +21,7 @@ public interface EventLog {
 	public JSONObject getJSONObject();
 	
 	public Date getTime();
+	
+	public void rollbackEvent();
 
 }

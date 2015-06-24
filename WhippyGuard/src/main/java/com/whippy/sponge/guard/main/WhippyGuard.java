@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.EntityInteractionTypes;
+import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.cause.Cause;
@@ -131,7 +132,7 @@ public class WhippyGuard {
 						//Player killed a player, currently don't care
 						
 					}else{
-						PlayerKilledAnimalEvent eventLog  =new PlayerKilledAnimalEvent(player, event.getEntity(),event.getLocation(), new Date());
+						PlayerKilledAnimalEvent eventLog = new PlayerKilledAnimalEvent(player, (Living) event.getEntity(),event.getLocation(), new Date());
 						StaticsHandler.getLoggerHandler().pushEvent(eventLog);
 					}
 				}

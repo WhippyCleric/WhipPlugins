@@ -41,4 +41,10 @@ public class PlayerPlacedBlockEvent implements EventLog {
 		return null;
 	}
 
+	@Override
+	public void rollbackEvent() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
