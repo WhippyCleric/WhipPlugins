@@ -73,6 +73,10 @@ The Whippyconomy plugin is a server side economy and auction plugin built using 
 
 ** Number of auctions allowed to be queued
 
+* Built in fail safes for the auction to ensure winning bidder always gets items, even if disconnected during auction
+
+* Amount bid/max bid is held in a holding account untill they are either outbid or win the auction. At which time they are refunded the amount they are owed.
+
 == General Usage
 
 This plugin is designed to be used for the whole economy of the server. It may be integrated with shop plugins which allow you to override the commands the shop pluign is calling. Alternatively though you can use the WhippyShop Plugin which will be released later (or maybe directly integrated into future versions of Whippyconomy).
@@ -122,10 +126,10 @@ This plugin is designed to be used for the whole economy of the server. It may b
 |<<_auc ,auc>>
 |Used to auction the current item in your hand (or many of this item)
 
-|<<_auccancel ,aucCancel>>
+|<<_auc_c ,auc c>>
 |Used to cancel the current auction
 
-|<<_aucinfo ,aucInfo>>
+|<<_auc_i ,auc i>>
 |Used to look up information about the current auction, and the amount in the queue
 
 |<<_bid ,bid>>
@@ -692,7 +696,7 @@ To auction 10 of the item in your hand, with a starting bid of 50, a minimum inc
 /auc 10 50 11 60 100
 ----
 
-==== aucCancel
+==== auc c
 
 ===== Purpose
 
@@ -720,10 +724,10 @@ To cancel your auction, either in progress (if more than half the time remains) 
 
 [source,cmd]
 ----
-/aucCancel
+/auc c
 ----
 
-==== aucInfo
+==== auc i
 
 ===== Purpose
 
@@ -753,7 +757,7 @@ To get information about the auctions
 
 [source,cmd]
 ----
-/aucInfo
+/auc i
 ----
 
 ==== bid
@@ -879,9 +883,187 @@ The configuration of Whippyconomy uses standard Java properties, and the file ca
 
 |===
 
+=== Alias Configuration
+
+Every command has configurable aliases, for example you may want to make the command `auc cancel` behave the same was as `auc c`.
+
+As well as being able to add aliases for the child commands, you can also add aliases for the root command as well, so you can configure `auction` to behave the same as `auc`
+
+Along with all the aliases you are also able to overide the commands completley, for example you can disable `auc` completly and specify only `auction` is valid. *Please ensure to document this for your users*
+
+Inside the `config\plugins\whip\config\whippyconomy-alias.properties` file you can configure all these options in a list properties defined thus:
+
+.Alaias Configuration for Economy
+[cols="1,4,1"]
+|===
+|Key | Description | Example 
+
+|pay.aliases
+|Add additional aliases for the pay command as csv
+|pay.aliases:p,sendmoney,bribe
+
+|pay.only.aliases
+|Set that only the aliases work, the original pay command will no longer function
+|pay.only.aliases:true
+
+|transfer.aliases
+|Add additional aliases for the transfer command as csv
+|transfer.aliases:tran,swapmoney,forcepay
+
+|transfer.only.aliases
+|Set that only the aliases work, the original transfer command will no longer function
+|transfer.only.aliases:true
+
+|charge.aliases
+|Add additional aliases for the charge command as csv
+|charge.aliases:bill,take
+
+|charge.only.aliases
+|Set that only the aliases work, the original charge command will no longer function
+|charge.only.aliases:true
+
+|bal.aliases
+|Add additional aliases for the bal command as csv
+|charge.aliases:b,ballance,balance
+
+|bal.only.aliases
+|Set that only the aliases work, the original bal command will no longer function
+|bal.only.aliases:true
+
+|baltop.aliases
+|Add additional aliases for the baltop command as csv
+|baltop.aliases:btop,ballancetop,balancetop
+
+|baltop.only.aliases
+|Set that only the aliases work, the original baltop command will no longer function
+|baltop.only.aliases:true
+
+|bank.aliases
+|Add additional aliases for the bank command as csv
+|bank.aliases:save,movetosavings
+
+|bank.only.aliases
+|Set that only the aliases work, the original bank command will no longer function
+|bank.only.aliases:true
+
+|withdraw.aliases
+|Add additional aliases for the withdraw command as csv
+|withdraw.aliases:extract,movetocurrent
+
+|withdraw.only.aliases
+|Set that only the aliases work, the original withdraw command will no longer function
+|withdraw.only.aliases:true
+
+|acchistory.aliases
+|Add additional aliases for the acchistory command as csv
+|acchistory.aliases:extract,movetocurrent
+
+|acchistory.only.aliases
+|Set that only the aliases work, the original acchistory command will no longer function
+|acchistory.only.aliases:true
+
+|===
+
+.Alaias Configuration for Auction
+[cols="1,4,1"]
+|===
+|Key | Description | Example 
+
+|auc.aliases
+|Add additional aliases for the auc command as csv
+|auc.aliases:auction,a
+
+|auc.only.aliases
+|Set that only the aliases work, the original auc command will no longer function
+|auc.only.aliases:true
+
+|auc.c.aliases
+|Add additional aliases for the c command, the child of auc, as csv
+|auc.c.aliases:cancel,remove
+
+|auc.c.only.aliases
+|Set that only the aliases work, the child command c will no longer function
+|auc.c.only.aliases:true
+
+|auc.i.aliases
+|Add additional aliases for the i command, the child of auc, as csv
+|auc.i.aliases:info,information
+
+|auc.i.only.aliases
+|Set that only the aliases work, the child command i will no longer function
+|auc.i.only.aliases:true
+
+|bid.aliases
+|Add additional aliases for the bid command as csv
+|bid.aliases:punt,haveago
+
+|bid.only.aliases
+|Set that only the aliases work, the original bid command will no longer function
+|bid.only.aliases:true
+
+|===
+
 === Command Permissions
 
-*To be done*
+It is recomended to use Pex for the permissions management below are all the permission nodes for Whippyconomy
+
+.Permission Nodes - Economy
+[cols="1,4"]
+|===
+
+|Node | Description  
+
+|whippyconomy.pay
+|The node to specify who has rights to use the pay command
+
+|whippyconomy.transfer
+|The node to specify who has rights to use the transfer command
+
+|whippyconomy.charge
+|The node to specify who has rights to use the charge command
+
+|whippyconomy.bal.own
+|The node to specify who has rights to check their own ballance
+
+|whippyconomy.bal.others
+|The node to specify who has rights to check other players ballances
+
+|whippyconomy.baltop
+|The node to specify who has rights to use the baltop command
+
+|whippyconomy.bank
+|The node to specify who has rights to use the bank command
+
+|whippyconomy.withdraw
+|The node to specify who has rights to use the withdraw command
+
+|whippyconomy.accHistory.own
+|The node to specify who has rights to check their own account history
+
+|whippyconomy.accHistory.others
+|The node to specify who has rights to check other players account history
+
+|===
+
+.Permission Nodes - Auction
+[cols="1,4"]
+|===
+
+|Node | Description  
+
+|whippyconomy.auc
+|The node to specify who has rights to use the auc command
+
+|whippyconomy.auc.c
+|The node to specify who has rights to use the auc c command
+
+|whippyconomy.auc.i
+|The node to specify who has rights to use the auc i command
+
+|whippyconomy.bid
+|The node to specify who has rights to use the bid command
+
+|===
 
 == Distribution & Licensing
 
