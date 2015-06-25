@@ -143,7 +143,7 @@ The command is used to finalise the creation of an area. After defining 2 points
 
 ===== Optional
 
-.Table Optional Paramerters
+.Optional Paramerters
 [cols="1,4,2"]
 |===
 |Index | Description | Data Type 

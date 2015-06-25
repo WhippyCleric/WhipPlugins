@@ -1,6 +1,7 @@
 package com.whippy.sponge.whipconomy.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.util.command.args.GenericArguments;
+import org.spongepowered.api.util.command.spec.CommandExecutor;
+import org.spongepowered.api.util.command.spec.CommandSpec;
 
 import com.google.inject.Inject;
 import com.whippy.sponge.whipconomy.beans.Payment;
@@ -25,8 +29,8 @@ import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
 import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
-import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
+import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -95,11 +99,34 @@ public class Whipconomy {
 	}
 
 	
+	private void registerCommand(String description, String permission, CommandExecutor executor, List<String> aliases){
+		CommandSpec myCommandSpec = CommandSpec.builder()
+			    .description(Texts.of(description))
+			    .permission(permission)
+			    .executor(executor)
+			    .build();
+		
+		CommandService cmdService = game.getCommandDispatcher();
+		cmdService.register(this, myCommandSpec, aliases);
+	}
+
+	
 	@Subscribe
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
-		cmdService.register(this, new BalCommand(), "bal");
-		cmdService.register(this, new PayCommand(), "pay");
+
+		registerCommand("Display account ballance", "whippyconomy.bal", new BalCommand(), Arrays.asList("bal"));
+		
+		CommandSpec payCommandSpec = CommandSpec.builder()
+			    .description(Texts.of("Pay another player"))
+			    .permission("whippyconomy.pay").
+			    arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerName"))))
+			    .executor(new PayCommand())
+			    .build();
+		
+		cmdService.register(this, payCommandSpec, Arrays.asList("pay"));
+		
+		
 		cmdService.register(this, new TransactionsCommand(), "accHistory");
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
