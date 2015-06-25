@@ -640,7 +640,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_example_usage_9">Example Usage</a></li>
 </ul>
 </li>
-<li><a href="#_auccancel">5.2.2. aucCancel</a>
+<li><a href="#_auc_c">5.2.2. auc c</a>
 <ul class="sectlevel4">
 <li><a href="#_purpose_10">Purpose</a></li>
 <li><a href="#_parameters_10">Parameters</a>
@@ -653,7 +653,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_example_usage_10">Example Usage</a></li>
 </ul>
 </li>
-<li><a href="#_aucinfo">5.2.3. aucInfo</a>
+<li><a href="#_auc_i">5.2.3. auc i</a>
 <ul class="sectlevel4">
 <li><a href="#_purpose_11">Purpose</a></li>
 <li><a href="#_parameters_11">Parameters</a>
@@ -686,7 +686,8 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#_configuration">6. Configuration</a>
 <ul class="sectlevel2">
 <li><a href="#_general_configuration">6.1. General Configuration</a></li>
-<li><a href="#_command_permissions">6.2. Command Permissions</a></li>
+<li><a href="#_alias_configuration">6.2. Alias Configuration</a></li>
+<li><a href="#_command_permissions">6.3. Command Permissions</a></li>
 </ul>
 </li>
 <li><a href="#_distribution_licensing">7. Distribution &amp; Licensing</a></li>
@@ -900,11 +901,11 @@ table.CodeRay td.code>pre{padding:0}
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used to auction the current item in your hand (or many of this item)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_auccancel">aucCancel</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_auc_c">auc c</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used to cancel the current auction</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_aucinfo">aucInfo</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#_auc_i">auc i</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Used to look up information about the current auction, and the amount in the queue</p></td>
 </tr>
 <tr>
@@ -1751,7 +1752,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 <div class="sect3">
-<h4 id="_auccancel"><a class="anchor" href="#_auccancel"></a>5.2.2. aucCancel</h4>
+<h4 id="_auc_c"><a class="anchor" href="#_auc_c"></a>5.2.2. auc c</h4>
 <div class="sect4">
 <h5 id="_purpose_10"><a class="anchor" href="#_purpose_10"></a>Purpose</h5>
 <div class="paragraph">
@@ -1789,13 +1790,13 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="cmd">/aucCancel</code></pre>
+<pre class="CodeRay highlight"><code data-lang="cmd">/auc c</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_aucinfo"><a class="anchor" href="#_aucinfo"></a>5.2.3. aucInfo</h4>
+<h4 id="_auc_i"><a class="anchor" href="#_auc_i"></a>5.2.3. auc i</h4>
 <div class="sect4">
 <h5 id="_purpose_11"><a class="anchor" href="#_purpose_11"></a>Purpose</h5>
 <div class="paragraph">
@@ -1836,7 +1837,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="cmd">/aucInfo</code></pre>
+<pre class="CodeRay highlight"><code data-lang="cmd">/auc i</code></pre>
 </div>
 </div>
 </div>
@@ -2028,10 +2029,261 @@ table.CodeRay td.code>pre{padding:0}
 </table>
 </div>
 <div class="sect2">
-<h3 id="_command_permissions"><a class="anchor" href="#_command_permissions"></a>6.2. Command Permissions</h3>
+<h3 id="_alias_configuration"><a class="anchor" href="#_alias_configuration"></a>6.2. Alias Configuration</h3>
 <div class="paragraph">
-<p><strong>To be done</strong></p>
+<p>Every command has configurable aliases, for example you may want to make the command <code>auc cancel</code> behave the same was as <code>auc c</code>.</p>
 </div>
+<div class="paragraph">
+<p>As well as being able to add aliases for the child commands, you can also add aliases for the root command as well, so you can configure <code>auction</code> to behave the same as <code>auc</code></p>
+</div>
+<div class="paragraph">
+<p>Along with all the aliases you are also able to overide the commands completley, for example you can disable <code>auc</code> completly and specify only <code>auction</code> is valid. <strong>Please ensure to document this for your users</strong></p>
+</div>
+<div class="paragraph">
+<p>Inside the <code>config\plugins\whip\config\whippyconomy-alias.properties</code> file you can configure all these options in a list properties defined thus:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 15. Alaias Configuration for Economy</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 66%;">
+<col style="width: 16%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pay.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the pay command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pay.aliases:p,sendmoney,bribe</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pay.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original pay command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pay.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transfer.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the transfer command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transfer.aliases:tran,swapmoney,forcepay</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transfer.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original transfer command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">transfer.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">charge.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the charge command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">charge.aliases:bill,take</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">charge.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original charge command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">charge.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bal.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the bal command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">charge.aliases:b,ballance,balance</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bal.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original bal command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bal.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baltop.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the baltop command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baltop.aliases:btop,ballancetop,balancetop</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baltop.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original baltop command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">baltop.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bank.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the bank command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bank.aliases:save,movetosavings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bank.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original bank command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bank.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">withdraw.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the withdraw command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">withdraw.aliases:extract,movetocurrent</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">withdraw.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original withdraw command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">withdraw.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acchistory.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the acchistory command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acchistory.aliases:extract,movetocurrent</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acchistory.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original acchistory command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">acchistory.only.aliases:true</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 16. Alaias Configuration for Auction</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 66%;">
+<col style="width: 16%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the auc command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.aliases:auction,a</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original auc command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.c.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the c command, the child of auc, as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.c.aliases:cancel,remove</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.c.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the child command c will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.c.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.i.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the i command, the child of auc, as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.i.aliases:info,information</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.i.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the child command i will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">auc.i.only.aliases:true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bid.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add additional aliases for the bid command as csv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bid.aliases:punt,haveago</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bid.only.aliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set that only the aliases work, the original bid command will no longer function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bid.only.aliases:true</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_command_permissions"><a class="anchor" href="#_command_permissions"></a>6.3. Command Permissions</h3>
+<div class="paragraph">
+<p>It is recomended to use Pex for the permissions management below are all the permission nodes for Whippyconomy</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 17. Permission Nodes - Economy</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Node</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.pay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the pay command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.transfer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the transfer command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.charge</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the charge command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.bal.own</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to check their own ballance</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.bal.others</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to check other players ballances</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.baltop</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the baltop command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.bank</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the bank command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.withdraw</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the withdraw command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.accHistory.own</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to check their own account history</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.accHistory.others</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to check other players account history</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 18. Permission Nodes - Auction</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 80%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Node</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.auc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the auc command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.auc.c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the auc c command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.auc.i</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the auc i command</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">whippyconomy.bid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The node to specify who has rights to use the bid command</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -2057,7 +2309,7 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2015-06-24 18:04:16 CEST
+Last updated 2015-06-25 11:32:24 CEST
 </div>
 </div>
 </body>
