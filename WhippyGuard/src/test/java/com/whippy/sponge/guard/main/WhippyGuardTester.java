@@ -45,7 +45,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -97,7 +97,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -129,7 +129,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -162,7 +162,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -221,7 +221,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -280,7 +280,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);
@@ -339,7 +339,7 @@ public class WhippyGuardTester {
 		ItemStack mockItemStack = spongeObjectCreator.createMockItemStack(ItemTypes.BONE, 1);
 		Player mockPlayer = spongeObjectCreator.createRandomPlayerWithObject(mockItemStack);
 		World mockWorld = mock(World.class);
-		when(mockEvent.getPlayer()).thenReturn(mockPlayer);
+		when(mockEvent.getEntity()).thenReturn(mockPlayer);
 		when(mockPlayer.getWorld()).thenReturn(mockWorld);
 		when(mockWorld.getName()).thenReturn(MOCK_WORLD);
 		when(mockEvent.getInteractionType()).thenReturn(EntityInteractionTypes.USE);

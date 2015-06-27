@@ -54,7 +54,7 @@ public class WhipCommands {
 	
 	@Subscribe
 	public void onPlayerEnterBed(PlayerEnterBedEvent event) {
-		CommandConfiguration.setBedHome(event.getPlayer());
+		CommandConfiguration.setBedHome(event.getEntity());
 	}
 	
 	@Subscribe 

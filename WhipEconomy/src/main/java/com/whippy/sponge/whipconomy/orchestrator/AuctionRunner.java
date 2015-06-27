@@ -5,9 +5,6 @@ import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
 public class AuctionRunner extends Thread{
 
-
-
-
 	@Override
 	public void run(){
 		while(ConfigurationLoader.hasAuctions()){

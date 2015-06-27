@@ -15,13 +15,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.whippy.sponge.guard.beans.EventLog;
+import com.whippy.sponge.guard.beans.StaticsHandler;
 
 public class LoggerHandler {
 
 	private static final String EVENT_LOG_PATH = ".\\config\\plugins\\whip\\data\\eventlog.json";;
 	private Map<String, List<EventLog>> events;
 	
-	public LoggerHandler() throws IOException, ParseException{
+	public LoggerHandler(){
 		events  = new HashMap<String, List<EventLog>>();
 		refreshFromFile();
 	}
@@ -62,7 +63,8 @@ public class LoggerHandler {
 		}
 	}
 	
-	private synchronized void refreshFromFile() throws IOException, ParseException{
+	private synchronized void refreshFromFile(){
+		try{
 		events = new HashMap<String, List<EventLog>>();
 
 		FileReader reader = new FileReader(EVENT_LOG_PATH);
@@ -75,6 +77,11 @@ public class LoggerHandler {
 		for (Object eventObj : allEvents) {
 			JSONObject eventJson = (JSONObject) eventObj;
 			pushEvent(getEventFromJSONObject(eventJson));
+		}
+		}catch(IOException e){
+			StaticsHandler.getLogger().info("No history found");
+		} catch (ParseException e) {
+			StaticsHandler.getLogger().info("Failed to parse event history");
 		}
 	}
 	

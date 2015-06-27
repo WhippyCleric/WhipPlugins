@@ -119,23 +119,31 @@ public class Whipconomy {
 		
 		CommandSpec payCommandSpec = CommandSpec.builder()
 			    .description(Texts.of("Pay another player"))
-			    .permission("whippyconomy.pay").
-			    arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerName"))))
+			    .permission("whippyconomy.pay")
+			    .arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerName")))
+			    ,GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
 			    .executor(new PayCommand())
 			    .build();
 		
 		cmdService.register(this, payCommandSpec, Arrays.asList("pay"));
 		
+		CommandSpec accHistoryCommandSpec = CommandSpec.builder()
+			    .description(Texts.of("List a history of transactions"))
+			    .permission("whippyconomy.accHistory.own")
+			    .arguments(GenericArguments.optional(GenericArguments.integer((Texts.of("numberOfTransactions")))
+			    ,GenericArguments.optional(GenericArguments.string(Texts.of("playerName")))))
+			    .executor(new TransactionsCommand())
+			    .build();
 		
-		cmdService.register(this, new TransactionsCommand(), "accHistory");
+		
+		cmdService.register(this, accHistoryCommandSpec, Arrays.asList("accHistory"));
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
 	        cmdService.register(this, new BidCommand(), "bid");
 		}
 		StaticsHandler.setAuctionCache(new AuctionCache());
 		StaticsHandler.setAuctioneer(new Auctioneer());
-		AuctionRunner runner = new AuctionRunner();
-		runner.run();
+		StaticsHandler.setAuctionRunner(new AuctionRunner());
 	}
 	
 }

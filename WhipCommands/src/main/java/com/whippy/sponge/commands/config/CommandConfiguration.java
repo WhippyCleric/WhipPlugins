@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 
+import com.whippy.sponge.commands.beans.StaticsHandler;
 import com.whippy.sponge.commands.beans.WorldLocation;
 import com.whippy.sponge.commands.beans.PlayerLocations;
 
@@ -109,7 +110,7 @@ public class CommandConfiguration {
 			bedHomes = PlayerLocations.fromJSONObject( bedHomesFromFile);
 			
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			StaticsHandler.getLogger().info("No configuration found");
 		}
 	}
 }

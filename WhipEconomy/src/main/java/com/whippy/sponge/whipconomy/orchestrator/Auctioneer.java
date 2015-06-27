@@ -49,6 +49,7 @@ public class Auctioneer extends Thread {
 
 
 	public synchronized void pushAuctionToQueue(Auction auction, Player player){
+		StaticsHandler.startAuctionsIfNotStarted();
 		if(auctions.size()<maxAuctions){
 			boolean hasAuction = false;
 			for (Auction auctionInQueue : auctions) {

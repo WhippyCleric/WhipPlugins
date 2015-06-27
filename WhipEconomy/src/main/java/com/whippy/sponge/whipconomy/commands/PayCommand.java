@@ -13,6 +13,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
@@ -37,25 +38,26 @@ public class PayCommand implements CommandExecutor {
 	}
 	
 	@Override
-	public CommandResult execute(CommandSource source, CommandContext arg1) throws CommandException {
+	public CommandResult execute(CommandSource source, CommandContext commandArgs) throws CommandException {
 		Logger logger = StaticsHandler.getLogger();
 		if(source instanceof Player){
 			Player player = (Player) source;
-			if(arguments==null){
-				player.sendMessage(Texts.builder("Must enter who to, and an amount to transfer").color(TextColors.RED).build());
-			}else{
-				String[] args = arguments.split(" ");
-				if(args.length<2){
-					player.sendMessage(Texts.builder("Must enter who to, and an amount to transfer").color(TextColors.RED).build());
-				}else{
-					String whoTo = args[0];
-					String amountString = args[1];
-					Double amount = Double.parseDouble(amountString);
-					EconomyCache.transfer(player, whoTo, amount);
+			Optional<Object> optionalPlayerName = commandArgs.getOne("playerName");
+			Optional<Object> optionalAmountName = commandArgs.getOne("amount");
+			if(optionalPlayerName.isPresent() && optionalAmountName.isPresent()){
+				String playerName = (String) optionalPlayerName.get();
+				try{
+					Double amount = Double.valueOf((String) optionalAmountName.get()); 
+					EconomyCache.transfer(player, playerName, amount);
+				}catch(NumberFormatException e){
+					player.sendMessage(Texts.builder("Amount must be numeric").color(TextColors.RED).build());					
 				}
+			}else{
+				
+				player.sendMessage(Texts.builder("Must enter who to, and an amount to transfer").color(TextColors.RED).build());
 			}
 		}else{
-			logger.warn("Transfer called by non player entity");
+			logger.warn("Pay called by non player entity");
 		}
 		return null;
 	}

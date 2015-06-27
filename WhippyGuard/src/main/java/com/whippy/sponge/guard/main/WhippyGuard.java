@@ -73,7 +73,7 @@ public class WhippyGuard {
 	
 	@Subscribe 
 	public void onPlayerBreakBlockEvent(PlayerBreakBlockEvent event){
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		Location block = event.getBlock();
 		String worldName = player.getWorld().getName();
 		if(!StaticsHandler.getAreaHandler().canBreak(player, block, worldName)){
@@ -83,7 +83,7 @@ public class WhippyGuard {
 	}
 	@Subscribe 
 	public void onPlayerPlaceBlockEvent(PlayerPlaceBlockEvent event){
-		Player player = event.getPlayer();
+		Player player = event.getEntity();
 		Location block = event.getBlock();
 		String worldName = player.getWorld().getName();
 		if(!StaticsHandler.getAreaHandler().canPlace(player, block, worldName)){
@@ -94,7 +94,7 @@ public class WhippyGuard {
 	
 	@Subscribe
 	public void onPlayerInteractEvent(PlayerInteractEvent event){
-		Optional<ItemStack> itemInHand = event.getPlayer().getItemInHand();
+		Optional<ItemStack> itemInHand = event.getEntity().getItemInHand();
 		if(itemInHand.isPresent()){
 			ItemType item = itemInHand.get().getItem();
 			String id = item.getId();
@@ -104,9 +104,9 @@ public class WhippyGuard {
 						inRightClick = true;
 						if(event.getClickedPosition().isPresent()){
 							Vector3d vectorPoint = event.getClickedPosition().get();
-							World world = event.getPlayer().getWorld();
+							World world = event.getEntity().getWorld();
 							WorldLocation point = new WorldLocation(world.getName(), vectorPoint.getX(), vectorPoint.getY(), vectorPoint.getZ());
-							StaticsHandler.getAreaHandler().playerAreaDefineClick( event.getPlayer(), point);
+							StaticsHandler.getAreaHandler().playerAreaDefineClick( event.getEntity(), point);
 						}
 					}else if (RIGHT_CLICK_BUG){
 						inRightClick = false;						

@@ -210,7 +210,7 @@ public class AreaHandler {
 				definedAreas.put(areaName, area);
 			}			
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			StaticsHandler.getLogger().info("No configuration found");
 		}
 	}
 	

@@ -1,8 +1,15 @@
 package com.whippy.sponge.whipconomy.cache;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.whippy.sponge.whipconomy.beans.Account;
 
 public class ConfigurationLoader {
 
@@ -18,7 +25,7 @@ public class ConfigurationLoader {
 	private static int minAuctionTime;
 	private static int maxAuctionTime;
 	private static int maxAuctions;
-
+	private static int defaultAuctionTime;
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
 	public static boolean init(){
@@ -26,34 +33,64 @@ public class ConfigurationLoader {
 			FileReader reader = new FileReader(CONFIG_PATH);
 			Properties props = new Properties();
 			props.load(reader);
-			currency = props.getProperty("Currency");
-			decPlaces = Integer.parseInt(props.getProperty("MacDecimalPlaces"));
-			appendCurrency = Boolean.parseBoolean(props.getProperty("AppendCurrency"));
-			startingBallance = Double.parseDouble(props.getProperty("StartingBalance"));
-			maxOverdraft = Double.parseDouble(props.getProperty("MaxOverdraft"));
-			maxTransactionHistory =Integer.parseInt(props.getProperty("MaxTransactionHistory"));
+			setValues(props);
 
-			auctionPrefix = "[WhipAuction] ";
-			defaultIncrement = 1;
-			minAuctionTime = 45;
-			maxAuctionTime=90;
-			hasAuctions = true;
-			maxAuctions=4;
 			return true;
 		} catch (IOException e) {
-			currency = "$";
-			decPlaces = 2;
-			startingBallance = 0;
-			maxOverdraft = 0;
-			maxTransactionHistory = 30;
-			auctionPrefix = "[WhipAuction] ";
-			hasAuctions = true;
-			defaultIncrement = 1;
-			minAuctionTime = 45;
-			maxAuctionTime=90;
-			maxAuctions=4;
+			Properties props = new Properties();
+			props.put("currency", "$");
+			props.put("decPlaces", "2");
+			props.put("appendCurrency", false);
+			props.put("startingBalance", "0");
+			props.put("maxOverdraft", "0");
+			props.put("maxTransactionHistory", "30");
+			props.put("hasAuctions", true);
+			props.put("auctionPrefix", "[WhipAuction] ");
+			props.put("defaultIncrement", "1");
+			props.put("minAuctionTime", "45");
+			props.put("maxAuctionTime", "90");
+			props.put("defaultAuctionTime", "60");
+			props.put("maxAuctions", "4");
+			setValues(props);
+			try{
+				File accountsFile = new File(CONFIG_PATH);
+				if(!accountsFile.exists()) {
+					accountsFile.getParentFile().mkdirs();
+				    accountsFile.createNewFile();
+				} 
+				FileWriter file = new FileWriter(CONFIG_PATH);
+				StringBuilder propertyBuilder = new StringBuilder();
+				for (Object key : props.keySet()) {
+					propertyBuilder.append(key);
+					propertyBuilder.append("=");
+					propertyBuilder.append(props.get(key));
+					propertyBuilder.append("\n");
+				}
+				file.write(propertyBuilder.toString());
+				file.flush();
+				file.close();
+			}catch(Exception e1){
+				e1.printStackTrace();
+				
+			}
 			return false;
 		}
+	}
+	
+	private static void setValues(Properties props){
+		currency = props.getProperty("currency");
+		decPlaces = Integer.parseInt(props.getProperty("decPlaces"));
+		appendCurrency = Boolean.parseBoolean(props.getProperty("appendCurrency"));
+		startingBallance = Double.parseDouble(props.getProperty("startingBalance"));
+		maxOverdraft = Double.parseDouble(props.getProperty("maxOverdraft"));
+		maxTransactionHistory =Integer.parseInt(props.getProperty("maxTransactionHistory"));
+		hasAuctions = Boolean.parseBoolean(props.getProperty("hasAuctions"));
+		auctionPrefix = props.getProperty("auctionPrefix");
+		defaultIncrement= Double.parseDouble(props.getProperty("defaultIncrement"));
+		minAuctionTime =Integer.parseInt(props.getProperty("minAuctionTime"));
+		maxAuctionTime =Integer.parseInt(props.getProperty("maxAuctionTime"));
+		maxAuctions =Integer.parseInt(props.getProperty("maxAuctions"));
+		defaultAuctionTime = Integer.parseInt(props.getProperty("defaultAuctionTime"));
 	}
 	
 	public static int getMinAuctionTime() {
@@ -105,6 +142,11 @@ public class ConfigurationLoader {
 	public static int getMaxAuctions() {
 		return maxAuctions;
 	}
+
+	public static int getDefaultAuctionTime() {
+		return defaultAuctionTime;
+	}
+
 
 
 

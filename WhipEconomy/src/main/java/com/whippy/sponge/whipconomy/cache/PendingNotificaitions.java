@@ -13,6 +13,7 @@ import org.json.simple.parser.JSONParser;
 
 import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Payment;
+import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
 public class PendingNotificaitions {
 
@@ -66,7 +67,7 @@ public class PendingNotificaitions {
 				playerIdsToPayments.put(playerId, payments);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			StaticsHandler.getLogger().info("No pending notifications file found");
 		}
 	}
 	

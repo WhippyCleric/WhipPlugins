@@ -12,6 +12,8 @@ import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.util.command.args.CommandContext;
+import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
@@ -19,71 +21,41 @@ import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.exceptions.GetTransactionException;
 
 
-public class TransactionsCommand implements CommandCallable {
+public class TransactionsCommand implements CommandExecutor{
 
     //~ ----------------------------------------------------------------------------------------------------------------
     //~ Methods 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public Optional<Text> getHelp(CommandSource arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    public Optional<Text> getShortDescription(CommandSource arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        
 
-    @Override
-    public List<String> getSuggestions(CommandSource arg0, String arg1) throws CommandException {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Text getUsage(CommandSource arg0) {
-        return Texts.builder("/transactions <number>").color(TextColors.GOLD).build();
-    }
-
-    @Override
-    public Optional<CommandResult> process(CommandSource sender, String arguments) throws CommandException {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            if (arguments == null) {
-                player.sendMessage(Texts.builder("Must enter number of transactions to print!").color(TextColors.RED).build());
-            } else {
-                String[] args = arguments.split(" ");
-                if (args.length != 1) {
-                    player.sendMessage(Texts.builder("Only 1 argument needed for this command!").color(TextColors.RED).build());
-                } else {
-                    String numberString = args[0];
-                    try {
-                        if (numberString == null) {
-                            numberString = "10";
-                        }
-                        int number = Integer.parseInt(numberString);
-                        if (number <= 0) {
-                            number = 10;
-                        }
-                        EconomyCache.getLastTransactions(player, number);
-                    } catch (NumberFormatException e) {
-                        process(sender, "10");
-                    } catch (GetTransactionException e) {
-                        player.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());
-                    }
-                }
+	@Override
+	public CommandResult execute(CommandSource sender, CommandContext args)throws CommandException {
+		if (sender instanceof Player) {
+            
+			Player player = (Player) sender;
+            String playerName;
+			int numberOfTransactions;
+            
+            
+            if(args.getOne("numberOfTransactions").isPresent()){
+            	numberOfTransactions = (Integer) args.getOne("numberOfTransactions").get();
+            }else{
+            	numberOfTransactions = 10;
             }
+            if(args.getOne("playerName").isPresent()){
+            	player.hasPermission("whippyconomy.accHistory.others");
+            	playerName = (String) args.getOne("playerName").get();
+            }else{
+            	playerName = player.getName();
+            }
+			EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
+	
+            
         } else {
         	StaticsHandler.getLogger().warn("Transactions called by non player entity");
         }
         return null;
     }
-
-    @Override
-    public boolean testPermission(CommandSource arg0) {
-        return true;
-    }
-
 }

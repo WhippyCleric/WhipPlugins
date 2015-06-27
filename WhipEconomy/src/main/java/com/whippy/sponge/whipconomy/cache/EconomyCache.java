@@ -108,10 +108,14 @@ public class EconomyCache {
 		return receiverPayment;
 	}
 
-	public synchronized static void getLastTransactions(Player player, int number) throws GetTransactionException{
-		Account account = playerIdsToAccounts.get(player.getIdentifier());
+	public synchronized static void getLastTransactions(Player player, String playerName, int number) {
+		String playerID = playerNameToID.get("playerName");
+		if(playerID==null||playerID.isEmpty()){
+			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric").color(TextColors.RED).build());
+		}	
+		Account account = playerIdsToAccounts.get(playerID);
 		if(account==null){
-			player.sendMessage(Texts.builder("Player " + player.getName() + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric").color(TextColors.RED).build());
+			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric").color(TextColors.RED).build());
 		}	
 		List<Payment> transactions = account.getPayments();
 		int size = transactions.size();
@@ -280,7 +284,7 @@ public class EconomyCache {
 				playerNameToID.put(playerName, playerId);
 			}
 		} catch (IOException | ParseException e) {
-			e.printStackTrace();
+			StaticsHandler.getLogger().info("No configuration found");
 		}
 	}
 	
@@ -311,7 +315,7 @@ public class EconomyCache {
 				playerIdsToAccounts.put(playerId, account);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			StaticsHandler.getLogger().info("No accounts file found");
 		}
 	}
 	
