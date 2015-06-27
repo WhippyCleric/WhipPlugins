@@ -37,8 +37,7 @@ public class TransactionsCommand implements CommandExecutor{
 			Player player = (Player) sender;
             String playerName;
 			int numberOfTransactions;
-            
-            
+
             if(args.getOne("numberOfTransactions").isPresent()){
             	numberOfTransactions = (Integer) args.getOne("numberOfTransactions").get();
             }else{
@@ -54,6 +53,7 @@ public class TransactionsCommand implements CommandExecutor{
             }else{
             	playerName = player.getName();
             }
+			EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
 	
             
         } else {
