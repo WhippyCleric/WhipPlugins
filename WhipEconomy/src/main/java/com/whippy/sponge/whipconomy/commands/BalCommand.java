@@ -40,8 +40,9 @@ public class BalCommand implements CommandExecutor {
 	            player.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
 	        } else {
 	        	StaticsHandler.getLogger().warn("Bal called by non player entity");
+	        	return CommandResult.empty();
 	        }
-	        return null;
+	        return CommandResult.success();
 	}
 
 }

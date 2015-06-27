@@ -45,17 +45,22 @@ public class TransactionsCommand implements CommandExecutor{
             	numberOfTransactions = 10;
             }
             if(args.getOne("playerName").isPresent()){
-            	player.hasPermission("whippyconomy.accHistory.others");
-            	playerName = (String) args.getOne("playerName").get();
+            	if(player.hasPermission("whippyconomy.accHistory.others")){            		
+            		playerName = (String) args.getOne("playerName").get();
+            	}else{
+            		player.sendMessage(Texts.builder("You do not have permission to sue that command").color(TextColors.RED).build());
+            		return CommandResult.empty();
+            	}
             }else{
             	playerName = player.getName();
             }
-			EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
 	
             
         } else {
         	StaticsHandler.getLogger().warn("Transactions called by non player entity");
+        	return CommandResult.empty();
         }
-        return null;
+		return CommandResult.success();
+
     }
 }

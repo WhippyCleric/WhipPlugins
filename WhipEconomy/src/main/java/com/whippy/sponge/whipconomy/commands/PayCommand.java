@@ -51,15 +51,17 @@ public class PayCommand implements CommandExecutor {
 					EconomyCache.transfer(player, playerName, amount);
 				}catch(NumberFormatException e){
 					player.sendMessage(Texts.builder("Amount must be numeric").color(TextColors.RED).build());					
+					return CommandResult.empty();
 				}
-			}else{
-				
+			}else{				
 				player.sendMessage(Texts.builder("Must enter who to, and an amount to transfer").color(TextColors.RED).build());
+				return CommandResult.empty();
 			}
 		}else{
 			logger.warn("Pay called by non player entity");
+			return CommandResult.empty();
 		}
-		return null;
+		return CommandResult.success();
 	}
 
 }
