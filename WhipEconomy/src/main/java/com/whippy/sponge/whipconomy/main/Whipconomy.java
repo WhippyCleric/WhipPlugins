@@ -133,7 +133,6 @@ public class Whipconomy {
 		
 		cmdService.register(this, accHistoryCommandSpec, Arrays.asList("accHistory"));
 		
-		
 		CommandSpec chargeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Charge another player money"))
 				.permission("whippyconomy.charge")
@@ -143,6 +142,17 @@ public class Whipconomy {
 				.build();
 		
 		cmdService.register(this, chargeCommandSpec, Arrays.asList("charge"));
+		
+		CommandSpec transferCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Transfer money from one player to another"))
+				.permission("whippyconomy.transfer")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerNameFrom")))
+				,GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerNameTo")))
+				,GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
+				.executor(new TransactionsCommand())
+				.build();
+		
+		cmdService.register(this, transferCommandSpec, Arrays.asList("transfer"));
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");

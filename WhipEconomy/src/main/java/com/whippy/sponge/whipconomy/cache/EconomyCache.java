@@ -26,7 +26,6 @@ import com.google.common.collect.HashBiMap;
 import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
-import com.whippy.sponge.whipconomy.exceptions.GetTransactionException;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
 import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
@@ -41,20 +40,26 @@ public class EconomyCache {
 	private static BiMap<String, String> playerNameToID;
 	private static Map<String, Account> playerIdsToAccounts;
 
-	public synchronized static void transfer(Player playerFrom, String playerTo, double amount){
-		try{
-			Payment receiverPayment = transferWithName(playerFrom.getName(), playerTo, amount);		
+	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
+		try {
+			Payment receiverPayment = transferWithName(playerFrom, playerTo, amount);
+			String playerFromId = EconomyCache.getId(playerFrom);
+			String playerToId = EconomyCache.getId(playerTo);
 			StringBuilder messageBuilder = new StringBuilder();
 			messageBuilder.append("Transfer complete, new balance: ");
 			if(!ConfigurationLoader.isAppendCurrency()){
 				messageBuilder.append(ConfigurationLoader.getCurrency());
-				messageBuilder.append(getBalance(playerFrom.getIdentifier()));
+				messageBuilder.append(getBalance(playerFromId));
 			}else{
-				messageBuilder.append(getBalance(playerFrom.getIdentifier()));
+				messageBuilder.append(getBalance(playerFromId));
 				messageBuilder.append(ConfigurationLoader.getCurrency());
 			}
-			playerFrom.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
-			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom.getName() +  " " + playerTo + " " + amount);
+			if(player!=null){			
+				player.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
+			}else{
+				StaticsHandler.getLogger().warn(messageBuilder.toString());
+			}
+			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom +  " " + playerTo + " " + amount);
 			PlayerNotifier notifier = new PlayerNotifier();
 			StringBuilder paymentReceived = new StringBuilder();
 			paymentReceived.append("Recevied ");
@@ -66,14 +71,26 @@ public class EconomyCache {
 				paymentReceived.append(ConfigurationLoader.getCurrency());
 			}
 			paymentReceived.append(" from ");
-			paymentReceived.append(playerFrom.getName());
-			if(!notifier.notify(Texts.builder(paymentReceived.toString()).color(TextColors.GREEN).build(), UUID.fromString(EconomyCache.getId(playerTo)))){
+			paymentReceived.append(playerFrom);
+			if(!notifier.notify(Texts.builder(paymentReceived.toString()).color(TextColors.GREEN).build(), UUID.fromString(playerToId))){
 				PendingNotificaitions.addPayment(EconomyCache.getId(playerTo), receiverPayment);
 			}
-
-		}catch(TransferException e){
-			playerFrom.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());
-		}
+			if(player!=null && !player.getName().equals(playerFrom)){
+				if(!notifier.notify(Texts.builder(paymentReceived.toString()).color(TextColors.GREEN).build(), UUID.fromString(playerFromId))){
+					PendingNotificaitions.addPayment(playerToId, receiverPayment);
+				}
+			}
+		} catch (TransferException e) {
+			if(player==null){
+				StaticsHandler.getLogger().warn(e.getMessage());
+			}else{
+				player.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());
+			}
+		}	
+	}
+	
+	public synchronized static void transfer(Player playerFrom, String playerTo, double amount){
+		transfer(playerFrom, playerFrom.getName(), playerTo, amount);
 	}
 
 

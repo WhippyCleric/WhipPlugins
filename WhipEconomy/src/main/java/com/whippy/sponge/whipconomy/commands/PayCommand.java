@@ -42,20 +42,12 @@ public class PayCommand implements CommandExecutor {
 		Logger logger = StaticsHandler.getLogger();
 		if(source instanceof Player){
 			Player player = (Player) source;
-			Optional<Object> optionalPlayerName = commandArgs.getOne("playerName");
-			Optional<Object> optionalAmountName = commandArgs.getOne("amount");
-			if(optionalPlayerName.isPresent() && optionalAmountName.isPresent()){
-				String playerName = (String) optionalPlayerName.get();
-				try{
-					Double amount = Double.valueOf((String) optionalAmountName.get()); 
-					EconomyCache.transfer(player, playerName, amount);
-				}catch(NumberFormatException e){
-					player.sendMessage(Texts.builder("Amount must be numeric").color(TextColors.RED).build());					
-					return CommandResult.empty();
-				}
-			}else{				
-				player.sendMessage(Texts.builder("Must enter who to, and an amount to transfer").color(TextColors.RED).build());
-				return CommandResult.empty();
+			String playerName = (String) commandArgs.getOne("playerName").get();
+			try{				
+				Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
+				EconomyCache.transfer(player, playerName, amount);
+			}catch(NumberFormatException e){
+				player.sendMessage(Texts.builder("Amount to transfer must be numeric!").color(TextColors.RED).build());
 			}
 		}else{
 			logger.warn("Pay called by non player entity");
