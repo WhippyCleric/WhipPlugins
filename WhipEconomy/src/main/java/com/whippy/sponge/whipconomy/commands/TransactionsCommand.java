@@ -13,6 +13,7 @@ import org.spongepowered.api.util.command.CommandException;
 import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
+import org.spongepowered.api.util.command.args.CommandElement;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import com.google.common.base.Optional;
@@ -23,44 +24,43 @@ import com.whippy.sponge.whipconomy.exceptions.GetTransactionException;
 
 public class TransactionsCommand implements CommandExecutor{
 
-    //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Methods 
-    //~ ----------------------------------------------------------------------------------------------------------------
+	//~ ----------------------------------------------------------------------------------------------------------------
+	//~ Methods 
+	//~ ----------------------------------------------------------------------------------------------------------------
 
 
-        
+
 
 	@Override
 	public CommandResult execute(CommandSource sender, CommandContext args)throws CommandException {
 		if (sender instanceof Player) {
-            
+
 			Player player = (Player) sender;
-            String playerName;
+			String playerName;
 			int numberOfTransactions;
 
-            if(args.getOne("numberOfTransactions").isPresent()){
-            	numberOfTransactions = (Integer) args.getOne("numberOfTransactions").get();
-            }else{
-            	numberOfTransactions = 10;
-            }
-            if(args.getOne("playerName").isPresent()){
-            	if(player.hasPermission("whippyconomy.accHistory.others")){            		
-            		playerName = (String) args.getOne("playerName").get();
-            	}else{
-            		player.sendMessage(Texts.builder("You do not have permission to sue that command").color(TextColors.RED).build());
-            		return CommandResult.empty();
-            	}
-            }else{
-            	playerName = player.getName();
-            }
+
+			if(args.hasAny("numberOfTransactions")  ){
+				numberOfTransactions = (Integer) args.getOne("numberOfTransactions").get();
+			}else{
+				numberOfTransactions = 10;
+			}
+			if(args.hasAny("playerName")){
+				if(player.hasPermission("whippyconomy.accHistory.others")){            		
+					playerName = (String) args.getOne("playerName").get();
+				}else{
+					player.sendMessage(Texts.builder("You do not have permission to use that command").color(TextColors.RED).build());
+					return CommandResult.empty();
+				}
+			}else{
+				playerName = player.getName();
+			}
 			EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
-	
-            
-        } else {
-        	StaticsHandler.getLogger().warn("Transactions called by non player entity");
-        	return CommandResult.empty();
-        }
+		} else {
+			StaticsHandler.getLogger().warn("Transactions called by non player entity");
+			return CommandResult.empty();
+		}
 		return CommandResult.success();
 
-    }
+	}
 }

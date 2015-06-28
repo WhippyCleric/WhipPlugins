@@ -130,8 +130,8 @@ public class Whipconomy {
 		CommandSpec accHistoryCommandSpec = CommandSpec.builder()
 			    .description(Texts.of("List a history of transactions"))
 			    .permission("whippyconomy.accHistory.own")
-			    .arguments(GenericArguments.optional(GenericArguments.integer((Texts.of("numberOfTransactions")))
-			    ,GenericArguments.optional(GenericArguments.string(Texts.of("playerName")))))
+			    .arguments(GenericArguments.optional(GenericArguments.integer((Texts.of("numberOfTransactions"))), 10)
+			    ,GenericArguments.optional(GenericArguments.string(Texts.of("playerName"))))
 			    .executor(new TransactionsCommand())
 			    .build();
 		

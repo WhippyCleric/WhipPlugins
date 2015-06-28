@@ -75,12 +75,12 @@ public class EconomyCache {
 			playerFrom.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());
 		}
 	}
-	
-	
+
+
 	public static Set<String> getAllPlayers(){
 		return playerNameToID.keySet();
 	}
-	
+
 	public synchronized static Payment transferWithName(String playerFrom, String playerTo, double amount) throws TransferException{
 		String playerToId = playerNameToID.get(playerTo);
 		String playerFromId = playerNameToID.get(playerFrom);
@@ -109,29 +109,35 @@ public class EconomyCache {
 	}
 
 	public synchronized static void getLastTransactions(Player player, String playerName, int number) {
-		String playerID = playerNameToID.get("playerName");
+		String playerID = playerNameToID.get(playerName);
 		if(playerID==null||playerID.isEmpty()){
-			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric").color(TextColors.RED).build());
-		}	
-		Account account = playerIdsToAccounts.get(playerID);
-		if(account==null){
-			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric").color(TextColors.RED).build());
-		}	
-		List<Payment> transactions = account.getPayments();
-		int size = transactions.size();
-		if(size < number){
-			for(int i = 0; i<transactions.size(); i++){
-				Payment transaction = transactions.get(i);
-				player.sendMessage(transaction.toText());
-			}
+			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
 		}else{
-			for(int i = transactions.size()-number; i<transactions.size(); i++){
-				Payment transaction = transactions.get(i);
-				player.sendMessage(transaction.toText());
+			Account account = playerIdsToAccounts.get(playerID);
+			if(account==null){
+				player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
+			}else{			
+				List<Payment> transactions = account.getPayments();
+				if(transactions.size()==0){
+					player.sendMessage(Texts.builder("No transactions found").color(TextColors.BLUE).build());
+				}else{
+					int size = transactions.size();
+					if(size < number){
+						for(int i = 0; i<transactions.size(); i++){
+							Payment transaction = transactions.get(i);
+							player.sendMessage(transaction.toText());
+						}
+					}else{
+						for(int i = transactions.size()-number; i<transactions.size(); i++){
+							Payment transaction = transactions.get(i);
+							player.sendMessage(transaction.toText());
+						}
+					}
+				}
 			}
 		}
 	}
-	
+
 	public synchronized static void pay(String playerId, double amount) throws TransferException{
 		payWithoutPush(playerId, amount);
 		pushFileAccountsUpdate();
@@ -164,14 +170,14 @@ public class EconomyCache {
 		}
 		account.ammendBal(amount*-1);
 	}
-	
+
 	public synchronized static boolean hasAccountByName(String playerName){
 		if(playerNameToID.get(playerName)==null){
 			return false;
 		}
 		return playerIdsToAccounts.containsKey(playerNameToID.get(playerName));
 	}
-	
+
 	public synchronized static boolean hasAccountById(String playerId){
 		return playerIdsToAccounts.containsKey(playerId);
 	}
@@ -199,20 +205,20 @@ public class EconomyCache {
 		}
 		pushFileMappingsUpdate();
 	}
-	
+
 	private synchronized static void createAccount(String playerId){
 		Account account = new Account(playerId);
 		account.ammendBal(ConfigurationLoader.getStartingBallance());
 		playerIdsToAccounts.put(playerId, account);
 		pushFileAccountsUpdate();
 	}
-	
+
 	public synchronized static void pushFileAccountsUpdate(){
 		try{
 			File accountsFile = new File(ACCOUNTS_PATH);
 			if(!accountsFile.exists()) {
 				accountsFile.getParentFile().mkdirs();
-			    accountsFile.createNewFile();
+				accountsFile.createNewFile();
 			} 
 			JSONObject all = new JSONObject();
 			FileWriter file = new FileWriter(ACCOUNTS_PATH);
@@ -227,16 +233,16 @@ public class EconomyCache {
 			file.close();
 		}catch(Exception e){
 			e.printStackTrace();
-			
+
 		}
 	}
-	
+
 	public synchronized static void pushFileMappingsUpdate(){
 		try {
 			File accountsFile = new File(NAME_TO_UID_MAPPINGS);
 			if(!accountsFile.exists()) {
 				accountsFile.getParentFile().mkdirs();
-			    accountsFile.createNewFile();
+				accountsFile.createNewFile();
 			} 
 			JSONObject all = new JSONObject();
 			FileWriter file = new FileWriter(NAME_TO_UID_MAPPINGS);
@@ -260,13 +266,13 @@ public class EconomyCache {
 	public synchronized static double getBalance(String playerId){
 		return round(playerIdsToAccounts.get(playerId).getBal(), ConfigurationLoader.getDecPlaces());
 	}
-	
-	public static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
 
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	public static double round(double value, int places) {
+		if (places < 0) throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 
 	public synchronized static void refreshMappingsFromFile(){
@@ -287,7 +293,7 @@ public class EconomyCache {
 			StaticsHandler.getLogger().info("No configuration found");
 		}
 	}
-	
+
 	public synchronized static void refreshAccountsFromFile(){
 		try{
 			playerIdsToAccounts = new HashMap<String, Account>();
@@ -318,7 +324,7 @@ public class EconomyCache {
 			StaticsHandler.getLogger().info("No accounts file found");
 		}
 	}
-	
+
 	public static String getId(String playerName){
 		return playerNameToID.get(playerName);
 	}
