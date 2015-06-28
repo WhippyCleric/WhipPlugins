@@ -32,6 +32,7 @@ import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.ChargeCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
+import com.whippy.sponge.whipconomy.commands.TransferCommand;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -149,7 +150,7 @@ public class Whipconomy {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerNameFrom")))
 				,GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerNameTo")))
 				,GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
-				.executor(new TransactionsCommand())
+				.executor(new TransferCommand())
 				.build();
 		
 		cmdService.register(this, transferCommandSpec, Arrays.asList("transfer"));
