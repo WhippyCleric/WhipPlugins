@@ -169,6 +169,8 @@ public class EconomyCache {
 			throw new TransferException("Player does not have enough money to make the payment");			
 		}
 		account.ammendBal(amount*-1);
+		PlayerNotifier notifier = new PlayerNotifier();
+		notifier.notify(Texts.builder("You have been charged " + amount + ", remaining balance " + account.getBal()).color(TextColors.BLUE).build(), UUID.fromString(playerId));
 	}
 
 	public synchronized static boolean hasAccountByName(String playerName){

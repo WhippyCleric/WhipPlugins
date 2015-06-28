@@ -29,6 +29,7 @@ import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
 import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
+import com.whippy.sponge.whipconomy.commands.ChargeCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
@@ -98,24 +99,19 @@ public class Whipconomy {
 		
 	}
 
-	
-	private void registerCommand(String description, String permission, CommandExecutor executor, List<String> aliases){
-		CommandSpec myCommandSpec = CommandSpec.builder()
-			    .description(Texts.of(description))
-			    .permission(permission)
-			    .executor(executor)
-			    .build();
-		
-		CommandService cmdService = game.getCommandDispatcher();
-		cmdService.register(this, myCommandSpec, aliases);
-	}
-
-	
 	@Subscribe
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
 
-		registerCommand("Display account ballance", "whippyconomy.bal", new BalCommand(), Arrays.asList("bal"));
+		CommandSpec balCommandSpec = CommandSpec.builder()
+			    .description(Texts.of("Retrieve the ballance of a player"))
+			    .permission("whippyconomy.bal.own")
+			    .arguments(GenericArguments.optional(GenericArguments.string((Texts.of("playerName")))))
+			    .executor(new BalCommand())
+			    .build();
+
+		cmdService.register(this, balCommandSpec, Arrays.asList("bal"));
+		
 		
 		CommandSpec payCommandSpec = CommandSpec.builder()
 			    .description(Texts.of("Pay another player"))
@@ -135,8 +131,19 @@ public class Whipconomy {
 			    .executor(new TransactionsCommand())
 			    .build();
 		
-		
 		cmdService.register(this, accHistoryCommandSpec, Arrays.asList("accHistory"));
+		
+		
+		CommandSpec chargeCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Charge another player money"))
+				.permission("whippyconomy.charge")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerName")))
+				,GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
+				.executor(new ChargeCommand())
+				.build();
+		
+		cmdService.register(this, chargeCommandSpec, Arrays.asList("charge"));
+
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
 	        cmdService.register(this, new BidCommand(), "bid");
