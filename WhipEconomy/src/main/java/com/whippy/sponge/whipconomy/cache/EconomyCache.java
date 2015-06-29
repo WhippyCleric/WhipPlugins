@@ -193,8 +193,10 @@ public class EconomyCache {
 		if(!playerIdsToCurrentAccounts.containsKey(player.getIdentifier())){
 			createCurrentAccount(player.getIdentifier());
 		}
-		if(!playerIdsToSavingsAccounts.containsKey(player.getIdentifier())){
-			createSavingsAccount(player.getIdentifier());
+		if(ConfigurationLoader.isSavingsEnabled()){			
+			if(!playerIdsToSavingsAccounts.containsKey(player.getIdentifier())){
+				createSavingsAccount(player.getIdentifier());
+			}
 		}
 		pushFileMappingsUpdate();
 	}

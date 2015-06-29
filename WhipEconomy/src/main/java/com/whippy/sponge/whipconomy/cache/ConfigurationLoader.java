@@ -22,6 +22,7 @@ public class ConfigurationLoader {
 	private static int maxAuctions;
 	private static int defaultAuctionTime;
 	private static int maxTransferHistory;
+	private static boolean isSavingsEnabled;
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
 	public static boolean init(){
@@ -48,6 +49,7 @@ public class ConfigurationLoader {
 			props.put("maxAuctionTime", "90");
 			props.put("defaultAuctionTime", "60");
 			props.put("maxAuctions", "4");
+			props.put("isSavingsEnabled", true);
 			setValues(props);
 			try{
 				File accountsFile = new File(CONFIG_PATH);
@@ -82,6 +84,7 @@ public class ConfigurationLoader {
 		maxOverdraft = Double.parseDouble(props.getProperty("maxOverdraft"));
 		maxTransactionHistory =Integer.parseInt(props.getProperty("maxTransactionHistory"));
 		hasAuctions = Boolean.parseBoolean(props.getProperty("hasAuctions"));
+		isSavingsEnabled = Boolean.parseBoolean(props.getProperty("isSavingsEnabled"));
 		auctionPrefix = props.getProperty("auctionPrefix");
 		defaultIncrement= Double.parseDouble(props.getProperty("defaultIncrement"));
 		minAuctionTime =Integer.parseInt(props.getProperty("minAuctionTime"));
@@ -147,6 +150,10 @@ public class ConfigurationLoader {
 
 	public static int getMaxTransferHistory() {
 		return maxTransferHistory;
+	}
+
+	public static boolean isSavingsEnabled() {
+		return isSavingsEnabled;
 	}
 
 
