@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>org.spongepowered</groupId>
 			<artifactId>spongeapi</artifactId>
-			<version>2.1-20150421.042532-1</version>
+			<version>2.1-20150528.033129-93</version>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
