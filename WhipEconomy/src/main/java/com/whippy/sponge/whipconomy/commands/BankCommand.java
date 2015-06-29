@@ -9,8 +9,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 public class BankCommand implements CommandExecutor{
 
 	@Override
-	public CommandResult execute(CommandSource arg0, CommandContext arg1)
-			throws CommandException {
+	public CommandResult execute(CommandSource arg0, CommandContext arg1) throws CommandException {
 		// TODO Auto-generated method stub
 		return null;
 	}

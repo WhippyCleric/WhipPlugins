@@ -1,6 +1,8 @@
 
 package com.whippy.sponge.whipconomy.commands;
 
+import java.util.List;
+
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
@@ -10,6 +12,7 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
@@ -45,7 +48,24 @@ public class TransactionsCommand implements CommandExecutor{
             }else{
             	playerName = player.getName();
             }
-			EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
+            List<Payment> transactions = EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
+			
+			if(transactions.size()==0){
+				player.sendMessage(Texts.builder("No transactions found").color(TextColors.BLUE).build());
+			}else{
+				int size = transactions.size();
+				if(size < numberOfTransactions){
+					for(int i = 0; i<transactions.size(); i++){
+						Payment transaction = transactions.get(i);
+						player.sendMessage(transaction.toText(player.getName()));
+					}
+				}else{
+					for(int i = transactions.size()-numberOfTransactions; i<transactions.size(); i++){
+						Payment transaction = transactions.get(i);
+						player.sendMessage(transaction.toText(player.getName()));
+					}
+				}
+			}
 	
             
         } else {

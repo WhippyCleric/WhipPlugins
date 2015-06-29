@@ -59,8 +59,6 @@ public class EconomyCache {
 		transfer(playerFrom, playerFrom.getName(), playerTo, amount);
 	}
 	
-	
-
 
 	public static Set<String> getAllPlayers(){
 		return playerNameToID.keySet();
@@ -93,7 +91,7 @@ public class EconomyCache {
 		return receiverPayment;
 	}
 
-	public synchronized static void getLastTransactions(Player player, String playerName, int number) {
+	public synchronized static List<Payment> getLastTransactions(Player player, String playerName, int number) {
 		String playerID = playerNameToID.get(playerName);
 		if(playerID==null||playerID.isEmpty()){
 			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
@@ -103,27 +101,24 @@ public class EconomyCache {
 				player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
 			}else{			
 				List<Payment> transactions = account.getPayments();
-				if(transactions.size()==0){
-					player.sendMessage(Texts.builder("No transactions found").color(TextColors.BLUE).build());
-				}else{
-					int size = transactions.size();
-					if(size < number){
-						for(int i = 0; i<transactions.size(); i++){
-							Payment transaction = transactions.get(i);
-							player.sendMessage(transaction.toText(player.getName()));
-						}
-					}else{
-						for(int i = transactions.size()-number; i<transactions.size(); i++){
-							Payment transaction = transactions.get(i);
-							player.sendMessage(transaction.toText(player.getName()));
-						}
-					}
-				}
+				return transactions;
 			}
 		}
+		return null;
 	}
 	
-	public static void gift(String playerName, Double amount)throws TransferException{
+	public synchronized static void withdraw(String playerName, Double amount)throws TransferException{
+
+	}
+	public synchronized static void bank(String playerName, Double amount)throws TransferException{
+		
+	}
+	public synchronized static List<InternalTransfer> getSavingsHistory(Player player, String playerName, Double amount)throws TransferException{
+		return null;
+	}
+
+	
+	public synchronized static void gift(String playerName, Double amount)throws TransferException{
 		payWithoutPush(getId(playerName), amount);
 		pushFileAccountsUpdate();
 	}
