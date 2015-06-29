@@ -24,6 +24,7 @@ import com.google.common.collect.HashBiMap;
 import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Account.AccountType;
 import com.whippy.sponge.whipconomy.beans.CurrentAccount;
+import com.whippy.sponge.whipconomy.beans.InternalTransfer;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.SavingsAccount;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
@@ -190,12 +191,12 @@ public class EconomyCache {
 			}
 		}
 		if(!playerIdsToCurrentAccounts.containsKey(player.getIdentifier())){
-			createAccount(player.getIdentifier());
+			createCurrentAccount(player.getIdentifier());
 		}
 		pushFileMappingsUpdate();
 	}
 
-	private synchronized static void createAccount(String playerId){
+	private synchronized static void createCurrentAccount(String playerId){
 		CurrentAccount account = new CurrentAccount(playerId);
 		account.ammendBal(ConfigurationLoader.getStartingBallance());
 		playerIdsToCurrentAccounts.put(playerId, account);
@@ -214,6 +215,10 @@ public class EconomyCache {
 			JSONArray accounts = new JSONArray();
 			for (String playerId : playerIdsToCurrentAccounts.keySet()) {
 				CurrentAccount account = playerIdsToCurrentAccounts.get(playerId);
+				accounts.add(account.toJSONObject());
+			}
+			for (String playerId : playerIdsToSavingAccounts.keySet()) {
+				SavingsAccount account = playerIdsToSavingAccounts.get(playerId);
 				accounts.add(account.toJSONObject());
 			}
 			all.put(ACCOUNTS, accounts);
@@ -297,7 +302,7 @@ public class EconomyCache {
 				Double bal = (Double) jsonAccount.get(Account.BAL_ID);
 				AccountType accountType = AccountType.valueOf((String) jsonAccount.get(Account.ACCOUNT_TYPE));
 				if(AccountType.CURRENT.equals(accountType)){					
-					JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(Account.PAYMENTS_ID);
+					JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(CurrentAccount.PAYMENTS_ID);
 					CurrentAccount account = new CurrentAccount(playerId);
 					account.ammendBal(bal);
 					for (Object paymentObj : arrayOfPayments) {
@@ -309,6 +314,18 @@ public class EconomyCache {
 						account.addPayment(new Payment(receiver, payer, amount, date));
 					}
 					playerIdsToCurrentAccounts.put(playerId, account);
+				}else{
+					JSONArray arrayOfTransfers = (JSONArray) jsonAccount.get(SavingsAccount.TRANSFERS_ID);
+					SavingsAccount account = new SavingsAccount(playerId);
+					account.ammendBal(bal);
+					for (Object transferObj : arrayOfTransfers) {
+						JSONObject jsonTransfer = (JSONObject) transferObj;
+						Double amount = (Double) jsonTransfer.get(InternalTransfer.AMOUNT_ID);
+						String date = (String) jsonTransfer.get(InternalTransfer.DATE_ID);
+						Boolean isWithdrawl = (Boolean) jsonTransfer.get(InternalTransfer.IS_WITHDRAWL);
+						account.addInternalTransfer(new InternalTransfer(isWithdrawl, amount, date));
+					}
+					playerIdsToSavingAccounts.put(playerId, account);
 				}
 			}
 		}catch(Exception e){

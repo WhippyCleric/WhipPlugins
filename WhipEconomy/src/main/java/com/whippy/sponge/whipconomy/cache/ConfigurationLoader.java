@@ -6,11 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import com.whippy.sponge.whipconomy.beans.Account;
-
 public class ConfigurationLoader {
 
 	private static String currency;
@@ -145,6 +140,11 @@ public class ConfigurationLoader {
 
 	public static int getDefaultAuctionTime() {
 		return defaultAuctionTime;
+	}
+
+	public static int getMaxTransferHistory() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

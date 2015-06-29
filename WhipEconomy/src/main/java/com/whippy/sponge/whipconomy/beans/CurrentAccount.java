@@ -11,10 +11,12 @@ import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 public class CurrentAccount extends Account{
 
 	private List<Payment> payments;
+	public static final String PAYMENTS_ID = "payments";
 	
 	public CurrentAccount(String playerId) {
 		super(playerId);
 		payments = new ArrayList<Payment>();
+		super.setAccountType(AccountType.CURRENT);
 	}
 	
 	public void addPayment(Payment payment){
