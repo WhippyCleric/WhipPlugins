@@ -13,9 +13,11 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
+import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 public class ChargeCommand implements CommandExecutor {
 
 
@@ -56,6 +58,8 @@ public class ChargeCommand implements CommandExecutor {
 			String playerId = EconomyCache.getId(playerName);
 			if(playerId!=null && !playerId.isEmpty()){
 				EconomyCache.charge(playerId, amount);
+				Payment payment = new Payment(null, playerName, amount);
+				PlayerNotifier.notifyEvenIfOffline(payment);
 				if(isPlayer){					
 					player.sendMessage(Texts.builder(playerName + " has been charged " + amount).color(TextColors.GREEN).build());					
 				}else{

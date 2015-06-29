@@ -6,12 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +25,6 @@ import com.whippy.sponge.whipconomy.beans.Account;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
-import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
 public class EconomyCache {
 
@@ -42,44 +39,8 @@ public class EconomyCache {
 
 	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
 		try {
-			Payment receiverPayment = transferWithName(playerFrom, playerTo, amount);
-			String playerFromId = EconomyCache.getId(playerFrom);
-			String playerToId = EconomyCache.getId(playerTo);
-			StringBuilder messageBuilder = new StringBuilder();
-			messageBuilder.append("Transfer complete, new balance: ");
-			if(!ConfigurationLoader.isAppendCurrency()){
-				messageBuilder.append(ConfigurationLoader.getCurrency());
-				messageBuilder.append(getBalance(playerFromId));
-			}else{
-				messageBuilder.append(getBalance(playerFromId));
-				messageBuilder.append(ConfigurationLoader.getCurrency());
-			}
-			if(player!=null){			
-				player.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
-			}else{
-				StaticsHandler.getLogger().warn(messageBuilder.toString());
-			}
+			transferWithName(playerFrom, playerTo, amount);
 			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom +  " " + playerTo + " " + amount);
-			PlayerNotifier notifier = new PlayerNotifier();
-			StringBuilder paymentReceived = new StringBuilder();
-			paymentReceived.append("Recevied ");
-			if(!ConfigurationLoader.isAppendCurrency()){
-				paymentReceived.append(ConfigurationLoader.getCurrency());
-				paymentReceived.append(round(amount,ConfigurationLoader.getDecPlaces()));
-			}else{
-				paymentReceived.append(round(amount,ConfigurationLoader.getDecPlaces()));
-				paymentReceived.append(ConfigurationLoader.getCurrency());
-			}
-			paymentReceived.append(" from ");
-			paymentReceived.append(playerFrom);
-			if(!notifier.notify(Texts.builder(paymentReceived.toString()).color(TextColors.GREEN).build(), UUID.fromString(playerToId))){
-				PendingNotificaitions.addPayment(EconomyCache.getId(playerTo), receiverPayment);
-			}
-			if(player!=null && !player.getName().equals(playerFrom)){
-				if(!notifier.notify(Texts.builder(paymentReceived.toString()).color(TextColors.GREEN).build(), UUID.fromString(playerFromId))){
-					PendingNotificaitions.addPayment(playerToId, receiverPayment);
-				}
-			}
 		} catch (TransferException e) {
 			if(player==null){
 				StaticsHandler.getLogger().warn(e.getMessage());
@@ -117,8 +78,8 @@ public class EconomyCache {
 		}
 		accountTo.ammendBal(amount);
 		accountFrom.ammendBal(amount * -1);
-		Payment payerPayment = new Payment(playerTo, playerFrom, round(amount, ConfigurationLoader.getDecPlaces()), Payment.dateFormat.format(new Date()), true);
-		Payment receiverPayment = new Payment(playerTo, playerFrom, round(amount, ConfigurationLoader.getDecPlaces()), Payment.dateFormat.format(new Date()), false);
+		Payment payerPayment = new Payment(playerTo, playerFrom, round(amount, ConfigurationLoader.getDecPlaces()));
+		Payment receiverPayment = new Payment(playerTo, playerFrom, round(amount, ConfigurationLoader.getDecPlaces()));
 		accountTo.addPayment(receiverPayment);
 		accountFrom.addPayment(payerPayment);
 		pushFileAccountsUpdate();
@@ -142,12 +103,12 @@ public class EconomyCache {
 					if(size < number){
 						for(int i = 0; i<transactions.size(); i++){
 							Payment transaction = transactions.get(i);
-							player.sendMessage(transaction.toText());
+							player.sendMessage(transaction.toText(player.getName()));
 						}
 					}else{
 						for(int i = transactions.size()-number; i<transactions.size(); i++){
 							Payment transaction = transactions.get(i);
-							player.sendMessage(transaction.toText());
+							player.sendMessage(transaction.toText(player.getName()));
 						}
 					}
 				}
@@ -186,8 +147,6 @@ public class EconomyCache {
 			throw new TransferException("Player does not have enough money to make the payment");			
 		}
 		account.ammendBal(amount*-1);
-		PlayerNotifier notifier = new PlayerNotifier();
-		notifier.notify(Texts.builder("You have been charged " + amount + ", remaining balance " + account.getBal()).color(TextColors.BLUE).build(), UUID.fromString(playerId));
 	}
 
 	public synchronized static boolean hasAccountByName(String playerName){
@@ -334,8 +293,7 @@ public class EconomyCache {
 					String receiver = (String) jsonPayment.get(Payment.RECEIVER);
 					Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
 					String date = (String) jsonPayment.get(Payment.DATE_ID);
-					boolean isPayer = (Boolean) jsonPayment.get(Payment.IS_PAYER);
-					account.addPayment(new Payment(receiver, payer, amount, date, isPayer));
+					account.addPayment(new Payment(receiver, payer, amount, date));
 				}
 				playerIdsToAccounts.put(playerId, account);
 			}

@@ -13,9 +13,10 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
-import com.google.common.base.Optional;
+import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
+import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
 public class PayCommand implements CommandExecutor {
 	
@@ -46,6 +47,8 @@ public class PayCommand implements CommandExecutor {
 			try{				
 				Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
 				EconomyCache.transfer(player, playerName, amount);
+				Payment payment = new Payment(playerName, player.getName(), amount);
+				PlayerNotifier.notifyEvenIfOffline(payment );
 			}catch(NumberFormatException e){
 				player.sendMessage(Texts.builder("Amount to transfer must be numeric!").color(TextColors.RED).build());
 			}

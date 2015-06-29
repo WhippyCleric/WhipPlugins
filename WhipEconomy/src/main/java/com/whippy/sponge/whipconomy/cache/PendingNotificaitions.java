@@ -4,8 +4,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -61,8 +61,7 @@ public class PendingNotificaitions {
 					String receiver = (String) jsonPayment.get(Payment.RECEIVER);
 					Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
 					String date = (String) jsonPayment.get(Payment.DATE_ID);
-					boolean isPayer = (Boolean) jsonPayment.get(Payment.IS_PAYER);
-					payments.add(new Payment(receiver, payer, amount, date, isPayer));
+					payments.add(new Payment(receiver, payer, amount, date));
 				}
 				playerIdsToPayments.put(playerId, payments);
 			}
@@ -87,7 +86,6 @@ public class PendingNotificaitions {
 					paymentJSON.put(Payment.RECEIVER, payment.getPlayerNameReceiver());
 					paymentJSON.put(Payment.AMOUNT_ID, payment.getAmount());
 					paymentJSON.put(Payment.DATE_ID, payment.getDate());
-					paymentJSON.put(Payment.IS_PAYER, payment.isPayer());
 					payments.add(paymentJSON);
 				}
 				paymentListJson.put(Account.PAYMENTS_ID, payments);	

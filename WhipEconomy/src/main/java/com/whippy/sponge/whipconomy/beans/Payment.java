@@ -2,6 +2,7 @@ package com.whippy.sponge.whipconomy.beans;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.spongepowered.api.text.Text;
@@ -17,21 +18,25 @@ public class Payment {
 	public static final String RECEIVER = "receiver";
 	public static final String DATE_ID = "date";
 	public static final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	public static final Object IS_PAYER = "isPayer";
 	
-	private boolean isPayer;
 	private String playerNameReceiver;
 	private String playerNamePayer;
 	private double amount;
 	private String date;
 	
 	
-	public Payment(String playerNameReceiver, String playerNamePayer, double amount, String date, boolean isPayer) {
+	public Payment(String playerNameReceiver, String playerNamePayer, double amount, String date) {
 		this.playerNameReceiver = playerNameReceiver;
 		this.playerNamePayer = playerNamePayer;
 		this.amount = amount;
 		this.date = date;
-		this.isPayer = isPayer;
+	}
+	
+	public Payment(String playerNameReceiver, String playerNamePayer, double amount) {
+		this.playerNameReceiver = playerNameReceiver;
+		this.playerNamePayer = playerNamePayer;
+		this.amount = amount;
+		this.date = Payment.dateFormat.format(new Date());
 	}
 		
 	public String getPlayerNameReceiver() {
@@ -50,12 +55,11 @@ public class Payment {
 		obj.put(PAYER, playerNamePayer);
 		obj.put(AMOUNT_ID, amount);
 		obj.put(DATE_ID, date);
-		obj.put(IS_PAYER, isPayer);
 		return obj;
 	}
 
 	
-	public Text toText(){
+	public Text toText(String playerName){
 		StringBuilder messageBuilder = new StringBuilder();
 		messageBuilder.append("- ");
 		messageBuilder.append(playerNamePayer);
@@ -69,16 +73,13 @@ public class Payment {
 			messageBuilder.append(amount);
 			messageBuilder.append(ConfigurationLoader.getCurrency());
 		}
-		if(isPayer){
+		if(playerName.equals(playerNamePayer)){
 			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.RED).build()).build();		
 		}else{
 			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build()).build();		
 		}
 	}
 	
-	public boolean isPayer(){
-		return isPayer;
-	}
 	
 	public String getDate() {
 		return date;
