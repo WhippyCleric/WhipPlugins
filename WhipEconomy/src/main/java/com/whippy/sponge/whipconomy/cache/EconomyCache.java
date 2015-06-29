@@ -40,7 +40,7 @@ public class EconomyCache {
 	public static final String NAME_TO_UID_MAPPINGS = ".\\config\\plugins\\whip\\data\\whipconomy-uidmappings.json";
 	private static BiMap<String, String> playerNameToID;
 	private static Map<String, CurrentAccount> playerIdsToCurrentAccounts;
-	private static Map<String, SavingsAccount> playerIdsToSavingAccounts;
+	private static Map<String, SavingsAccount> playerIdsToSavingsAccounts;
 
 	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
 		try {
@@ -193,6 +193,9 @@ public class EconomyCache {
 		if(!playerIdsToCurrentAccounts.containsKey(player.getIdentifier())){
 			createCurrentAccount(player.getIdentifier());
 		}
+		if(!playerIdsToSavingsAccounts.containsKey(player.getIdentifier())){
+			createSavingsAccount(player.getIdentifier());
+		}
 		pushFileMappingsUpdate();
 	}
 
@@ -200,6 +203,11 @@ public class EconomyCache {
 		CurrentAccount account = new CurrentAccount(playerId);
 		account.ammendBal(ConfigurationLoader.getStartingBallance());
 		playerIdsToCurrentAccounts.put(playerId, account);
+		pushFileAccountsUpdate();
+	}
+	private synchronized static void createSavingsAccount(String playerId){
+		SavingsAccount account = new SavingsAccount(playerId);
+		playerIdsToSavingsAccounts.put(playerId, account);
 		pushFileAccountsUpdate();
 	}
 
@@ -217,8 +225,8 @@ public class EconomyCache {
 				CurrentAccount account = playerIdsToCurrentAccounts.get(playerId);
 				accounts.add(account.toJSONObject());
 			}
-			for (String playerId : playerIdsToSavingAccounts.keySet()) {
-				SavingsAccount account = playerIdsToSavingAccounts.get(playerId);
+			for (String playerId : playerIdsToSavingsAccounts.keySet()) {
+				SavingsAccount account = playerIdsToSavingsAccounts.get(playerId);
 				accounts.add(account.toJSONObject());
 			}
 			all.put(ACCOUNTS, accounts);
@@ -325,7 +333,7 @@ public class EconomyCache {
 						Boolean isWithdrawl = (Boolean) jsonTransfer.get(InternalTransfer.IS_WITHDRAWL);
 						account.addInternalTransfer(new InternalTransfer(isWithdrawl, amount, date));
 					}
-					playerIdsToSavingAccounts.put(playerId, account);
+					playerIdsToSavingsAccounts.put(playerId, account);
 				}
 			}
 		}catch(Exception e){
