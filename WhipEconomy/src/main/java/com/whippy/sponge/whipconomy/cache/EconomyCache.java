@@ -22,7 +22,10 @@ import org.spongepowered.api.text.format.TextColors;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.whippy.sponge.whipconomy.beans.Account;
+import com.whippy.sponge.whipconomy.beans.Account.AccountType;
+import com.whippy.sponge.whipconomy.beans.CurrentAccount;
 import com.whippy.sponge.whipconomy.beans.Payment;
+import com.whippy.sponge.whipconomy.beans.SavingsAccount;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
 
@@ -35,7 +38,8 @@ public class EconomyCache {
 	public static final String ACCOUNTS_PATH = ".\\config\\plugins\\whip\\data\\whipcoonomy-accounts.json";
 	public static final String NAME_TO_UID_MAPPINGS = ".\\config\\plugins\\whip\\data\\whipconomy-uidmappings.json";
 	private static BiMap<String, String> playerNameToID;
-	private static Map<String, Account> playerIdsToAccounts;
+	private static Map<String, CurrentAccount> playerIdsToCurrentAccounts;
+	private static Map<String, SavingsAccount> playerIdsToSavingAccounts;
 
 	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
 		try {
@@ -73,8 +77,8 @@ public class EconomyCache {
 		if(playerFromId==null){
 			throw new TransferException("Player " + playerFrom + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric");			
 		}
-		Account accountTo = playerIdsToAccounts.get(playerToId);
-		Account accountFrom = playerIdsToAccounts.get(playerFromId);
+		CurrentAccount accountTo = playerIdsToCurrentAccounts.get(playerToId);
+		CurrentAccount accountFrom = playerIdsToCurrentAccounts.get(playerFromId);
 		if(accountFrom.getBal()+ConfigurationLoader.getMaxOverdraft()<amount){
 			throw new TransferException("Player " + playerFrom + " does not have enough money to make the paymentc");			
 		}
@@ -93,7 +97,7 @@ public class EconomyCache {
 		if(playerID==null||playerID.isEmpty()){
 			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
 		}else{
-			Account account = playerIdsToAccounts.get(playerID);
+			CurrentAccount account = playerIdsToCurrentAccounts.get(playerID);
 			if(account==null){
 				player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
 			}else{			
@@ -128,7 +132,7 @@ public class EconomyCache {
 		pushFileAccountsUpdate();
 	}
 	public synchronized static void payWithoutPush(String playerId, double amount) throws TransferException{
-		Account account = playerIdsToAccounts.get(playerId);
+		Account account = playerIdsToCurrentAccounts.get(playerId);
 		if(account==null){
 			throw new TransferException("Player not found, " + playerId);
 		}
@@ -143,7 +147,7 @@ public class EconomyCache {
 		pushFileAccountsUpdate();
 	}
 	public synchronized static void chargeWithoutPush(String playerId, double amount) throws TransferException{
-		Account account = playerIdsToAccounts.get(playerId);
+		Account account = playerIdsToCurrentAccounts.get(playerId);
 		if(account==null){
 			throw new TransferException("Player not found, " + playerId);
 		}
@@ -160,11 +164,11 @@ public class EconomyCache {
 		if(playerNameToID.get(playerName)==null){
 			return false;
 		}
-		return playerIdsToAccounts.containsKey(playerNameToID.get(playerName));
+		return playerIdsToCurrentAccounts.containsKey(playerNameToID.get(playerName));
 	}
 
 	public synchronized static boolean hasAccountById(String playerId){
-		return playerIdsToAccounts.containsKey(playerId);
+		return playerIdsToCurrentAccounts.containsKey(playerId);
 	}
 
 	public synchronized static void updatePlayerMapping(Player player){
@@ -185,16 +189,16 @@ public class EconomyCache {
 				playerNameToID.put(player.getName(), player.getIdentifier());
 			}
 		}
-		if(!playerIdsToAccounts.containsKey(player.getIdentifier())){
+		if(!playerIdsToCurrentAccounts.containsKey(player.getIdentifier())){
 			createAccount(player.getIdentifier());
 		}
 		pushFileMappingsUpdate();
 	}
 
 	private synchronized static void createAccount(String playerId){
-		Account account = new Account(playerId);
+		CurrentAccount account = new CurrentAccount(playerId);
 		account.ammendBal(ConfigurationLoader.getStartingBallance());
-		playerIdsToAccounts.put(playerId, account);
+		playerIdsToCurrentAccounts.put(playerId, account);
 		pushFileAccountsUpdate();
 	}
 
@@ -208,8 +212,8 @@ public class EconomyCache {
 			JSONObject all = new JSONObject();
 			FileWriter file = new FileWriter(ACCOUNTS_PATH);
 			JSONArray accounts = new JSONArray();
-			for (String playerId : playerIdsToAccounts.keySet()) {
-				Account account = playerIdsToAccounts.get(playerId);
+			for (String playerId : playerIdsToCurrentAccounts.keySet()) {
+				CurrentAccount account = playerIdsToCurrentAccounts.get(playerId);
 				accounts.add(account.toJSONObject());
 			}
 			all.put(ACCOUNTS, accounts);
@@ -249,7 +253,7 @@ public class EconomyCache {
 	}
 
 	public synchronized static double getBalance(String playerId){
-		return round(playerIdsToAccounts.get(playerId).getBal(), ConfigurationLoader.getDecPlaces());
+		return round(playerIdsToCurrentAccounts.get(playerId).getBal(), ConfigurationLoader.getDecPlaces());
 	}
 
 	public static double round(double value, int places) {
@@ -281,7 +285,7 @@ public class EconomyCache {
 
 	public synchronized static void refreshAccountsFromFile(){
 		try{
-			playerIdsToAccounts = new HashMap<String, Account>();
+			playerIdsToCurrentAccounts = new HashMap<String, CurrentAccount>();
 			FileReader reader = new FileReader(ACCOUNTS_PATH);
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(reader);
@@ -291,18 +295,21 @@ public class EconomyCache {
 				JSONObject jsonAccount = (JSONObject) accountObj;
 				String playerId = (String) jsonAccount.get(Account.PLAYER_ID);
 				Double bal = (Double) jsonAccount.get(Account.BAL_ID);
-				JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(Account.PAYMENTS_ID);
-				Account account = new Account(playerId);
-				account.ammendBal(bal);
-				for (Object paymentObj : arrayOfPayments) {
-					JSONObject jsonPayment = (JSONObject) paymentObj;
-					String payer = (String) jsonPayment.get(Payment.PAYER);
-					String receiver = (String) jsonPayment.get(Payment.RECEIVER);
-					Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
-					String date = (String) jsonPayment.get(Payment.DATE_ID);
-					account.addPayment(new Payment(receiver, payer, amount, date));
+				AccountType accountType = AccountType.valueOf((String) jsonAccount.get(Account.ACCOUNT_TYPE));
+				if(AccountType.CURRENT.equals(accountType)){					
+					JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(Account.PAYMENTS_ID);
+					CurrentAccount account = new CurrentAccount(playerId);
+					account.ammendBal(bal);
+					for (Object paymentObj : arrayOfPayments) {
+						JSONObject jsonPayment = (JSONObject) paymentObj;
+						String payer = (String) jsonPayment.get(Payment.PAYER);
+						String receiver = (String) jsonPayment.get(Payment.RECEIVER);
+						Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
+						String date = (String) jsonPayment.get(Payment.DATE_ID);
+						account.addPayment(new Payment(receiver, payer, amount, date));
+					}
+					playerIdsToCurrentAccounts.put(playerId, account);
 				}
-				playerIdsToAccounts.put(playerId, account);
 			}
 		}catch(Exception e){
 			StaticsHandler.getLogger().info("No accounts file found");
