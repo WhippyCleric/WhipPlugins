@@ -53,6 +53,8 @@ public class EconomyCache {
 	public synchronized static void transfer(Player playerFrom, String playerTo, double amount){
 		transfer(playerFrom, playerFrom.getName(), playerTo, amount);
 	}
+	
+	
 
 
 	public static Set<String> getAllPlayers(){
@@ -114,6 +116,11 @@ public class EconomyCache {
 				}
 			}
 		}
+	}
+	
+	public static void gift(String playerName, Double amount)throws TransferException{
+		payWithoutPush(getId(playerName), amount);
+		pushFileAccountsUpdate();
 	}
 
 	public synchronized static void pay(String playerId, double amount) throws TransferException{
@@ -305,5 +312,7 @@ public class EconomyCache {
 	public static String getId(String playerName){
 		return playerNameToID.get(playerName);
 	}
+
+
 
 }

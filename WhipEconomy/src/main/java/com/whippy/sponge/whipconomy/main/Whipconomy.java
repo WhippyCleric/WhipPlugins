@@ -29,6 +29,7 @@ import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.ChargeCommand;
+import com.whippy.sponge.whipconomy.commands.GiftCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
@@ -153,6 +154,16 @@ public class Whipconomy {
 				.build();
 		
 		cmdService.register(this, transferCommandSpec, Arrays.asList("transfer"));
+
+		CommandSpec giftCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Give a player an amount of money from the server"))
+				.permission("whippyconomy.give")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("playerName")))
+						,GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
+						.executor(new GiftCommand())
+						.build();
+		
+		cmdService.register(this, giftCommandSpec, Arrays.asList("give"));
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
