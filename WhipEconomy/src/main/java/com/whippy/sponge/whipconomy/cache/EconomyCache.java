@@ -37,6 +37,7 @@ public class EconomyCache {
 	private static final String NAME = "Name";
 	private static final String ID = "ID";
 	public static final String ACCOUNTS_PATH = ".\\config\\plugins\\whip\\data\\whipcoonomy-accounts.json";
+	public static final String TEMP_ACCOUNTS_PATH = ".\\config\\plugins\\whip\\data\\whipcoonomy-accounts-temp.json";
 	public static final String NAME_TO_UID_MAPPINGS = ".\\config\\plugins\\whip\\data\\whipconomy-uidmappings.json";
 	private static BiMap<String, String> playerNameToID;
 	private static Map<String, CurrentAccount> playerIdsToCurrentAccounts;
