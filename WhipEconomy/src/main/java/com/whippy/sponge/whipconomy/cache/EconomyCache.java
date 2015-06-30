@@ -133,8 +133,32 @@ public class EconomyCache {
 		
 	}
 	public synchronized static void bank(String playerName, Double amount)throws TransferException{
+		if(amount<=0){
+			throw new TransferException("Can not bank negative amount");
+		}
+		String playerId = playerNameToID.get(playerName);
+		if(playerId==null || playerId.isEmpty()){
+			throw new TransferException(playerName + " does not exist");
+		}
+		SavingsAccount playerSavings = playerIdsToSavingsAccounts.get(playerId);
+		CurrentAccount playerCurrent = playerIdsToCurrentAccounts.get(playerId);
 		
+		if(playerSavings==null || playerCurrent ==null){
+			throw new TransferException("Unable to find either savings or current account for " + playerName);
+		}
+		
+		if(playerCurrent.getBal()<amount){
+			throw new TransferException("Not enough money to bank" + amount + ". Current savings ballance is " + playerCurrent.getBal());			
+		}
+		
+		playerSavings.ammendBal(amount);
+		playerCurrent.ammendBal(amount*-1);
+		
+		pushFileAccountsUpdate();
 	}
+	
+	
+	
 	public synchronized static List<InternalTransfer> getSavingsHistory(Player player, String playerName, Double amount)throws TransferException{
 		return null;
 	}
