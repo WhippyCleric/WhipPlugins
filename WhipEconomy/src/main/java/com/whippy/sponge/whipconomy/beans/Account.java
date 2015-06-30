@@ -8,7 +8,6 @@ public class Account {
 	public static final String PLAYER_ID = "playerId";
 	public static final String BAL_ID = "bal";
 	public static final String ACCOUNT_TYPE = "accountType";
-	public static final String PAYMENTS_ID = "payments";
 	private String playerId;
 	private double bal;
 

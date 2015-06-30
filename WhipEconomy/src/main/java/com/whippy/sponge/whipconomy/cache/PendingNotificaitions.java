@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.whippy.sponge.whipconomy.beans.Account;
+import com.whippy.sponge.whipconomy.beans.CurrentAccount;
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 
@@ -53,7 +54,7 @@ public class PendingNotificaitions {
 			for (Object accountObj : accountArray) {
 				JSONObject jsonAccount = (JSONObject) accountObj;
 				String playerId = (String) jsonAccount.get(Account.PLAYER_ID);
-				JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(Account.PAYMENTS_ID);
+				JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(CurrentAccount.PAYMENTS_ID);
 				List<Payment> payments = new ArrayList<Payment>();
 				for (Object paymentObj : arrayOfPayments) {
 					JSONObject jsonPayment = (JSONObject) paymentObj;
@@ -88,7 +89,7 @@ public class PendingNotificaitions {
 					paymentJSON.put(Payment.DATE_ID, payment.getDate());
 					payments.add(paymentJSON);
 				}
-				paymentListJson.put(Account.PAYMENTS_ID, payments);	
+				paymentListJson.put(CurrentAccount.PAYMENTS_ID, payments);	
 				players.add(paymentListJson);
 			}
 			all.put(PENDINGS, players);
