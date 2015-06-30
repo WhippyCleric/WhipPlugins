@@ -108,7 +108,29 @@ public class EconomyCache {
 	}
 	
 	public synchronized static void withdraw(String playerName, Double amount)throws TransferException{
-
+		if(amount<=0){
+			throw new TransferException("Can not withdraw negative amount");
+		}
+		String playerId = playerNameToID.get(playerName);
+		if(playerId==null || playerId.isEmpty()){
+			throw new TransferException(playerName + " does not exist");
+		}
+		SavingsAccount playerSavings = playerIdsToSavingsAccounts.get(playerId);
+		CurrentAccount playerCurrent = playerIdsToCurrentAccounts.get(playerId);
+		
+		if(playerSavings==null || playerCurrent ==null){
+			throw new TransferException("Unable to find either savings or current account for " + playerName);
+		}
+		
+		if(playerSavings.getBal()<amount){
+			throw new TransferException("Not enough savings to withdraw " + amount + ". Current savings ballance is " + playerSavings.getBal());			
+		}
+		
+		playerSavings.ammendBal(amount*-1);
+		playerCurrent.ammendBal(amount);
+		
+		pushFileAccountsUpdate();
+		
 	}
 	public synchronized static void bank(String playerName, Double amount)throws TransferException{
 		
