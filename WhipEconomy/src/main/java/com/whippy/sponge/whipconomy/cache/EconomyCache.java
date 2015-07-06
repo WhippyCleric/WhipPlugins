@@ -46,7 +46,7 @@ public class EconomyCache {
 	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
 		try {
 			transferWithName(playerFrom, playerTo, amount);
-			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom +  " " + playerTo + " " + amount);
+			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom +  " " + playerTo + " " + StaticsHandler.getAmountWithCurrency(amount));
 		} catch (TransferException e) {
 			if(player==null){
 				StaticsHandler.getLogger().warn(e.getMessage());
@@ -124,7 +124,7 @@ public class EconomyCache {
 		}
 		
 		if(playerSavings.getBal()<amount){
-			throw new TransferException("Not enough savings to withdraw " + amount + ". Current savings ballance is " + playerSavings.getBal());			
+			throw new TransferException("Not enough savings to withdraw " + StaticsHandler.getAmountWithCurrency(amount) + ". Current savings ballance is " + playerSavings.getBal());			
 		}
 		
 		playerSavings.ammendBal(amount*-1);
@@ -150,7 +150,7 @@ public class EconomyCache {
 		}
 		
 		if(playerCurrent.getBal()<amount){
-			throw new TransferException("Not enough money to bank" + amount + ". Current savings ballance is " + playerCurrent.getBal());			
+			throw new TransferException("Not enough money to bank"+ StaticsHandler.getAmountWithCurrency(amount) +". Current savings ballance is " + playerCurrent.getBal());			
 		}
 		
 		playerSavings.ammendBal(amount);

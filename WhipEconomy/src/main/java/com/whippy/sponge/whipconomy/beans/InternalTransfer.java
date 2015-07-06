@@ -7,8 +7,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
-
 public class InternalTransfer {
 
 	
@@ -61,13 +59,7 @@ public class InternalTransfer {
 			messageBuilder.append(" Banked ");
 			
 		}
-		if(!ConfigurationLoader.isAppendCurrency()){
-			messageBuilder.append(ConfigurationLoader.getCurrency());
-			messageBuilder.append(amount);
-		}else{
-			messageBuilder.append(amount);
-			messageBuilder.append(ConfigurationLoader.getCurrency());
-		}
+		messageBuilder.append(StaticsHandler.getAmountWithCurrency(amount));
 		if(isWithdrawl){
 			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.RED).build()).build();		
 		}else{

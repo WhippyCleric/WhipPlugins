@@ -28,13 +28,13 @@ public class PlayerNotifier {
 			double amount = payment.getAmount();
 			Literal message;
 			if(receiver!=null && receiver.equals(playerName)){
-				message = Texts.builder("Received " + amount + " from " + sender).color(TextColors.GREEN).build();
+				message = Texts.builder("Received " + StaticsHandler.getAmountWithCurrency(amount) + " from " + sender).color(TextColors.GREEN).build();
 			}else if(receiver==null){
-				message = Texts.builder("Charged " + amount + " by the server").color(TextColors.GREEN).build();				
+				message = Texts.builder("Charged " + StaticsHandler.getAmountWithCurrency(amount) + " by the server").color(TextColors.GREEN).build();				
 			}else if(sender!=null && sender.equals(playerName)){
-				message = Texts.builder("Paid " + amount + " to " + receiver).color(TextColors.RED).build();				
+				message = Texts.builder("Paid " + StaticsHandler.getAmountWithCurrency(amount) + " to " + receiver).color(TextColors.RED).build();				
 			}else{
-				message = Texts.builder("Received " + amount + " from the server").color(TextColors.GREEN).build();								
+				message = Texts.builder("Received " + StaticsHandler.getAmountWithCurrency(amount) + " from the server").color(TextColors.GREEN).build();								
 			}
 			player.sendMessage(message);
 			return true;

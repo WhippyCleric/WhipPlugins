@@ -24,7 +24,7 @@ public class BankCommand implements CommandExecutor{
 			try{				
 				Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
 				EconomyCache.bank(player.getName(), amount);				
-				player.sendMessage(Texts.builder(amount + " tansfered into savings account").color(TextColors.BLUE).build());
+				player.sendMessage(Texts.builder(StaticsHandler.getAmountWithCurrency(amount) + " transfered into savings account").color(TextColors.BLUE).build());
 			}catch(NumberFormatException e){
 				player.sendMessage(Texts.builder("Amount to transfer must be numeric!").color(TextColors.RED).build());
 				return CommandResult.empty();

@@ -9,8 +9,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.format.TextColors;
 
-import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
-
 public class Payment {
 
 	public static final String AMOUNT_ID = "amount";
@@ -66,13 +64,7 @@ public class Payment {
 		messageBuilder.append(" paid ");
 		messageBuilder.append(playerNameReceiver);
 		messageBuilder.append(" ");
-		if(!ConfigurationLoader.isAppendCurrency()){
-			messageBuilder.append(ConfigurationLoader.getCurrency());
-			messageBuilder.append(amount);
-		}else{
-			messageBuilder.append(amount);
-			messageBuilder.append(ConfigurationLoader.getCurrency());
-		}
+    	messageBuilder.append(StaticsHandler.getAmountWithCurrency(amount));
 		if(playerName.equals(playerNamePayer)){
 			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.RED).build()).build();		
 		}else{

@@ -61,9 +61,9 @@ public class ChargeCommand implements CommandExecutor {
 				Payment payment = new Payment(null, playerName, amount);
 				PlayerNotifier.notifyEvenIfOffline(payment);
 				if(isPlayer){					
-					player.sendMessage(Texts.builder(playerName + " has been charged " + amount).color(TextColors.GREEN).build());					
+					player.sendMessage(Texts.builder(playerName + " has been charged " + StaticsHandler.getAmountWithCurrency(amount)).color(TextColors.GREEN).build());					
 				}else{
-					logger.warn(playerName + " has been charged " + amount);
+					logger.warn(playerName + " has been charged " + StaticsHandler.getAmountWithCurrency(amount));
 				}
 			}else{
 				if(isPlayer){					

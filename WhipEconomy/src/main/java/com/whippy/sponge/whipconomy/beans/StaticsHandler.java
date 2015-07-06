@@ -50,6 +50,15 @@ public class StaticsHandler {
 	}
 
 
+	public static String getAmountWithCurrency(Double amount){
+		if(ConfigurationLoader.isAppendCurrency()){
+			return amount + ConfigurationLoader.getCurrency();
+		}else{
+			return ConfigurationLoader.getCurrency() + amount;
+		}
+	}
+	
+	
 	public static Text buildTextForEcoPlugin(String message, Base color){
 		StringBuilder notification = new StringBuilder();
 		notification.append(ConfigurationLoader.getAuctionPrefix());
