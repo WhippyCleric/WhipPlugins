@@ -102,6 +102,7 @@ public class Whipconomy {
 		
 	}
 
+
 	@Subscribe
 	public void onPreInitializationEvent(ServerStartingEvent event) {
 		CommandService cmdService = game.getCommandDispatcher();
