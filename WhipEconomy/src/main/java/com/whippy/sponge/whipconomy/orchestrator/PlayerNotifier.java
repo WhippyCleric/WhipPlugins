@@ -47,12 +47,12 @@ public class PlayerNotifier {
 
 	public static void notifyEvenIfOffline(Payment payment){
 		if(payment.getPlayerNamePayer()!=null){			
-			if(!notify(payment, EconomyCache.getId(payment.getPlayerNamePayer()))){
+			if(!notify(payment, payment.getPlayerNamePayer())){
 				PendingNotificaitions.addPayment(EconomyCache.getId(payment.getPlayerNamePayer()), payment);
 			}
 		}
 		if(payment.getPlayerNameReceiver()!=null){			
-			if(!notify(payment, EconomyCache.getId(payment.getPlayerNameReceiver()))){
+			if(!notify(payment, payment.getPlayerNameReceiver())){
 				PendingNotificaitions.addPayment(EconomyCache.getId(payment.getPlayerNameReceiver()), payment);
 			}
 		}
