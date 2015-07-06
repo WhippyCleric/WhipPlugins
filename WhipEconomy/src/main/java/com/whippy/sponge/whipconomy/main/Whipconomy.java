@@ -27,6 +27,7 @@ import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.cache.PendingNotificaitions;
 import com.whippy.sponge.whipconomy.commands.AucCommand;
 import com.whippy.sponge.whipconomy.commands.BalCommand;
+import com.whippy.sponge.whipconomy.commands.BankCommand;
 import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.ChargeCommand;
 import com.whippy.sponge.whipconomy.commands.GiftCommand;
@@ -164,6 +165,15 @@ public class Whipconomy {
 						.build();
 		
 		cmdService.register(this, giftCommandSpec, Arrays.asList("give"));
+	
+		CommandSpec bankCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Transfer money from current account to savings account"))
+				.permission("whippyconomy.bank")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
+						.executor(new BankCommand())
+						.build();
+		
+		cmdService.register(this, bankCommandSpec, Arrays.asList("bank"));
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
