@@ -1,7 +1,6 @@
 package com.whippy.sponge.whipconomy.main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +52,11 @@ public class Whipconomy {
 		StaticsHandler.setLogger(logger);
 		StaticsHandler.setGame(game);
 		
-		if(!ConfigurationLoader.init()){
+		if(!ConfigurationLoader.initProperties()){
 			logger.warn("Failed to load configuration defaults will be used");
+		}
+		if(!ConfigurationLoader.initAliases()){
+			logger.warn("Failed to load aliases defaults will be used");			
 		}
 		EconomyCache.refreshMappingsFromFile();
 		EconomyCache.refreshAccountsFromFile();
@@ -115,7 +117,7 @@ public class Whipconomy {
 			    .executor(new BalCommand())
 			    .build();
 
-		cmdService.register(this, balCommandSpec, Arrays.asList("bal"));
+		cmdService.register(this, balCommandSpec, ConfigurationLoader.getBalAliases());
 		
 		
 		CommandSpec payCommandSpec = CommandSpec.builder()
@@ -126,7 +128,7 @@ public class Whipconomy {
 			    .executor(new PayCommand())
 			    .build();
 		
-		cmdService.register(this, payCommandSpec, Arrays.asList("pay"));
+		cmdService.register(this, payCommandSpec, ConfigurationLoader.getPayAliases());
 		
 		CommandSpec accHistoryCommandSpec = CommandSpec.builder()
 			    .description(Texts.of("List a history of transactions"))
@@ -136,7 +138,7 @@ public class Whipconomy {
 			    .executor(new TransactionsCommand())
 			    .build();
 		
-		cmdService.register(this, accHistoryCommandSpec, Arrays.asList("accHistory"));
+		cmdService.register(this, accHistoryCommandSpec, ConfigurationLoader.getAccHistoryAliases());
 		
 		CommandSpec chargeCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Charge another player money"))
@@ -146,7 +148,7 @@ public class Whipconomy {
 				.executor(new ChargeCommand())
 				.build();
 		
-		cmdService.register(this, chargeCommandSpec, Arrays.asList("charge"));
+		cmdService.register(this, chargeCommandSpec,ConfigurationLoader.getChargeAliases());
 		
 		CommandSpec transferCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Transfer money from one player to another"))
@@ -157,7 +159,7 @@ public class Whipconomy {
 				.executor(new TransferCommand())
 				.build();
 		
-		cmdService.register(this, transferCommandSpec, Arrays.asList("transfer"));
+		cmdService.register(this, transferCommandSpec, ConfigurationLoader.getTransferAliases());
 
 		CommandSpec giftCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Give a player an amount of money from the server"))
@@ -167,7 +169,7 @@ public class Whipconomy {
 						.executor(new GiftCommand())
 						.build();
 		
-		cmdService.register(this, giftCommandSpec, Arrays.asList("give"));
+		cmdService.register(this, giftCommandSpec,ConfigurationLoader.getGiftAliases());
 	
 		CommandSpec bankCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Transfer money from current account to savings account"))
@@ -176,7 +178,7 @@ public class Whipconomy {
 						.executor(new BankCommand())
 						.build();
 		
-		cmdService.register(this, bankCommandSpec, Arrays.asList("bank"));
+		cmdService.register(this, bankCommandSpec, ConfigurationLoader.getBalAliases());
 		
 		CommandSpec withdrawCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Transfer money from savings account to current account"))
@@ -185,7 +187,7 @@ public class Whipconomy {
 				.executor(new WithdrawCommand())
 				.build();
 		
-		cmdService.register(this, withdrawCommandSpec, Arrays.asList("withdraw"));
+		cmdService.register(this, withdrawCommandSpec, ConfigurationLoader.getWithdrawAliases());
 		
 		
 		CommandSpec savingsHistoryCommandSpec = CommandSpec.builder()
@@ -195,7 +197,7 @@ public class Whipconomy {
 			    .executor(new SavingsAccHistoryCommand())
 			    .build();
 		
-		cmdService.register(this, savingsHistoryCommandSpec, Arrays.asList("savingsHistory"));
+		cmdService.register(this, savingsHistoryCommandSpec, ConfigurationLoader.getSavingsHistoryAliases());
 		
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){

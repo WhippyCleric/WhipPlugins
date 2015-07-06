@@ -62,7 +62,7 @@ public class AucCommandTest {
 		mockColor(TextColors.class.getField("BLUE"), Color.BLUE);
 		mockItemType(ItemTypes.class.getField("BONE"), "Bones");
 		mockItemType(ItemTypes.class.getField("BOAT"), "Boats");
-		ConfigurationLoader.init();
+		ConfigurationLoader.initProperties();
 		AUCTION_PREFIX = ConfigurationLoader.getAuctionPrefix();
 		
 		EconomyCache.refreshMappingsFromFile();
