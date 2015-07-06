@@ -32,7 +32,7 @@ public class BankCommand implements CommandExecutor{
 				return CommandResult.empty();
 			}
 		}else{
-			logger.warn("Pay called by non player entity");
+			logger.warn("Bank called by non player entity");
 			return CommandResult.empty();
 		}
 		return CommandResult.success();

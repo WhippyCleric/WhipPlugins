@@ -34,6 +34,7 @@ import com.whippy.sponge.whipconomy.commands.GiftCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
+import com.whippy.sponge.whipconomy.commands.WithdrawCommand;
 import com.whippy.sponge.whipconomy.orchestrator.AuctionRunner;
 import com.whippy.sponge.whipconomy.orchestrator.Auctioneer;
 
@@ -174,6 +175,15 @@ public class Whipconomy {
 						.build();
 		
 		cmdService.register(this, bankCommandSpec, Arrays.asList("bank"));
+		
+		CommandSpec withdrawCommandSpec = CommandSpec.builder()
+				.description(Texts.of("Transfer money from savings account to current account"))
+				.permission("whippyconomy.withdraw")
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Texts.of("amount"))))
+				.executor(new WithdrawCommand())
+				.build();
+		
+		cmdService.register(this, withdrawCommandSpec, Arrays.asList("withdraw"));
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");
