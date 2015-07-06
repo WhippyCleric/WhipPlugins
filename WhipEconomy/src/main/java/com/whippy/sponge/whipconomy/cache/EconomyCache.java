@@ -343,6 +343,7 @@ public class EconomyCache {
 	public synchronized static void refreshAccountsFromFile(){
 		try{
 			playerIdsToCurrentAccounts = new HashMap<String, CurrentAccount>();
+			playerIdsToSavingsAccounts = new HashMap<String, SavingsAccount>();
 			FileReader reader = new FileReader(ACCOUNTS_PATH);
 			JSONParser parser = new JSONParser();
 			Object obj = parser.parse(reader);
