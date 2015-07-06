@@ -11,6 +11,7 @@ import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
 
@@ -23,6 +24,7 @@ public class WithdrawCommand implements CommandExecutor{
 			Player player = (Player) source;
 			try{				
 				Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
+				amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
 				EconomyCache.withdraw(player.getName(), amount);
 				player.sendMessage(Texts.builder(StaticsHandler.getAmountWithCurrency(amount) + " transfered into current account").color(TextColors.BLUE).build());
 			}catch(NumberFormatException e){

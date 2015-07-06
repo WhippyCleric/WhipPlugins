@@ -14,6 +14,8 @@ import org.spongepowered.api.util.command.CommandSource;
 
 import com.google.common.base.Optional;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
+import com.whippy.sponge.whipconomy.cache.EconomyCache;
 
 
 public class BidCommand implements CommandCallable {
@@ -55,6 +57,7 @@ public class BidCommand implements CommandCallable {
 				if(arguments.length==1){
 					try{
 						double bid = Double.valueOf(arguments[0]);
+						bid = EconomyCache.round(bid, ConfigurationLoader.getDecPlaces());
 						StaticsHandler.getAuctioneer().bid(player, bid);
 					}catch(NumberFormatException e){
 						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received non number value for bid amount",TextColors.RED));
@@ -63,6 +66,8 @@ public class BidCommand implements CommandCallable {
 					try{
 						double bid = Double.valueOf(arguments[0]);
 						double maxBid = Double.valueOf(arguments[1]);
+						bid = EconomyCache.round(bid, ConfigurationLoader.getDecPlaces());
+						maxBid = EconomyCache.round(maxBid, ConfigurationLoader.getDecPlaces());
 						StaticsHandler.getAuctioneer().bid(player, bid, maxBid);
 					}catch(NumberFormatException e){
 						player.sendMessage(StaticsHandler.buildTextForEcoPlugin("Invalid command format, received non number value for either bid or max bid amount",TextColors.RED));

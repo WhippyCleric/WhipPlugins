@@ -45,6 +45,7 @@ public class BalCommand implements CommandExecutor {
 				player.sendMessage(Texts.builder(playerName + " does not exist!").color(TextColors.RED).build());
 			}else{				
 				double bal = EconomyCache.getBalance(playerId);
+				bal = EconomyCache.round(bal, ConfigurationLoader.getDecPlaces());
 				StringBuilder messageBuilder = new StringBuilder();
 				messageBuilder.append("Balance: ");
 				if (!ConfigurationLoader.isAppendCurrency()) {

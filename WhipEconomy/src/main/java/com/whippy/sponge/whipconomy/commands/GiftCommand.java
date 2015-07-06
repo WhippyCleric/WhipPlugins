@@ -12,6 +12,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.exceptions.TransferException;
 import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
@@ -30,6 +31,7 @@ public class GiftCommand implements CommandExecutor{
 		String playerName = (String) commandArgs.getOne("playerName").get();
 		try{				
 			Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
+			amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
 			EconomyCache.gift(playerName, amount);
 			Payment payment = new Payment(playerName, null, amount);
 			PlayerNotifier.notifyEvenIfOffline(payment);

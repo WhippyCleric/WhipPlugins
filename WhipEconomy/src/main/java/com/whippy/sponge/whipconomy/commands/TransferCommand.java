@@ -10,6 +10,7 @@ import org.spongepowered.api.util.command.spec.CommandExecutor;
 
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
@@ -21,6 +22,7 @@ public class TransferCommand implements CommandExecutor {
 		String playerNameFrom = (String) commandArgs.getOne("playerNameFrom").get();
 		String playerNameTo = (String) commandArgs.getOne("playerNameTo").get();
 		Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
+		amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
 		if(source instanceof Player){
 			Player player = (Player) source;
 			EconomyCache.transfer(player, playerNameFrom, playerNameTo, amount);
