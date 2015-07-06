@@ -21,7 +21,7 @@ public class SavingsAccount extends Account{
 
 	
 	public void addInternalTransfer(InternalTransfer transfer){
-		if(transfers.size()>=ConfigurationLoader.getMaxTransferHistory()){
+		if(transfers.size()>=ConfigurationLoader.getMaxSavingsHistory()){
 			transfers.remove(0);
 		}
 		transfers.add(transfer);
@@ -38,8 +38,8 @@ public class SavingsAccount extends Account{
 		obj.put(BAL_ID, super.getBal());
 		obj.put(ACCOUNT_TYPE, super.getAccountType());
 		JSONArray transferArray = new JSONArray();
-		for (InternalTransfer tansfer : transfers) {
-			transferArray.add(tansfer.toJSONObject());
+		for (InternalTransfer transfer : transfers) {
+			transferArray.add(transfer.toJSONObject());
 		}
 		obj.put(TRANSFERS_ID, transferArray);
 		return obj;

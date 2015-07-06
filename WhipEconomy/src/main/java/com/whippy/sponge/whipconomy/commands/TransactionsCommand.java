@@ -48,7 +48,7 @@ public class TransactionsCommand implements CommandExecutor{
             }else{
             	playerName = player.getName();
             }
-            List<Payment> transactions = EconomyCache.getLastTransactions(player, playerName, numberOfTransactions);
+            List<Payment> transactions = EconomyCache.getLastTransactions(player, playerName);
 			
 			if(transactions.size()==0){
 				player.sendMessage(Texts.builder("No transactions found").color(TextColors.BLUE).build());

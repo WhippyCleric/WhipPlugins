@@ -3,6 +3,11 @@ package com.whippy.sponge.whipconomy.beans;
 import java.util.Date;
 
 import org.json.simple.JSONObject;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
+import org.spongepowered.api.text.format.TextColors;
+
+import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
 
 public class InternalTransfer {
 
@@ -45,6 +50,29 @@ public class InternalTransfer {
 		obj.put(DATE_ID, date);
 		obj.put(IS_WITHDRAWL, isWithdrawl);
 		return obj;
+	}
+	
+	public Text toText(String playerName){
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append("- ");
+		if(isWithdrawl){
+			messageBuilder.append(" Withdrew ");
+		}else{
+			messageBuilder.append(" Banked ");
+			
+		}
+		if(!ConfigurationLoader.isAppendCurrency()){
+			messageBuilder.append(ConfigurationLoader.getCurrency());
+			messageBuilder.append(amount);
+		}else{
+			messageBuilder.append(amount);
+			messageBuilder.append(ConfigurationLoader.getCurrency());
+		}
+		if(isWithdrawl){
+			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.RED).build()).build();		
+		}else{
+			return Texts.builder(date + " ").color(TextColors.YELLOW).append(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build()).build();		
+		}
 	}
 
 }

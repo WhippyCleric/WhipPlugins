@@ -92,7 +92,7 @@ public class EconomyCache {
 		return receiverPayment;
 	}
 
-	public synchronized static List<Payment> getLastTransactions(Player player, String playerName, int number) {
+	public synchronized static List<Payment> getLastTransactions(Player player, String playerName) {
 		String playerID = playerNameToID.get(playerName);
 		if(playerID==null||playerID.isEmpty()){
 			player.sendMessage(Texts.builder("Player " + playerName + " does not exist!").color(TextColors.RED).build());
@@ -129,7 +129,8 @@ public class EconomyCache {
 		
 		playerSavings.ammendBal(amount*-1);
 		playerCurrent.ammendBal(amount);
-		
+		InternalTransfer transfer = new InternalTransfer(true, amount);
+		playerSavings.addInternalTransfer(transfer );
 		pushFileAccountsUpdate();
 		
 	}
@@ -154,13 +155,26 @@ public class EconomyCache {
 		
 		playerSavings.ammendBal(amount);
 		playerCurrent.ammendBal(amount*-1);
-		
+		InternalTransfer transfer = new InternalTransfer(false, amount);
+		playerSavings.addInternalTransfer(transfer );
 		pushFileAccountsUpdate();
 	}
 	
 	
 	
-	public synchronized static List<InternalTransfer> getSavingsHistory(Player player, String playerName, Double amount)throws TransferException{
+	public synchronized static List<InternalTransfer> getSavingsHistory(Player player){
+		String playerID = playerNameToID.get(player.getName());
+		if(playerID==null||playerID.isEmpty()){
+			player.sendMessage(Texts.builder("Player " + player.getName() + " does not exist!").color(TextColors.RED).build());
+		}else{
+			SavingsAccount account = playerIdsToSavingsAccounts.get(playerID);
+			if(account==null){
+				player.sendMessage(Texts.builder("Player " + player.getName() + " does not exist!").color(TextColors.RED).build());
+			}else{			
+				List<InternalTransfer> transactions = account.getInternalTransfers();
+				return transactions;
+			}
+		}
 		return null;
 	}
 

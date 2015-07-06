@@ -32,6 +32,7 @@ import com.whippy.sponge.whipconomy.commands.BidCommand;
 import com.whippy.sponge.whipconomy.commands.ChargeCommand;
 import com.whippy.sponge.whipconomy.commands.GiftCommand;
 import com.whippy.sponge.whipconomy.commands.PayCommand;
+import com.whippy.sponge.whipconomy.commands.SavingsAccHistoryCommand;
 import com.whippy.sponge.whipconomy.commands.TransactionsCommand;
 import com.whippy.sponge.whipconomy.commands.TransferCommand;
 import com.whippy.sponge.whipconomy.commands.WithdrawCommand;
@@ -185,6 +186,17 @@ public class Whipconomy {
 				.build();
 		
 		cmdService.register(this, withdrawCommandSpec, Arrays.asList("withdraw"));
+		
+		
+		CommandSpec savingsHistoryCommandSpec = CommandSpec.builder()
+			    .description(Texts.of("List a history of savings transfers"))
+			    .permission("whippyconomy.savingsHistort")
+			    .arguments(GenericArguments.optional(GenericArguments.integer((Texts.of("numberOfTransfers"))), 10))
+			    .executor(new SavingsAccHistoryCommand())
+			    .build();
+		
+		cmdService.register(this, savingsHistoryCommandSpec, Arrays.asList("savingsHistory"));
+		
 
 		if(ConfigurationLoader.hasAuctions() && ConfigurationLoader.getMaxAuctions()>0){
 			cmdService.register(this, new AucCommand(), "auc");

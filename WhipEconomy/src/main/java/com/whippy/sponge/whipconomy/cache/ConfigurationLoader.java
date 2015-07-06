@@ -21,7 +21,7 @@ public class ConfigurationLoader {
 	private static int maxAuctionTime;
 	private static int maxAuctions;
 	private static int defaultAuctionTime;
-	private static int maxTransferHistory;
+	private static int maxSavingsHistory;
 	private static boolean isSavingsEnabled;
 	public static final String CONFIG_PATH = ".\\config\\plugins\\whip\\config\\whippyconomy-config.properties";
 	
@@ -41,7 +41,7 @@ public class ConfigurationLoader {
 			props.put("startingBalance", "0");
 			props.put("maxOverdraft", "0");
 			props.put("maxTransactionHistory", "30");
-			props.put("maxTransferHistory", "30");
+			props.put("maxSavingsHistory", "30");
 			props.put("hasAuctions", true);
 			props.put("auctionPrefix", "[WhipAuction] ");
 			props.put("defaultIncrement", "1");
@@ -91,7 +91,7 @@ public class ConfigurationLoader {
 		maxAuctionTime =Integer.parseInt(props.getProperty("maxAuctionTime"));
 		maxAuctions =Integer.parseInt(props.getProperty("maxAuctions"));
 		defaultAuctionTime = Integer.parseInt(props.getProperty("defaultAuctionTime"));
-		maxTransferHistory = Integer.parseInt(props.getProperty("maxTransferHistory"));
+		maxSavingsHistory = Integer.parseInt(props.getProperty("maxSavingsHistory"));
 	}
 	
 	public static int getMinAuctionTime() {
@@ -148,8 +148,8 @@ public class ConfigurationLoader {
 		return defaultAuctionTime;
 	}
 
-	public static int getMaxTransferHistory() {
-		return maxTransferHistory;
+	public static int getMaxSavingsHistory() {
+		return maxSavingsHistory;
 	}
 
 	public static boolean isSavingsEnabled() {
