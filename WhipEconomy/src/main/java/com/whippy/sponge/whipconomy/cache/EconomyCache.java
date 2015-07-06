@@ -1,11 +1,14 @@
 package com.whippy.sponge.whipconomy.cache;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -276,8 +279,19 @@ public class EconomyCache {
 				accountsFile.getParentFile().mkdirs();
 				accountsFile.createNewFile();
 			} 
+			File tempAccountsFile = new File(TEMP_ACCOUNTS_PATH);
+			if(!tempAccountsFile.exists()) {
+				tempAccountsFile.getParentFile().mkdirs();
+				tempAccountsFile.createNewFile();
+			} 
+			
+			FileChannel src = new FileInputStream(accountsFile).getChannel();
+			FileChannel dest = new FileOutputStream(tempAccountsFile).getChannel();
+			dest.transferFrom(src, 0, src.size());
+			
+			
 			JSONObject all = new JSONObject();
-			FileWriter file = new FileWriter(ACCOUNTS_PATH);
+			FileWriter fileWriter = new FileWriter(ACCOUNTS_PATH);
 			JSONArray accounts = new JSONArray();
 			for (String playerId : playerIdsToCurrentAccounts.keySet()) {
 				CurrentAccount account = playerIdsToCurrentAccounts.get(playerId);
@@ -288,9 +302,12 @@ public class EconomyCache {
 				accounts.add(account.toJSONObject());
 			}
 			all.put(ACCOUNTS, accounts);
-			file.write(all.toJSONString());
-			file.flush();
-			file.close();
+			fileWriter.write(all.toJSONString());
+			fileWriter.flush();
+			fileWriter.close();
+			tempAccountsFile.delete();
+			src.close();
+			dest.close();
 		}catch(Exception e){
 			e.printStackTrace();
 
@@ -359,44 +376,62 @@ public class EconomyCache {
 			playerIdsToCurrentAccounts = new HashMap<String, CurrentAccount>();
 			playerIdsToSavingsAccounts = new HashMap<String, SavingsAccount>();
 			FileReader reader = new FileReader(ACCOUNTS_PATH);
-			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(reader);
-			JSONObject jsonObject = (JSONObject) obj;
-			JSONArray accountArray = (JSONArray) jsonObject.get(ACCOUNTS);
-			for (Object accountObj : accountArray) {
-				JSONObject jsonAccount = (JSONObject) accountObj;
-				String playerId = (String) jsonAccount.get(Account.PLAYER_ID);
-				Double bal = (Double) jsonAccount.get(Account.BAL_ID);
-				AccountType accountType = AccountType.valueOf((String) jsonAccount.get(Account.ACCOUNT_TYPE));
-				if(AccountType.CURRENT.equals(accountType)){					
-					JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(CurrentAccount.PAYMENTS_ID);
-					CurrentAccount account = new CurrentAccount(playerId);
-					account.ammendBal(bal);
-					for (Object paymentObj : arrayOfPayments) {
-						JSONObject jsonPayment = (JSONObject) paymentObj;
-						String payer = (String) jsonPayment.get(Payment.PAYER);
-						String receiver = (String) jsonPayment.get(Payment.RECEIVER);
-						Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
-						String date = (String) jsonPayment.get(Payment.DATE_ID);
-						account.addPayment(new Payment(receiver, payer, amount, date));
-					}
-					playerIdsToCurrentAccounts.put(playerId, account);
-				}else{
-					JSONArray arrayOfTransfers = (JSONArray) jsonAccount.get(SavingsAccount.TRANSFERS_ID);
-					SavingsAccount account = new SavingsAccount(playerId);
-					account.ammendBal(bal);
-					for (Object transferObj : arrayOfTransfers) {
-						JSONObject jsonTransfer = (JSONObject) transferObj;
-						Double amount = (Double) jsonTransfer.get(InternalTransfer.AMOUNT_ID);
-						String date = (String) jsonTransfer.get(InternalTransfer.DATE_ID);
-						Boolean isWithdrawl = (Boolean) jsonTransfer.get(InternalTransfer.IS_WITHDRAWL);
-						account.addInternalTransfer(new InternalTransfer(isWithdrawl, amount, date));
-					}
-					playerIdsToSavingsAccounts.put(playerId, account);
-				}
-			}
+			extractAccounts(reader);
 		}catch(Exception e){
-			StaticsHandler.getLogger().info("No accounts file found");
+			StaticsHandler.getLogger().info("No accounts file found or file is corrupted, trying to load from temporary");
+			File tempAccountsFile = new File(TEMP_ACCOUNTS_PATH);
+			if(tempAccountsFile.exists()) {
+				FileReader reader;
+				try {
+					reader = new FileReader(TEMP_ACCOUNTS_PATH);
+					extractAccounts(reader);
+				} catch (IOException e1) {
+					StaticsHandler.getLogger().info("Error loading temporary accounts file found");				
+				} catch (ParseException e1) {
+					StaticsHandler.getLogger().error("Unable to parse temporary accounts file: ", e1);				
+				}		
+			}else{
+				StaticsHandler.getLogger().info("No temporary accounts file found");				
+			}
+		}
+	}
+
+	private static void extractAccounts(FileReader reader) throws IOException, ParseException {
+		JSONParser parser = new JSONParser();
+		Object obj = parser.parse(reader);
+		JSONObject jsonObject = (JSONObject) obj;
+		JSONArray accountArray = (JSONArray) jsonObject.get(ACCOUNTS);
+		for (Object accountObj : accountArray) {
+			JSONObject jsonAccount = (JSONObject) accountObj;
+			String playerId = (String) jsonAccount.get(Account.PLAYER_ID);
+			Double bal = (Double) jsonAccount.get(Account.BAL_ID);
+			AccountType accountType = AccountType.valueOf((String) jsonAccount.get(Account.ACCOUNT_TYPE));
+			if(AccountType.CURRENT.equals(accountType)){					
+				JSONArray arrayOfPayments = (JSONArray) jsonAccount.get(CurrentAccount.PAYMENTS_ID);
+				CurrentAccount account = new CurrentAccount(playerId);
+				account.ammendBal(bal);
+				for (Object paymentObj : arrayOfPayments) {
+					JSONObject jsonPayment = (JSONObject) paymentObj;
+					String payer = (String) jsonPayment.get(Payment.PAYER);
+					String receiver = (String) jsonPayment.get(Payment.RECEIVER);
+					Double amount = (Double) jsonPayment.get(Payment.AMOUNT_ID);
+					String date = (String) jsonPayment.get(Payment.DATE_ID);
+					account.addPayment(new Payment(receiver, payer, amount, date));
+				}
+				playerIdsToCurrentAccounts.put(playerId, account);
+			}else{
+				JSONArray arrayOfTransfers = (JSONArray) jsonAccount.get(SavingsAccount.TRANSFERS_ID);
+				SavingsAccount account = new SavingsAccount(playerId);
+				account.ammendBal(bal);
+				for (Object transferObj : arrayOfTransfers) {
+					JSONObject jsonTransfer = (JSONObject) transferObj;
+					Double amount = (Double) jsonTransfer.get(InternalTransfer.AMOUNT_ID);
+					String date = (String) jsonTransfer.get(InternalTransfer.DATE_ID);
+					Boolean isWithdrawl = (Boolean) jsonTransfer.get(InternalTransfer.IS_WITHDRAWL);
+					account.addInternalTransfer(new InternalTransfer(isWithdrawl, amount, date));
+				}
+				playerIdsToSavingsAccounts.put(playerId, account);
+			}
 		}
 	}
 
