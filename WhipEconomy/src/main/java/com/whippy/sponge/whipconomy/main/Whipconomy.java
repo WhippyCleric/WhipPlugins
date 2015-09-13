@@ -178,7 +178,7 @@ public class Whipconomy {
 						.executor(new BankCommand())
 						.build();
 		
-		cmdService.register(this, bankCommandSpec, ConfigurationLoader.getBalAliases());
+		cmdService.register(this, bankCommandSpec, ConfigurationLoader.getBankAliases());
 		
 		CommandSpec withdrawCommandSpec = CommandSpec.builder()
 				.description(Texts.of("Transfer money from savings account to current account"))

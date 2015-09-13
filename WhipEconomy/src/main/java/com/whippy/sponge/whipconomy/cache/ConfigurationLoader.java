@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -174,7 +175,8 @@ public class ConfigurationLoader {
 	}
 	
 	private static List<String> getAlias(Properties props, String aliasProperty, String aliasOnlyProperty, String defaultCommand){
-		List<String> aliases = Arrays.asList(props.getProperty(aliasProperty).split(","));
+		List<String> aliases = new ArrayList<String>();
+		aliases.addAll(Arrays.asList(props.getProperty(aliasProperty).split(",")));
 		if(!(props.getProperty(aliasOnlyProperty)=="true")){
 			aliases.add(defaultCommand);
 		}
