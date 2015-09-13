@@ -46,21 +46,23 @@ public class EconomyCache {
 	private static Map<String, CurrentAccount> playerIdsToCurrentAccounts;
 	private static Map<String, SavingsAccount> playerIdsToSavingsAccounts;
 
-	public synchronized static void transfer(Player player, String playerFrom, String playerTo, double amount){
+	public synchronized static boolean transfer(Player player, String playerFrom, String playerTo, double amount){
 		try {
 			transferWithName(playerFrom, playerTo, amount);
 			StaticsHandler.getLogger().info("[PAYMENT]" + playerFrom +  " " + playerTo + " " + StaticsHandler.getAmountWithCurrency(amount));
+			return true;
 		} catch (TransferException e) {
 			if(player==null){
 				StaticsHandler.getLogger().warn(e.getMessage());
 			}else{
 				player.sendMessage(Texts.builder(e.getMessage()).color(TextColors.RED).build());
 			}
+			return false;
 		}	
 	}
 	
-	public synchronized static void transfer(Player playerFrom, String playerTo, double amount){
-		transfer(playerFrom, playerFrom.getName(), playerTo, amount);
+	public synchronized static boolean transfer(Player playerFrom, String playerTo, double amount){
+		return transfer(playerFrom, playerFrom.getName(), playerTo, amount);
 	}
 	
 
@@ -78,12 +80,12 @@ public class EconomyCache {
 			throw new TransferException("Player " + playerTo + " does not exist!");			
 		}
 		if(playerFromId==null){
-			throw new TransferException("Player " + playerFrom + " does not exist!, Since this is you it would appear to be a cock up, contact WhippyCleric");			
+			throw new TransferException("Player " + playerFrom + " does not exist!");			
 		}
 		CurrentAccount accountTo = playerIdsToCurrentAccounts.get(playerToId);
 		CurrentAccount accountFrom = playerIdsToCurrentAccounts.get(playerFromId);
 		if(accountFrom.getBal()+ConfigurationLoader.getMaxOverdraft()<amount){
-			throw new TransferException("Player " + playerFrom + " does not have enough money to make the paymentc");			
+			throw new TransferException("Player " + playerFrom + " does not have enough money to make the payment.");			
 		}
 		accountTo.ammendBal(amount);
 		accountFrom.ammendBal(amount * -1);
@@ -153,7 +155,7 @@ public class EconomyCache {
 		}
 		
 		if(playerCurrent.getBal()<amount){
-			throw new TransferException("Not enough money to bank"+ StaticsHandler.getAmountWithCurrency(amount) +". Current savings ballance is " + playerCurrent.getBal());			
+			throw new TransferException("Not enough money to bank "+ StaticsHandler.getAmountWithCurrency(amount) +". Current account ballance is " + playerCurrent.getBal());			
 		}
 		
 		playerSavings.ammendBal(amount);
@@ -183,6 +185,9 @@ public class EconomyCache {
 
 	
 	public synchronized static void gift(String playerName, Double amount)throws TransferException{
+		if(getId(playerName)==null){
+			throw new TransferException("Player not found, " + playerName);			
+		}
 		payWithoutPush(getId(playerName), amount);
 		pushFileAccountsUpdate();
 	}
@@ -342,6 +347,9 @@ public class EconomyCache {
 
 	public synchronized static double getBalance(String playerId){
 		return round(playerIdsToCurrentAccounts.get(playerId).getBal(), ConfigurationLoader.getDecPlaces());
+	}
+	public synchronized static double getSavingBalance(String playerId){
+		return round(playerIdsToSavingsAccounts.get(playerId).getBal(), ConfigurationLoader.getDecPlaces());
 	}
 
 	public static double round(double value, int places) {

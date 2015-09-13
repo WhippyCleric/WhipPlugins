@@ -15,7 +15,7 @@ import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
 public class TransferCommand implements CommandExecutor {
-	
+
 	@Override
 	public CommandResult execute(CommandSource source, CommandContext commandArgs) throws CommandException {
 		Logger logger = StaticsHandler.getLogger();
@@ -25,9 +25,10 @@ public class TransferCommand implements CommandExecutor {
 		amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
 		if(source instanceof Player){
 			Player player = (Player) source;
-			EconomyCache.transfer(player, playerNameFrom, playerNameTo, amount);
-			Payment payment = new Payment(playerNameTo, playerNameFrom, amount);
-			PlayerNotifier.notifyEvenIfOffline(payment);
+			if(EconomyCache.transfer(player, playerNameFrom, playerNameTo, amount)){				
+				Payment payment = new Payment(playerNameTo, playerNameFrom, amount);
+				PlayerNotifier.notifyEvenIfOffline(payment);
+			}
 		}else{
 			logger.warn("Pay called by non player entity");
 			EconomyCache.transfer(null, playerNameFrom, playerNameTo, amount);

@@ -23,8 +23,11 @@ public class GiftCommand implements CommandExecutor{
 	public CommandResult execute(CommandSource source, CommandContext commandArgs) throws CommandException {
 		Logger logger = StaticsHandler.getLogger();
 		Player player = null;
+		
+		boolean isPlayer=false;
 		if(source instanceof Player){
 			player = (Player) source;
+			isPlayer=true;
 		}else{
 			logger.warn("Pay called by non player entity");
 		}
@@ -35,6 +38,11 @@ public class GiftCommand implements CommandExecutor{
 			EconomyCache.gift(playerName, amount);
 			Payment payment = new Payment(playerName, null, amount);
 			PlayerNotifier.notifyEvenIfOffline(payment);
+			if(isPlayer){					
+				player.sendMessage(Texts.builder(playerName + " has been given " + StaticsHandler.getAmountWithCurrency(amount)).color(TextColors.GREEN).build());					
+			}else{
+				logger.warn(playerName + " has been charged " + StaticsHandler.getAmountWithCurrency(amount));
+			}
 		}catch(NumberFormatException e){
 			if(player!=null){					
 				player.sendMessage(Texts.builder("Amount to give must be numeric!").color(TextColors.RED).build());

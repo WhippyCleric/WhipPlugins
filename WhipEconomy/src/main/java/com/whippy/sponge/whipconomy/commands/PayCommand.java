@@ -13,6 +13,9 @@ import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.args.CommandContext;
 import org.spongepowered.api.util.command.spec.CommandExecutor;
 
+import sun.security.ec.ECDHKeyAgreement;
+import sun.security.provider.SHA;
+
 import com.whippy.sponge.whipconomy.beans.Payment;
 import com.whippy.sponge.whipconomy.beans.StaticsHandler;
 import com.whippy.sponge.whipconomy.cache.ConfigurationLoader;
@@ -20,7 +23,7 @@ import com.whippy.sponge.whipconomy.cache.EconomyCache;
 import com.whippy.sponge.whipconomy.orchestrator.PlayerNotifier;
 
 public class PayCommand implements CommandExecutor {
-	
+
 
 	public List<String> getSuggestions(CommandSource sender, String semicomplete)throws CommandException {
 		List<String> allPlayersSemi = new ArrayList<String>();
@@ -38,7 +41,7 @@ public class PayCommand implements CommandExecutor {
 		}
 		return playersToSuggest;
 	}
-	
+
 	@Override
 	public CommandResult execute(CommandSource source, CommandContext commandArgs) throws CommandException {
 		Logger logger = StaticsHandler.getLogger();
@@ -47,10 +50,21 @@ public class PayCommand implements CommandExecutor {
 			String playerName = (String) commandArgs.getOne("playerName").get();
 			try{				
 				Double amount = Double.valueOf((String) commandArgs.getOne("amount").get());
-				amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
-				EconomyCache.transfer(player, playerName, amount);
-				Payment payment = new Payment(playerName, player.getName(), amount);
-				PlayerNotifier.notifyEvenIfOffline(payment );
+				if(playerName.equals("*")){
+					for (Player playerToPay : StaticsHandler.getGame().getServer().getOnlinePlayers()) {
+						if(!playerToPay.getIdentifier().equals(player.getIdentifier())){							
+							payPlayer(amount, player, playerToPay.getName());
+						}
+					}
+				}else if(playerName.equals("*offline")){
+					for (String playerToPay : EconomyCache.getAllPlayers()) {
+						if(!player.getIdentifier().equals(EconomyCache.getId(playerToPay))){							
+							payPlayer(amount, player, playerToPay);						
+						}
+					}
+				}else{					
+					payPlayer(amount, player, playerName);
+				}
 			}catch(NumberFormatException e){
 				player.sendMessage(Texts.builder("Amount to transfer must be numeric!").color(TextColors.RED).build());
 			}
@@ -59,6 +73,14 @@ public class PayCommand implements CommandExecutor {
 			return CommandResult.empty();
 		}
 		return CommandResult.success();
+	}
+
+	private void payPlayer(Double amount, Player player, String playerName) {
+		amount = EconomyCache.round(amount, ConfigurationLoader.getDecPlaces());
+		if(EconomyCache.transfer(player, playerName, amount)){					
+			Payment payment = new Payment(playerName, player.getName(), amount);
+			PlayerNotifier.notifyEvenIfOffline(payment);
+		}
 	}
 
 }

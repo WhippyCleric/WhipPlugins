@@ -36,8 +36,8 @@ public class Account {
 		return bal;
 	}
 
-	public AccountType getAccountType() {
-		return accountType;
+	public String getAccountType() {
+		return accountType.toString();
 	}
 
 	public void setAccountType(AccountType accountType) {

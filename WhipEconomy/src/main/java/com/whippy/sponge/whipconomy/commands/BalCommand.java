@@ -45,23 +45,35 @@ public class BalCommand implements CommandExecutor {
 				player.sendMessage(Texts.builder(playerName + " does not exist!").color(TextColors.RED).build());
 			}else{				
 				double bal = EconomyCache.getBalance(playerId);
-				bal = EconomyCache.round(bal, ConfigurationLoader.getDecPlaces());
-				StringBuilder messageBuilder = new StringBuilder();
-				messageBuilder.append("Balance: ");
-				if (!ConfigurationLoader.isAppendCurrency()) {
-					messageBuilder.append(ConfigurationLoader.getCurrency());
-					messageBuilder.append(bal);
-				} else {
-					messageBuilder.append(bal);
-					messageBuilder.append(ConfigurationLoader.getCurrency());
+				bal = EconomyCache.round(bal, ConfigurationLoader.getDecPlaces());				
+				player.sendMessage(Texts.builder(buildBalanceMessage(bal, "Current")).color(TextColors.GREEN).build());
+				
+				if(ConfigurationLoader.isSavingsEnabled()){
+					double balSavings = EconomyCache.getSavingBalance(playerId);					
+					balSavings = EconomyCache.round(balSavings, ConfigurationLoader.getDecPlaces());
+					player.sendMessage(Texts.builder(buildBalanceMessage(balSavings, "Savings")).color(TextColors.GREEN).build());
 				}
-				player.sendMessage(Texts.builder(messageBuilder.toString()).color(TextColors.GREEN).build());
 			}
 	        } else {
 	        	StaticsHandler.getLogger().warn("Bal called by non player entity");
 	        	return CommandResult.empty();
 	        }
 	        return CommandResult.success();
+	}
+	
+	private String buildBalanceMessage(double bal, String accountType){
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append(accountType);
+		messageBuilder.append(" account ");
+		messageBuilder.append("balance: ");
+		if (!ConfigurationLoader.isAppendCurrency()) {
+			messageBuilder.append(ConfigurationLoader.getCurrency());
+			messageBuilder.append(bal);
+		} else {
+			messageBuilder.append(bal);
+			messageBuilder.append(ConfigurationLoader.getCurrency());
+		}
+		return messageBuilder.toString();
 	}
 
 }

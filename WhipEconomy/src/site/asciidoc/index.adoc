@@ -157,7 +157,7 @@ To pay another player a specified amount from your current account
 |Index | Description | Data Type 
 
 |1
-|The player to pay, * to pay everyone online, or *offline to pay everyone *including offline players*
+|The player to pay, * to pay everyone online, or *offline to pay everyone including offline players*
 |String
 
 |2
@@ -173,11 +173,11 @@ There are no optional parameters for the pay command.
 
 Upon sending payment you will receive a notification saying:
 
-`Transfer complete, new balance: 90`
+`Paid mrMisterson 10`
 
-Upon receiving a payment you will receive a notificaiton saying:
+Upon receiving a payment you will receive a notification saying:
 
-`Receieved 10 from mrMisterson`
+`Received 10 from mrMisterson`
 
 ===== Example Usage
 
@@ -238,11 +238,11 @@ There are no optional parameters for the transfer command.
 
 The player whom the payment was on behalf of will receive the following notification:
 
-`Transfer complete, new balance: 185`
+`Paid 100 to mrMisterson`
 
 The player who received the money will receive the following notification:
 
-`Receieved 100 from mrsMissy`
+`Received 100 from mrsMissy`
 
 ===== Example Usage
 
@@ -269,7 +269,7 @@ Like the transfer command this command is to be used by admins or other plugins 
 |Index | Description | Data Type 
 
 |1
-|The player to charge, or * to charge everyone online, or *offline to charge everyone *including offline players*
+|The player to charge, or * to charge everyone online, or *offline to charge everyone including offline players*
 |String
 
 |2
@@ -285,7 +285,7 @@ There are no optional parameters for the charge command
 
 The player who was charged will receive the following notification:
 
-`Charged 50, new balance: 185`
+`Charged 50 by the server`
 
 ===== Example Usage
 
