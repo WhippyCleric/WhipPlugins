@@ -33,7 +33,6 @@
 	<!--localRepository>D:\repositories\jirarepository</localRepository-->
 
 	<localRepository>D:\spongeRepo</localRepository>
-	<!--localRepository>D:/repositories/mlc</localRepository-->
 	<!-- interactiveMode
    | This will determine whether maven prompts you when it needs input. If set to false,
    | maven will use a sensible default value, perhaps based on some other setting, for
@@ -73,27 +72,8 @@
       <nonProxyHosts></nonProxyHosts>
     </proxy>-->
    
-		<!--proxy>
-			<id>proxyhttps</id>
-			<active>true</active>
-			<protocol>https</protocol>
-			<host>proxy</host>
-			<port>3128</port>
-			<nonProxyHosts />
-		</proxy>
-		<proxy>
-			<id>proxyhttp</id>
-			<active>true</active>
-			<protocol>http</protocol>
-			<host>proxy</host>
-			<port>3128</port>
-			<nonProxyHosts>callisto|ci-intdev|ci-connect-lx</nonProxyHosts>
-		</proxy-->
 	</proxies>
 
-	<pluginGroups>
-		<pluginGroup>murex.maven.plugins</pluginGroup>
-	</pluginGroups>
 
 	<!-- mirrors
    | This is a list of mirrors to be used in downloading artifacts from remote repositories.
@@ -113,12 +93,7 @@
      | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
      |
      -->
-		<!--mirror>
-			<mirrorOf>central</mirrorOf>
-			<id>publicGroupProxy</id>
-			<name>Proximity mirrored central repository in group public</name>
-			<url>http://callisto:8080/px/repository/public</url>
-		</mirror-->
+	
 		
 	</mirrors>
 	
@@ -131,13 +106,7 @@
     </server-->
   </servers>
   
-	<!--servers>
-		<server>
-			<id>intdev-releases</id>
-			<username>deployment</username>
-			<password>deployment123</password>
-		</server>
-	</servers-->
+
 
 
 	<!-- profiles
@@ -182,34 +151,7 @@
 				</property>
 			</activation>
 			
-			<!--repositories>
-                                <repository>
-                                        <id>nexus-murex</id>
-                                        <url>http://callisto:8080/nexus/content/groups/murex</url>
-                                </repository>
-                                <repository>
-                                        <id>nexus-public</id>
-                                        <url>http://callisto:8080/nexus/content/groups/public</url>
-                                </repository>
-                                 <repository>
-                                        <id>nexus-firstretry</id>
-                                        <url>http://callisto:8080/nexus/content/groups/firstretry</url>
-                                </repository>
-                        </repositories>
-                    <pluginRepositories>
-                        <pluginRepository>
-                                        <id>nexus-murex-plugin</id>
-                                        <url>http://callisto:8080/nexus/content/groups/murex</url>
-                        </pluginRepository>
-                        <pluginRepository>
-                                        <id>nexus-plugin-plugin</id>
-                                        <url>http://callisto:8080/nexus/content/groups/public</url>
-                        </pluginRepository>
-                        <pluginRepository>
-                                        <id>nexus-firstretry</id>
-                                        <url>http://callisto:8080/nexus/content/groups/firstretry</url>
-                        </pluginRepository>
-                    </pluginRepositories-->
+		
 			
 			<repositories>			
 		<repository>
@@ -245,35 +187,7 @@
 		</repository>
 			</repositories>
 			<pluginRepositories>
-				<!--pluginRepository>
-					<id>intdev-releases</id>
-					<url>http://ci-intdev/nexus/content/repositories/intdev-releases/</url>
-				</pluginRepository>
-				<pluginRepository>
-					<id>public</id>
-					<url>http://ci-connect-lx/nexus/content/groups/public</url>
-				</pluginRepository>
-				<pluginRepository>
-					<id>internal</id>
-					<url>http://ci-connect-lx/nexus/content/groups/internal</url>
-				</pluginRepository>
-
-				<pluginRepository>
-					<id>callisto-sas</id>
-					<url>http://ci-intdev/nexus/content/groups/public/</url>
-				</pluginRepository> 
-				<pluginRepository>
-					<id>nexus-murex-plugin</id>
-					<url>http://callisto:8080/nexus/content/groups/murex</url>
-				</pluginRepository>
-				<pluginRepository>
-					<id>nexus-plugin-plugin</id>
-					<url>http://callisto:8080/nexus/content/groups/public</url>
-				</pluginRepository>
-				<pluginRepository>
-					<id>nexus-firstretry</id>
-					<url>http://callisto:8080/nexus/content/groups/firstretry</url>
-				</pluginRepository-->
+			
 			</pluginRepositories>
 		</profile>
 	</profiles>
